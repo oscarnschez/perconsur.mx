@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PERCONSUR — Transporte de carga por carretera desde Manzanillo</title>
+<meta name="description" content="PERCONSUR: transporte de contenedores de importación y exportación desde el puerto de Manzanillo, Colima. Más de 15 años en servicio.">
+<meta name="theme-color" content="#F4F5F4">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="PERCONSUR — Transporte de carga por carretera desde Manzanillo">
+<meta property="og:description" content="Transporte de contenedores de importación y exportación desde el puerto de Manzanillo, Colima.">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<!-- fuentes:inicio -->
+<link rel="preload" href="assets/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- fuentes:fin -->
+<script>(function(d){d.lang='es-MX';d.classList.add('js')})(document.documentElement)</script>
+<style>
+/* =====================================================================
+   PERCONSUR — tokens
+   Layout: retícula suiza de 12 columnas sobre "papel", con bandas a
+   sangre (azul puerto, asfalto) y marcas de agua tipográficas.
+   Paleta: papel (fondo), asfalto (carretera/pie), plata (contenedores),
+   azul PERCONSUR #354FA3, naranja PERCONSUR #F26F22.
+   El sitio es claro por decisión de marca: un solo tema, con todos los
+   colores definidos de forma explícita.
+   ===================================================================== */
+:root{
+  color-scheme:light;
+  /* color */
+  --papel:#F4F5F4;
+  --papel-2:#EBEDEC;
+  --tinta:#161616;
+  --tinta-2:#4A4C50;
+  --tinta-3:#686B70;          /* 4.9:1 sobre papel (antes 3.0:1) */
+  --linea:rgba(22,22,22,.14);
+  --asfalto:#1B1B1B;
+  --plata:#C9CBCE;
+  --plata-2:#DEE0E2;
+  --azul:#354FA3;
+  --azul-2:#2C4289;
+  --naranja:#F26F22;
+  --naranja-tx:#D9581A;       /* naranja para texto grande: 3.6:1 sobre papel */
+  --marca:rgba(22,22,22,.055);
+  --error:#B3421A;
+  --foco:#2C4289;
+  --blanco:#FFFFFF;
+  --sobre-azul:rgba(255,255,255,.84);
+  --sobre-asfalto:rgba(255,255,255,.72);
+  /* tipografía */
+  --f-sans:"Space Grotesk","Space Grotesk Fallback","Helvetica Neue",Helvetica,Arial,sans-serif;
+  /* movimiento: desaceleración al llegar, aceleración al salir */
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-in:cubic-bezier(.55,0,1,.45);
+  --ease-drive:cubic-bezier(.25,.65,.2,1);
+  --t-fast:.16s;
+  --t-base:.26s;
+  /* layout */
+  --nav-h:72px;
+  --mx:clamp(20px,5vw,72px);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+/* ---------- fuentes ---------- */
+/* fuente-propia:inicio */
+@font-face{
+  font-family:"Space Grotesk";
+  src:url("assets/fonts/space-grotesk-latin.woff2") format("woff2");
+  font-weight:300 700;font-style:normal;font-display:swap;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+/* fuente-propia:fin */
+/* Respaldo con métricas ajustadas a Space Grotesk: evita el salto de
+   layout (CLS) mientras carga la fuente. Valores medidos sobre el texto
+   del sitio (mayúsculas en títulos, minúsculas en cuerpo). */
+@font-face{font-family:"Space Grotesk Fallback";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("Helvetica");font-weight:300;size-adjust:91.4%;ascent-override:107.7%;descent-override:31.9%;line-gap-override:0%}
+@font-face{font-family:"Space Grotesk Fallback";src:local("Arial"),local("ArialMT"),local("Liberation Sans"),local("Helvetica");font-weight:400 500;size-adjust:110%;ascent-override:89.5%;descent-override:26.5%;line-gap-override:0%}
+@font-face{font-family:"Space Grotesk Fallback";src:local("Arial Bold"),local("Arial-BoldMT"),local("Liberation Sans Bold"),local("Helvetica Bold");font-weight:600 700;size-adjust:89.8%;ascent-override:109.6%;descent-override:32.5%;line-gap-override:0%}
+
+/* ---------- base ---------- */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 16px)}
+*,*::before,*::after{box-sizing:inherit;margin:0;padding:0}
+body{
+  background:var(--papel);
+  color:var(--tinta);
+  font-family:var(--f-sans);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+html.menu-open body{overflow:hidden}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a,button,select,input,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid var(--foco);outline-offset:3px;border-radius:2px}
+.puerto :focus-visible,.pie :focus-visible{outline-color:var(--blanco)}
+[tabindex="-1"]:focus{outline:none}
+::selection{background:var(--azul);color:var(--blanco)}
+.ico{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.tnum{font-variant-numeric:tabular-nums}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.skip{
+  position:fixed;left:16px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:100;
+  padding:12px 18px;border-radius:999px;background:var(--tinta);color:var(--papel);font-weight:500;
+  opacity:0;pointer-events:none;transform:translateY(-160%);
+  transition:transform var(--t-base) var(--ease-out),opacity var(--t-fast) ease;
+}
+.skip:focus{opacity:1;pointer-events:auto;transform:none}
+
+/* ---------- tipografía ---------- */
+.h-display{
+  font-weight:700;
+  font-size:clamp(44px,7.4vw,132px);
+  line-height:.92;
+  letter-spacing:-.028em;
+  text-transform:uppercase;
+  text-wrap:balance;
+}
+.h-display .light{font-weight:300;letter-spacing:-.02em}
+.h-section{
+  font-weight:700;
+  font-size:clamp(34px,4.6vw,76px);
+  line-height:.96;
+  letter-spacing:-.024em;
+  text-transform:uppercase;
+  text-wrap:balance;
+}
+.h-section .light{font-weight:300}
+.c-4 .h-section{font-size:clamp(30px,3.6vw,58px)}
+.h-item{font-weight:500;font-size:20px;line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
+.h-sub{font-weight:500;font-size:26px;line-height:1.15;letter-spacing:-.015em}
+.lede{font-size:clamp(18px,1.6vw,22px);line-height:1.4;max-width:34em;color:var(--tinta-2)}
+p{max-width:60ch}
+.small{font-size:14px;color:var(--tinta-2)}
+.micro{
+  display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:4px;
+  font-size:12.5px;font-weight:500;line-height:1.45;letter-spacing:.14em;text-transform:uppercase;
+  font-variant-numeric:tabular-nums;color:var(--tinta-2);
+}
+.micro::before{content:"";flex:none;width:22px;height:2px;background:var(--naranja)}
+.micro .tnum{color:var(--tinta-3)}
+.pend{
+  color:var(--tinta-3);
+  border-bottom:1px dotted var(--tinta-3);
+  cursor:help;
+}
+.link{border-bottom:1px solid currentColor;transition:color var(--t-fast) ease,border-color var(--t-fast) ease}
+
+/* ---------- botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:12px;
+  min-height:52px;padding:0 26px;
+  border:1.5px solid var(--tinta);border-radius:999px;
+  font-weight:500;font-size:16px;letter-spacing:-.005em;white-space:nowrap;
+  transition:background-color var(--t-fast) ease,color var(--t-fast) ease,border-color var(--t-fast) ease,transform var(--t-base) var(--ease-out);
+}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--t-base) var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn-solid{background:var(--tinta);color:var(--papel)}
+.btn-invert{border-color:var(--blanco);color:var(--blanco)}
+@media (hover:hover){
+  .btn:hover{background:var(--tinta);color:var(--papel)}
+  .btn:hover svg{transform:translateX(4px)}
+  .btn-solid:hover{background:var(--azul);border-color:var(--azul);color:var(--blanco)}
+  .btn-invert:hover{background:var(--blanco);color:var(--azul)}
+  .link:hover{color:var(--azul)}
+}
+
+/* ---------- navegación ---------- */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  height:calc(var(--nav-h) + env(safe-area-inset-top,0px));
+  padding:env(safe-area-inset-top,0px) var(--mx) 0;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:transform .4s var(--ease-out),background-color var(--t-base) ease,color var(--t-base) ease,box-shadow var(--t-base) ease;
+}
+.nav.solid{background:rgba(244,245,244,.86);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 1px 0 var(--linea)}
+.nav.on-blue{color:var(--blanco)}
+.nav.on-blue.solid{background:rgba(53,79,163,.86);box-shadow:0 1px 0 rgba(255,255,255,.18)}
+.nav.hide{transform:translateY(-100%);transition:transform .24s var(--ease-in),background-color var(--t-base) ease,color var(--t-base) ease,box-shadow var(--t-base) ease}
+.logo{font-weight:700;font-size:22px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.logo-mark{position:relative;flex:none;width:43px;height:44px}
+.logo-mark img{position:absolute;inset:0;width:100%;height:100%;transition:opacity var(--t-base) ease}
+.logo-mark .inv{opacity:0}
+.nav.on-blue .logo-mark .inv,.pie .logo-mark .inv{opacity:1}
+.nav.on-blue .logo-mark .std{opacity:0}
+.nav-links{display:flex;gap:4px;list-style:none}
+.nav-links a{
+  display:block;padding:10px 14px;border-radius:999px;
+  font-size:15px;font-weight:500;letter-spacing:-.005em;
+  transition:background-color var(--t-fast) ease,color var(--t-fast) ease;
+}
+@media (hover:hover){
+  .nav-links a:hover{background:rgba(22,22,22,.07)}
+  .nav.on-blue .nav-links a:hover{background:rgba(255,255,255,.14)}
+}
+.nav-links a[aria-current="page"]{background:var(--tinta);color:var(--papel)}
+.nav.on-blue .nav-links a[aria-current="page"]{background:var(--blanco);color:var(--azul)}
+.nav-cta{margin-left:10px}
+.nav.on-blue .nav-cta{background:var(--blanco);border-color:var(--blanco);color:var(--azul)}
+.menu-btn{display:none;min-height:44px;align-items:center;font-weight:500;font-size:15px;padding:0 16px;border:1.5px solid currentColor;border-radius:999px}
+.menu-panel{
+  position:fixed;inset:0;z-index:49;overflow-y:auto;
+  background:var(--papel);
+  padding:calc(var(--nav-h) + 24px + env(safe-area-inset-top,0px)) var(--mx) calc(40px + env(safe-area-inset-bottom,0px));
+  visibility:hidden;opacity:0;transform:translateY(-10px);
+  transition:opacity .2s var(--ease-in),transform .2s var(--ease-in),visibility 0s linear .2s;
+}
+.menu-panel.open{visibility:visible;opacity:1;transform:none;transition:opacity .3s var(--ease-out),transform .45s var(--ease-out),visibility 0s}
+.menu-panel ul{list-style:none;display:grid;gap:6px}
+.menu-panel ul a{display:block;padding:16px 0;border-bottom:1px solid var(--linea);font-size:30px;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
+.menu-panel ul a[aria-current="page"]{color:var(--azul)}
+.menu-panel .btn{margin-top:28px}
+@media (max-width:900px){
+  .nav-links,.nav-cta{display:none}
+  .menu-btn{display:inline-flex}
+}
+@media (min-width:901px){.menu-panel{display:none}}
+
+/* ---------- páginas (router) ---------- */
+.page{display:none}
+.page.active{display:block;animation:page-in .5s var(--ease-out) both}
+main{min-height:100svh}
+
+/* ---------- utilidades de layout ---------- */
+.wrap{padding-left:var(--mx);padding-right:var(--mx)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:32px}
+.c-6{grid-column:span 6}.c-5{grid-column:span 5}.c-4{grid-column:span 4}.c-3{grid-column:span 3}.c-7{grid-column:span 7}.c-8{grid-column:span 8}.c-12{grid-column:span 12}
+@media (max-width:900px){.grid > *{grid-column:span 12}}
+.sec{position:relative;padding:clamp(72px,10vw,140px) 0}
+.sec-tight{padding:clamp(48px,7vw,96px) 0}
+.rule{border-top:1px solid var(--linea)}
+
+/* ---------- marca de agua ---------- */
+.marca{
+  position:absolute;left:0;right:0;pointer-events:none;user-select:none;
+  font-weight:700;text-transform:uppercase;white-space:nowrap;
+  font-size:clamp(120px,24vw,420px);line-height:1;letter-spacing:-.04em;
+  color:var(--marca);
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;min-height:clamp(560px,86svh,980px);overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding-top:calc(var(--nav-h) + 24px);
+}
+.hero .marca{top:auto;bottom:-3vw;text-align:right;right:-2vw}
+.hero-copy{position:relative;z-index:2;padding-bottom:clamp(40px,7vh,96px)}
+.hero-copy .micro{margin-bottom:clamp(20px,3vh,32px)}
+.hero-copy .lede{margin-top:28px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.road{
+  position:relative;z-index:1;height:118px;
+  --travel:40vw;--wheel-turn:1440deg;--wheel-in:2300deg;
+}
+.road::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:14px;
+  background:linear-gradient(to bottom,#2A2A2A 0 2px,var(--asfalto) 2px);
+}
+.truck{
+  position:absolute;bottom:14px;left:0;
+  width:clamp(300px,42vw,620px);
+  will-change:transform;
+}
+.truck svg{width:100%;height:auto;overflow:visible}
+.truck .wheel,.truck .wheel-in{transform-box:fill-box;transform-origin:center}
+.truck .body{transform-box:view-box;transform-origin:560px 270px}
+
+/* ---------- CIFRAS (prueba de confianza) ---------- */
+.cifras{padding-block:clamp(32px,4vw,56px) 0}
+.cifras-row{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--linea)}
+.cifras-row li{display:grid;align-content:start;gap:12px;padding:26px 24px 6px 0;border-right:1px solid var(--linea);min-width:0}
+.cifras-row li + li{padding-left:24px}
+.cifras-row li:last-child{border-right:0}
+.num{display:flex;align-items:flex-start;font-weight:300;font-size:clamp(60px,7.4vw,124px);line-height:.88;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.num .n{display:inline-block}
+.num .plus{color:var(--naranja-tx);font-weight:400;font-size:.6em;line-height:1;margin-left:.04em}
+.cifras .lbl{font-size:15px;line-height:1.35;color:var(--tinta-2);max-width:22ch}
+@media (max-width:900px){
+  .cifras-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cifras-row li:nth-child(2){border-right:0}
+  .cifras-row li:nth-child(3){padding-left:0}
+  .cifras-row li:nth-child(n+3){border-top:1px solid var(--linea)}
+  .cifras-row li{padding-bottom:26px}
+}
+
+/* ---------- SERVICIOS (portada) ---------- */
+.servicios{overflow:hidden}
+.servicios .marca{top:30%;padding-left:6vw}
+.serv-head{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;margin-bottom:clamp(32px,5vw,64px)}
+@media (max-width:900px){.serv-head{grid-template-columns:1fr;justify-items:start}}
+.serv-visual{position:relative;z-index:2;display:flex;justify-content:center;margin:clamp(24px,5vw,60px) 0}
+.serv-visual svg{width:min(820px,88vw);height:auto;filter:drop-shadow(0 18px 22px rgba(0,0,0,.10))}
+.serv-row{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;
+  border-top:1px solid var(--linea);
+}
+.serv-row > div{padding:28px 24px 28px 0;border-right:1px solid var(--linea)}
+.serv-row > div:last-child{border-right:0}
+.serv-row > div + div{padding-left:24px}
+.serv-row .ico{width:34px;height:34px;margin-bottom:22px}
+.serv-row .h-item{margin-bottom:8px}
+@media (max-width:900px){
+  .serv-row{grid-template-columns:1fr 1fr}
+  .serv-row > div:nth-child(2){border-right:0}
+  .serv-row > div:nth-child(3){padding-left:0;border-top:1px solid var(--linea)}
+  .serv-row > div:nth-child(4){border-top:1px solid var(--linea)}
+}
+@media (max-width:520px){
+  .serv-row{grid-template-columns:1fr}
+  .serv-row > div{padding-left:0 !important;border-right:0;border-top:1px solid var(--linea)}
+  .serv-row > div:first-child{border-top:0}
+}
+
+/* ---------- CONFIABILIDAD (pista vertical) ---------- */
+.pista-sec{position:relative}
+.pista-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr);column-gap:clamp(24px,5vw,80px);align-items:start}
+.pista{
+  position:relative;height:clamp(560px,120vh,980px);
+  background:var(--asfalto);
+  border-radius:2px;
+  overflow:hidden;
+  --caja-travel:50vh;
+}
+.pista::before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.55) 0 28px,transparent 28px 56px);
+}
+.pista .caja{
+  position:absolute;left:50%;top:0;width:78px;margin-left:-39px;
+  will-change:transform;
+}
+.pista .caja svg{width:100%;height:auto}
+.pista-copy{position:sticky;top:calc(var(--nav-h) + 24px)}
+.pista-copy .h-section{margin-bottom:22px}
+.rasgos{position:sticky;top:calc(var(--nav-h) + 24px);display:grid;gap:36px}
+.rasgos .ico{margin-bottom:14px}
+.rasgos .h-item{margin-bottom:6px}
+@media (max-width:900px){
+  .pista-grid{grid-template-columns:minmax(0,1fr) 84px;row-gap:40px}
+  .pista{grid-row:1 / span 2;grid-column:2;height:100%;min-height:520px}
+  .pista-copy{grid-column:1;position:static}
+  .rasgos{grid-column:1;position:static}
+  .pista .caja{width:48px;margin-left:-24px}
+}
+
+/* ---------- PUERTO (sección azul) ---------- */
+.puerto{background:var(--azul);color:var(--blanco);overflow:hidden}
+.puerto .marca{color:rgba(255,255,255,.07);top:6%;padding-left:4vw}
+.puerto-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,360px) minmax(0,1fr);column-gap:clamp(24px,5vw,80px);align-items:center}
+.puerto .lede{color:var(--sobre-azul);margin-top:22px}
+.puerto .h-section{font-size:clamp(32px,4vw,64px)}
+.puerto .barco{display:flex;justify-content:center}
+.puerto .barco svg{width:100%;max-width:380px;height:auto}
+.datos{display:grid;gap:34px}
+.datos .h-item{margin-bottom:6px}
+.datos p{color:var(--sobre-azul);font-size:16px}
+.datos .ico{margin-bottom:12px}
+.puerto-cta{margin-top:36px}
+@media (max-width:900px){
+  .puerto-grid{grid-template-columns:1fr;row-gap:48px}
+  .puerto .barco svg{max-width:260px}
+}
+
+/* ---------- CLIENTES ---------- */
+.clientes-lista{list-style:none;border-top:1px solid var(--linea)}
+.clientes-lista li{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:24px;
+  padding:26px 0;border-bottom:1px solid var(--linea);
+}
+.clientes-lista b{font-weight:700;font-size:clamp(28px,4vw,60px);letter-spacing:-.025em;line-height:1;text-transform:uppercase}
+.clientes-lista span{color:var(--tinta-2);font-size:15px;text-align:right;max-width:26ch}
+@media (max-width:640px){.clientes-lista li{grid-template-columns:1fr}.clientes-lista span{text-align:left}}
+.con-logo li{grid-template-columns:minmax(200px,280px) minmax(0,1fr);align-items:center;gap:clamp(20px,4vw,56px)}
+.con-logo .logo-cliente{max-width:none;display:flex;align-items:center;justify-content:center;height:136px;padding:16px 24px;background:var(--blanco);border:1px solid var(--linea);border-radius:4px}
+.con-logo .logo-cliente.oscuro{background:var(--asfalto);border-color:var(--asfalto)}
+.con-logo .logo-cliente img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain}
+.con-logo li > span:last-child{text-align:left;max-width:42ch;font-size:clamp(17px,1.5vw,20px);line-height:1.4;color:var(--tinta-2)}
+@media (max-width:640px){.con-logo li{grid-template-columns:1fr}.con-logo .logo-cliente{height:120px}}
+
+/* ---------- CTA final ---------- */
+.cta-final{border-top:1px solid var(--linea)}
+.cta-final .h-section{margin-bottom:28px}
+
+/* ---------- páginas interiores ---------- */
+.intro{padding-top:calc(var(--nav-h) + clamp(48px,9vh,120px))}
+.intro .lede{margin-top:26px}
+.intro .micro{margin-bottom:22px}
+.serv-detalle > div{border-top:1px solid var(--linea);padding-top:26px}
+.serv-detalle .ico{width:38px;height:38px;margin-bottom:18px}
+.serv-detalle p{margin-top:10px;color:var(--tinta-2)}
+.pasos{list-style:none;counter-reset:paso;border-top:1px solid var(--linea)}
+.pasos li{
+  counter-increment:paso;display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1.4fr);gap:24px;
+  padding:28px 0;border-bottom:1px solid var(--linea);
+}
+.pasos li::before{content:counter(paso,decimal-leading-zero);font-weight:300;font-size:34px;line-height:1;letter-spacing:-.03em;color:var(--tinta-3);font-variant-numeric:tabular-nums}
+.pasos p{color:var(--tinta-2);font-size:16px}
+@media (max-width:760px){.pasos li{grid-template-columns:56px minmax(0,1fr)}.pasos p{grid-column:2}}
+.linea-tiempo{position:relative;list-style:none;border-left:2px solid var(--tinta);padding-left:28px;display:grid;gap:34px}
+.linea-tiempo li{position:relative}
+.linea-tiempo li::before{content:"";position:absolute;left:-35px;top:8px;width:12px;height:12px;background:var(--papel);border:2px solid var(--tinta);border-radius:50%}
+.linea-tiempo b{display:block;font-size:14px;letter-spacing:.04em;color:var(--tinta-3);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.linea-tiempo .h-item{margin-bottom:6px}
+.linea-tiempo p{color:var(--tinta-2);font-size:16px}
+.ficha{list-style:none;border-top:1px solid var(--linea)}
+.ficha li{display:grid;grid-template-columns:minmax(140px,.7fr) minmax(0,1fr);gap:16px;padding:18px 0;border-bottom:1px solid var(--linea)}
+.ficha li span:first-child{color:var(--tinta-3);font-size:15px}
+.ficha li span:last-child{font-weight:500}
+@media (max-width:520px){.ficha li{grid-template-columns:1fr;gap:4px}}
+.flota-visual{margin:clamp(24px,5vw,60px) 0 0}
+.flota-visual svg{width:100%;height:auto}
+.chasis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px}
+.chasis > div{border-top:2px solid var(--tinta);padding-top:18px}
+.chasis svg{width:100%;height:auto;margin-bottom:16px}
+.chasis p{font-size:15px;color:var(--tinta-2)}
+@media (max-width:760px){.chasis{grid-template-columns:1fr}}
+.testimonio{border-left:2px solid var(--naranja);padding-left:24px;font-size:clamp(20px,2vw,26px);line-height:1.3;font-weight:300;max-width:34em}
+.testimonio footer{margin-top:14px;font-size:15px;font-weight:500}
+
+/* ---------- contacto ---------- */
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 24px}
+.form .full{grid-column:1 / -1}
+.campo{display:grid;gap:8px;align-content:start}
+.campo label{font-size:14px;color:var(--tinta-2)}
+.campo .req{color:var(--error)}
+.form input,.form select,.form textarea{
+  width:100%;min-height:44px;
+  font:inherit;font-size:16px;color:var(--tinta);
+  background:transparent;border:0;border-bottom:1.5px solid var(--tinta);
+  padding:10px 0;border-radius:0;
+  transition:border-color var(--t-fast) ease,box-shadow var(--t-fast) ease;
+}
+.form textarea{min-height:120px;resize:vertical}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-bottom-color:var(--azul);box-shadow:0 1.5px 0 var(--azul)}
+.form [aria-invalid="true"]{border-bottom-color:var(--error);box-shadow:0 1.5px 0 var(--error)}
+.form select{-webkit-appearance:none;appearance:none;padding-right:24px;background:transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23161616' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right center}
+.err{font-size:14px;color:var(--error)}
+.form-pie{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center}
+.form-ok{display:grid;gap:10px;padding:22px 24px;background:var(--blanco);border:1px solid var(--linea);border-left:3px solid var(--azul);border-radius:4px;animation:rise .45s var(--ease-out) both}
+.form .solicitud{min-height:0;font-size:14px;line-height:1.5;color:var(--tinta-2);border:1px solid var(--linea);border-radius:4px;padding:10px 12px;background:var(--papel);resize:none}
+.form-ok .acciones{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px}
+.contacto-datos{display:grid;gap:30px}
+.contacto-datos .h-item{margin-bottom:6px}
+.contacto-datos p{color:var(--tinta-2)}
+.contacto-datos a{border-bottom:1px solid var(--linea);transition:border-color var(--t-fast) ease}
+@media (hover:hover){.contacto-datos a:hover{border-bottom-color:var(--tinta)}}
+.copiar{display:inline-flex;align-items:center;min-height:32px;margin-left:8px;padding:0 12px;border:1px solid var(--linea);border-radius:999px;font-size:13px;font-weight:500;color:var(--tinta);vertical-align:middle;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
+@media (hover:hover){.copiar:hover{border-color:var(--tinta)}}
+.copiar:active{transform:scale(.96)}
+.estado{font-size:13px;color:var(--tinta-2);margin-left:8px}
+@media (max-width:760px){.form{grid-template-columns:1fr}}
+
+/* ---------- pie ---------- */
+.pie{background:var(--asfalto);color:var(--blanco);padding:clamp(56px,7vw,104px) 0 calc(32px + env(safe-area-inset-bottom,0px));overflow:hidden}
+.pie-lema{max-width:none;font-weight:700;text-transform:uppercase;font-size:clamp(40px,7vw,120px);line-height:.92;letter-spacing:-.03em;text-wrap:balance;margin-bottom:clamp(48px,7vw,96px)}
+.pie-lema .light{font-weight:300;color:var(--naranja)}
+.pie-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr);gap:32px;padding-top:32px;border-top:1px solid rgba(255,255,255,.16)}
+.pie .logo{margin-bottom:18px}
+.pie-grid p,.pie-grid li{color:var(--sobre-asfalto);font-size:15px}
+.pie-grid .pie-tit{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
+.pie ul{list-style:none;display:grid;gap:4px}
+.pie ul a{display:inline-block;padding:4px 0;transition:color var(--t-fast) ease}
+.pie address{font-style:normal;display:grid;gap:14px}
+@media (hover:hover){.pie a:hover{color:var(--blanco)}}
+.pie-base{margin-top:56px;padding-top:22px;border-top:1px solid rgba(255,255,255,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(255,255,255,.55)}
+@media (max-width:900px){.pie-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.pie-grid{grid-template-columns:1fr}}
+
+/* =====================================================================
+   MOVIMIENTO
+   1) Entradas por tiempo: carga de página y cambio de página.
+   2) Animaciones ligadas al scroll: corren en el hilo del compositor con
+      scroll-driven animations (Chrome, Edge, Safari 26+). Donde no hay
+      soporte, el JS hace lo esencial con medidas en caché.
+   3) prefers-reduced-motion: estado final, sin desplazamientos.
+   ===================================================================== */
+@keyframes page-in{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes word-up{from{transform:translateY(112%)}to{transform:none}}
+@keyframes truck-in{from{transform:translateX(calc(-100% - 8vw))}to{transform:none}}
+@keyframes wheel-in{from{transform:rotate(calc(var(--wheel-in) * -1))}to{transform:none}}
+@keyframes brake{0%,74%{transform:none}86%{transform:rotate(.55deg)}95%{transform:rotate(-.15deg)}100%{transform:none}}
+
+/* palabras de los títulos: suben desde una máscara */
+.split .w{display:inline-block;vertical-align:top;overflow:hidden;padding:.14em .05em .1em;margin:-.14em -.05em -.1em}
+.split .w > span{display:inline-block}
+.page.active .split .w > span{animation:word-up .95s var(--ease-out) both;animation-delay:calc(.08s + var(--wi,0) * 55ms)}
+.page.active .in{animation:rise .8s var(--ease-out) both;animation-delay:calc(.3s + var(--d,0) * 90ms)}
+.page.active .truck-in{animation:truck-in 1.7s var(--ease-drive) .15s both}
+.page.active .wheel-in{animation:wheel-in 1.7s var(--ease-drive) .15s both}
+.page.active .truck .body{animation:brake 1.7s linear .15s both}
+.menu-panel.open li,.menu-panel.open .btn{animation:rise .5s var(--ease-out) both;animation-delay:calc(.04s + var(--i,0) * 40ms)}
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .hero,.sec{view-timeline:--sec block;view-timeline-inset:0}
+    /* tráiler: recorre la carretera mientras el hero sale de pantalla */
+    .truck{animation:drive linear both;animation-timeline:--sec;animation-range:exit 0% exit 90%}
+    .truck .wheel{animation:roll linear both;animation-timeline:--sec;animation-range:exit 0% exit 90%}
+    /* contenedor bajando por la pista */
+    .pista .caja{animation:descend linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
+    /* marcas de agua: deriva lateral leve */
+    .marca{animation:drift linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
+    /* buque: entra a puerto */
+    .puerto .barco svg{animation:sail linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
+    /* contenedor de servicios: llega desde la izquierda */
+    .serv-visual svg{animation:arrive cubic-bezier(.2,.7,.2,1) both;animation-timeline:view();animation-range:entry 0% cover 45%}
+    /* bloques de contenido: aparecen al entrar, con escalonado por columna */
+    [data-reveal]{animation:reveal cubic-bezier(.2,.6,.25,1) both;animation-timeline:view();animation-range:entry calc(var(--i,0) * 9%) entry calc(72% + var(--i,0) * 9%)}
+    /* línea de tiempo: se dibuja hasta la mitad de la pantalla */
+    .linea-tiempo{view-timeline:--tl block;view-timeline-inset:0}
+    .linea-tiempo::after{content:"";position:absolute;left:-2px;top:0;bottom:0;width:2px;background:var(--azul);transform-origin:top;animation:grow linear both;animation-timeline:--tl;animation-range:cover 50vh cover calc(100% - 50vh)}
+    .linea-tiempo li{view-timeline:--hito block;view-timeline-inset:0}
+    .linea-tiempo li::before{animation:hito linear both;animation-timeline:--hito;animation-range:cover calc(50vh + 6px) cover calc(50vh + 20px)}
+  }
+}
+@keyframes drive{from{transform:none}to{transform:translateX(var(--travel))}}
+@keyframes roll{from{transform:none}to{transform:rotate(var(--wheel-turn))}}
+@keyframes descend{from{transform:none}to{transform:translateY(var(--caja-travel))}}
+@keyframes drift{from{transform:translateX(60px)}to{transform:translateX(-60px)}}
+@keyframes sail{from{transform:translateY(7%)}to{transform:translateY(-7%)}}
+@keyframes arrive{from{opacity:0;transform:translateX(-14%)}to{opacity:1;transform:none}}
+@keyframes reveal{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes hito{to{background:var(--azul);border-color:var(--azul)}}
+
+@media print{
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .nav,.menu-panel,.skip,.road{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+  .truck{transform:translateX(calc(var(--travel) * .28))}
+  .pista .caja{transform:translateY(calc(var(--caja-travel) * .45))}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="skip">Saltar al contenido</a>
+
+<!-- =====================================================================
+     SPRITE SVG — ilustraciones (tráiler, contenedor, barco, chasis, iconos)
+     ===================================================================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="corr" width="14" height="10" patternUnits="userSpaceOnUse">
+      <rect width="7" height="10" fill="#DADCDF"/><rect x="7" width="7" height="10" fill="#C4C7CB"/>
+    </pattern>
+    <pattern id="corrV" width="10" height="14" patternUnits="userSpaceOnUse">
+      <rect width="10" height="7" fill="#DADCDF"/><rect y="7" width="10" height="7" fill="#C4C7CB"/>
+    </pattern>
+    <linearGradient id="cabShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A3A3C"/><stop offset="1" stop-color="#202022"/>
+    </linearGradient>
+    <linearGradient id="tank" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D4D6D9"/><stop offset=".5" stop-color="#A8ABAF"/><stop offset="1" stop-color="#7E8185"/>
+    </linearGradient>
+
+    <!-- Ruedas centradas en el origen; birlos visibles para que se note el giro -->
+    <g id="wh-t">
+      <circle r="29" fill="#1E1E20"/>
+      <circle r="23" fill="none" stroke="#2E2E31" stroke-width="2"/>
+      <circle r="14" fill="#9A9DA1"/>
+      <g fill="#4A4C50"><circle cy="-9" r="1.9"/><circle cx="7.8" cy="-4.5" r="1.9"/><circle cx="7.8" cy="4.5" r="1.9"/><circle cy="9" r="1.9"/><circle cx="-7.8" cy="4.5" r="1.9"/><circle cx="-7.8" cy="-4.5" r="1.9"/></g>
+      <circle r="5" fill="#4A4C50"/>
+      <circle cx="0" cy="-12" r="1.3" fill="#C9CBCE"/>
+    </g>
+    <g id="wh-r">
+      <circle r="27" fill="#1E1E20"/>
+      <circle r="21.5" fill="none" stroke="#2E2E31" stroke-width="2"/>
+      <circle r="13" fill="#9A9DA1"/>
+      <g fill="#4A4C50"><circle cy="-8.5" r="1.8"/><circle cx="7.4" cy="-4.25" r="1.8"/><circle cx="7.4" cy="4.25" r="1.8"/><circle cy="8.5" r="1.8"/><circle cx="-7.4" cy="4.25" r="1.8"/><circle cx="-7.4" cy="-4.25" r="1.8"/></g>
+      <circle r="5" fill="#4A4C50"/>
+      <circle cx="0" cy="-11" r="1.2" fill="#C9CBCE"/>
+    </g>
+
+    <!-- Tractocamión con contenedor de 40': carrocería (sin ruedas) -->
+    <symbol id="truck-body" viewBox="0 0 1000 300">
+      <!-- chasis del remolque -->
+      <rect x="28" y="232" width="640" height="11" fill="#2A2A2C"/>
+      <rect x="512" y="243" width="7" height="24" fill="#3A3A3C"/><rect x="530" y="243" width="7" height="24" fill="#3A3A3C"/>
+      <rect x="506" y="266" width="37" height="4" fill="#3A3A3C"/>
+      <!-- contenedor 40' -->
+      <rect x="20" y="92" width="620" height="140" fill="url(#corr)"/>
+      <rect x="20" y="92" width="620" height="140" fill="none" stroke="#9EA1A6" stroke-width="2"/>
+      <rect x="20" y="88" width="620" height="6" fill="#B2B5B9"/>
+      <rect x="20" y="226" width="620" height="8" fill="#8F9296"/>
+      <!-- puertas traseras (izquierda) -->
+      <rect x="20" y="92" width="34" height="140" fill="#C0C3C7"/>
+      <rect x="31" y="102" width="3" height="120" fill="#7C7F84"/><rect x="42" y="102" width="3" height="120" fill="#7C7F84"/>
+      <rect x="27" y="150" width="20" height="4" fill="#7C7F84"/>
+      <!-- esquineros -->
+      <rect x="20" y="92" width="12" height="12" fill="#6F7276"/><rect x="628" y="92" width="12" height="12" fill="#6F7276"/>
+      <rect x="20" y="220" width="12" height="12" fill="#6F7276"/><rect x="628" y="220" width="12" height="12" fill="#6F7276"/>
+      <!-- rótulo del contenedor -->
+      <rect x="470" y="118" width="126" height="9" fill="#9EA1A6"/><rect x="470" y="133" width="80" height="6" fill="#ADB0B4"/>
+      <!-- tractocamión -->
+      <rect x="560" y="236" width="360" height="10" fill="#2A2A2C"/>
+      <rect x="586" y="60" width="9" height="180" fill="#B5B8BC"/><rect x="586" y="60" width="9" height="12" fill="#8F9296"/>
+      <!-- cabina con dormitorio -->
+      <path d="M596 240 V116 q0-16 16-16 H738 q10 0 16 8 L786 156 q4 6 4 14 V240 Z" fill="url(#cabShade)"/>
+      <rect x="600" y="92" width="150" height="10" rx="4" fill="#2C2C2E"/>
+      <!-- cofre -->
+      <path d="M786 240 V172 q0-6 6-6 H890 q14 0 16 14 V240 Z" fill="#2A2A2C"/>
+      <rect x="892" y="176" width="16" height="42" rx="3" fill="#CFD2D6"/>
+      <rect x="896" y="182" width="8" height="4" fill="#7C7F84"/><rect x="896" y="192" width="8" height="4" fill="#7C7F84"/><rect x="896" y="202" width="8" height="4" fill="#7C7F84"/>
+      <rect x="880" y="222" width="34" height="18" rx="3" fill="#3A3A3C"/>
+      <rect x="884" y="226" width="10" height="6" fill="#E9EBEE"/>
+      <!-- ventanas -->
+      <path d="M744 112 H736 q-6 0-6 6 V156 H770 L752 120 q-3-8-8-8 Z" fill="#DCE1E7"/>
+      <rect x="700" y="118" width="26" height="36" rx="3" fill="#DCE1E7"/>
+      <rect x="612" y="122" width="40" height="22" rx="3" fill="#C8CDD3"/>
+      <rect x="752" y="106" width="6" height="30" fill="#2A2A2C"/><rect x="752" y="106" width="14" height="8" fill="#2A2A2C"/>
+      <!-- franja naranja -->
+      <rect x="596" y="196" width="194" height="10" fill="#F26F22"/>
+      <rect x="596" y="206" width="194" height="3" fill="#354FA3"/>
+      <!-- puerta -->
+      <rect x="694" y="112" width="1.5" height="128" fill="#1A1A1C"/>
+      <rect x="700" y="164" width="18" height="4" rx="2" fill="#9A9DA1"/>
+      <!-- tanque y estribo -->
+      <rect x="742" y="222" width="90" height="36" rx="16" fill="url(#tank)"/>
+      <rect x="700" y="246" width="34" height="6" fill="#3A3A3C"/><rect x="700" y="256" width="34" height="6" fill="#3A3A3C"/>
+    </symbol>
+    <!-- Piezas que van por encima de las ruedas: loderas y salpicadera -->
+    <symbol id="truck-front" viewBox="0 0 1000 300">
+      <rect x="86" y="243" width="10" height="26" fill="#2A2A2C"/>
+      <path d="M834 236 a34 34 0 0 1 64 0 Z" fill="#2A2A2C"/>
+    </symbol>
+    <!-- Tractocamión completo (estático) -->
+    <symbol id="truck" viewBox="0 0 1000 300">
+      <ellipse cx="480" cy="284" rx="470" ry="8" fill="rgba(0,0,0,.12)"/>
+      <use href="#truck-body"/>
+      <use href="#wh-r" x="120" y="260"/><use href="#wh-r" x="186" y="260"/>
+      <use href="#wh-t" x="620" y="260"/><use href="#wh-t" x="690" y="260"/><use href="#wh-t" x="866" y="260"/>
+      <use href="#truck-front"/>
+    </symbol>
+
+    <!-- Contenedor de 40' en vertical (para la pista) -->
+    <symbol id="contV" viewBox="0 0 160 640">
+      <rect x="10" y="10" width="140" height="620" fill="url(#corrV)"/>
+      <rect x="10" y="10" width="140" height="620" fill="none" stroke="#9EA1A6" stroke-width="2"/>
+      <rect x="10" y="10" width="140" height="34" fill="#C0C3C7"/>
+      <rect x="20" y="21" width="120" height="3" fill="#7C7F84"/><rect x="20" y="32" width="120" height="3" fill="#7C7F84"/>
+      <rect x="6" y="10" width="6" height="620" fill="#B2B5B9"/><rect x="148" y="10" width="8" height="620" fill="#8F9296"/>
+      <g fill="#6F7276"><rect x="10" y="10" width="12" height="12"/><rect x="138" y="10" width="12" height="12"/><rect x="10" y="618" width="12" height="12"/><rect x="138" y="618" width="12" height="12"/></g>
+      <rect x="36" y="470" width="9" height="120" fill="#9EA1A6"/><rect x="50" y="510" width="6" height="80" fill="#ADB0B4"/>
+    </symbol>
+
+    <!-- Contenedor de 40' horizontal (servicios) -->
+    <symbol id="contH" viewBox="0 0 640 160">
+      <rect x="10" y="10" width="620" height="140" fill="url(#corr)"/>
+      <rect x="10" y="10" width="620" height="140" fill="none" stroke="#9EA1A6" stroke-width="2"/>
+      <rect x="10" y="10" width="34" height="140" fill="#C0C3C7"/>
+      <rect x="21" y="20" width="3" height="120" fill="#7C7F84"/><rect x="32" y="20" width="3" height="120" fill="#7C7F84"/>
+      <rect x="10" y="6" width="620" height="6" fill="#B2B5B9"/><rect x="10" y="144" width="620" height="8" fill="#8F9296"/>
+      <g fill="#6F7276"><rect x="10" y="10" width="12" height="12"/><rect x="618" y="10" width="12" height="12"/><rect x="10" y="138" width="12" height="12"/><rect x="618" y="138" width="12" height="12"/></g>
+    </symbol>
+
+    <!-- Buque portacontenedores, vista cenital -->
+    <symbol id="barco" viewBox="0 0 360 1300">
+      <path d="M120 980 Q60 1120 20 1300 H0 Q40 1110 96 960 Z" fill="rgba(255,255,255,.14)"/>
+      <path d="M240 980 Q300 1120 340 1300 H360 Q320 1110 264 960 Z" fill="rgba(255,255,255,.14)"/>
+      <path d="M150 1040 Q140 1160 130 1300 H230 Q220 1160 210 1040 Z" fill="rgba(255,255,255,.08)"/>
+      <path d="M180 24 Q296 160 300 300 V1000 q0 46-46 46 H106 q-46 0-46-46 V300 Q64 160 180 24 Z" fill="#E4E6E9"/>
+      <path d="M180 60 Q276 175 280 300 V990 q0 26-26 26 H106 q-26 0-26-26 V300 Q84 175 180 60 Z" fill="#CBCED2"/>
+      <g>
+        <rect x="93" y="300" width="34" height="26" fill="#F26F22"/><rect x="129" y="300" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="300" width="34" height="26" fill="#8C8F94"/><rect x="201" y="300" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="300" width="34" height="26" fill="#6B7DBE"/>
+        <rect x="93" y="330" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="330" width="34" height="26" fill="#8C8F94"/><rect x="165" y="330" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="330" width="34" height="26" fill="#6B7DBE"/><rect x="237" y="330" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="360" width="34" height="26" fill="#8C8F94"/><rect x="129" y="360" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="360" width="34" height="26" fill="#F26F22"/><rect x="201" y="360" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="360" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="400" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="400" width="34" height="26" fill="#6B7DBE"/><rect x="165" y="400" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="400" width="34" height="26" fill="#8C8F94"/><rect x="237" y="400" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="430" width="34" height="26" fill="#8C8F94"/><rect x="129" y="430" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="430" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="430" width="34" height="26" fill="#F26F22"/><rect x="237" y="430" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="460" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="460" width="34" height="26" fill="#8C8F94"/><rect x="165" y="460" width="34" height="26" fill="#6B7DBE"/><rect x="201" y="460" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="460" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="500" width="34" height="26" fill="#6B7DBE"/><rect x="129" y="500" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="500" width="34" height="26" fill="#8C8F94"/><rect x="201" y="500" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="500" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="530" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="530" width="34" height="26" fill="#F26F22"/><rect x="165" y="530" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="530" width="34" height="26" fill="#8C8F94"/><rect x="237" y="530" width="34" height="26" fill="#6B7DBE"/>
+        <rect x="93" y="560" width="34" height="26" fill="#8C8F94"/><rect x="129" y="560" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="560" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="560" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="560" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="600" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="600" width="34" height="26" fill="#8C8F94"/><rect x="165" y="600" width="34" height="26" fill="#F26F22"/><rect x="201" y="600" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="600" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="630" width="34" height="26" fill="#6B7DBE"/><rect x="129" y="630" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="630" width="34" height="26" fill="#8C8F94"/><rect x="201" y="630" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="630" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="660" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="660" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="660" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="660" width="34" height="26" fill="#6B7DBE"/><rect x="237" y="660" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="700" width="34" height="26" fill="#8C8F94"/><rect x="129" y="700" width="34" height="26" fill="#F26F22"/><rect x="165" y="700" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="700" width="34" height="26" fill="#8C8F94"/><rect x="237" y="700" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="730" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="730" width="34" height="26" fill="#8C8F94"/><rect x="165" y="730" width="34" height="26" fill="#6B7DBE"/><rect x="201" y="730" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="730" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="760" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="760" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="760" width="34" height="26" fill="#8C8F94"/><rect x="201" y="760" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="760" width="34" height="26" fill="#F26F22"/>
+        <rect x="93" y="200" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="200" width="34" height="26" fill="#8C8F94"/><rect x="165" y="200" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="200" width="34" height="26" fill="#6B7DBE"/><rect x="237" y="200" width="34" height="26" fill="#F1F2F4"/>
+        <rect x="93" y="230" width="34" height="26" fill="#6B7DBE"/><rect x="129" y="230" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="230" width="34" height="26" fill="#8C8F94"/><rect x="201" y="230" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="230" width="34" height="26" fill="#8C8F94"/>
+        <rect x="93" y="260" width="34" height="26" fill="#F1F2F4"/><rect x="129" y="260" width="34" height="26" fill="#F26F22"/><rect x="165" y="260" width="34" height="26" fill="#F1F2F4"/><rect x="201" y="260" width="34" height="26" fill="#F1F2F4"/><rect x="237" y="260" width="34" height="26" fill="#8C8F94"/>
+        <rect x="129" y="150" width="34" height="26" fill="#F1F2F4"/><rect x="165" y="150" width="34" height="26" fill="#8C8F94"/><rect x="201" y="150" width="34" height="26" fill="#F1F2F4"/>
+      </g>
+      <!-- puente de mando -->
+      <rect x="84" y="820" width="192" height="72" rx="4" fill="#F4F5F4"/>
+      <rect x="100" y="836" width="160" height="40" rx="3" fill="#DEE0E2"/>
+      <rect x="112" y="846" width="136" height="6" fill="#9EA1A6"/><rect x="112" y="860" width="100" height="6" fill="#9EA1A6"/>
+      <rect x="150" y="906" width="60" height="60" rx="30" fill="#DEE0E2"/><rect x="170" y="926" width="20" height="20" rx="10" fill="#8C8F94"/>
+      <rect x="120" y="120" width="120" height="6" fill="#9EA1A6"/>
+    </symbol>
+
+    <!-- Chasis 20', 40', 40/20 (vista lateral simplificada) -->
+    <symbol id="ch20" viewBox="0 0 300 70">
+      <rect x="20" y="24" width="180" height="10" fill="#2A2A2C"/>
+      <rect x="30" y="0" width="150" height="26" fill="url(#corr)" stroke="#9EA1A6" stroke-width="1.5"/>
+      <g fill="#1E1E20"><circle cx="60" cy="50" r="14"/><circle cx="94" cy="50" r="14"/></g>
+      <g fill="#9A9DA1"><circle cx="60" cy="50" r="6"/><circle cx="94" cy="50" r="6"/></g>
+      <rect x="180" y="34" width="4" height="14" fill="#3A3A3C"/>
+    </symbol>
+    <symbol id="ch40" viewBox="0 0 300 70">
+      <rect x="10" y="24" width="270" height="10" fill="#2A2A2C"/>
+      <rect x="16" y="0" width="256" height="26" fill="url(#corr)" stroke="#9EA1A6" stroke-width="1.5"/>
+      <g fill="#1E1E20"><circle cx="50" cy="50" r="14"/><circle cx="84" cy="50" r="14"/></g>
+      <g fill="#9A9DA1"><circle cx="50" cy="50" r="6"/><circle cx="84" cy="50" r="6"/></g>
+      <rect x="230" y="34" width="4" height="14" fill="#3A3A3C"/>
+    </symbol>
+    <symbol id="ch4020" viewBox="0 0 300 70">
+      <rect x="10" y="24" width="270" height="10" fill="#2A2A2C"/>
+      <rect x="16" y="0" width="124" height="26" fill="url(#corr)" stroke="#9EA1A6" stroke-width="1.5"/>
+      <rect x="148" y="0" width="124" height="26" fill="url(#corr)" stroke="#9EA1A6" stroke-width="1.5"/>
+      <g fill="#1E1E20"><circle cx="50" cy="50" r="14"/><circle cx="84" cy="50" r="14"/></g>
+      <g fill="#9A9DA1"><circle cx="50" cy="50" r="6"/><circle cx="84" cy="50" r="6"/></g>
+      <rect x="230" y="34" width="4" height="14" fill="#3A3A3C"/>
+    </symbol>
+
+    <!-- Iconos de línea -->
+    <symbol id="i-import" viewBox="0 0 32 32"><path d="M4 22h24M6 22l2 5h16l2-5"/><path d="M16 3v12M11 10l5 5 5-5"/><path d="M6 22V12h6M20 12h6v10"/></symbol>
+    <symbol id="i-export" viewBox="0 0 32 32"><path d="M4 22h24M6 22l2 5h16l2-5"/><path d="M16 15V3M11 8l5-5 5 5"/><path d="M6 22V12h6M20 12h6v10"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 32 32"><path d="M2 8h18v14H2zM20 12h6l4 5v5h-10z"/><circle cx="8" cy="24" r="3"/><circle cx="24" cy="24" r="3"/></symbol>
+    <symbol id="i-cont" viewBox="0 0 32 32"><rect x="3" y="9" width="26" height="14"/><path d="M8 9v14M13 9v14M18 9v14M23 9v14"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 32 32"><path d="M8 3h11l7 7v19H8z"/><path d="M19 3v7h7M12 17h10M12 22h10"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 32 32"><path d="M16 3l11 4v9c0 7-5 11-11 13C10 27 5 23 5 16V7z"/><path d="M11 16l3 3 7-7"/></symbol>
+    <symbol id="i-id" viewBox="0 0 32 32"><rect x="3" y="7" width="26" height="19" rx="2"/><circle cx="11" cy="15" r="3"/><path d="M6 22c1-3 3-4 5-4s4 1 5 4M19 13h6M19 18h6"/></symbol>
+    <symbol id="i-anchor" viewBox="0 0 32 32"><circle cx="16" cy="6" r="3"/><path d="M16 9v19M7 17c0 6 4 10 9 11 5-1 9-5 9-11M4 17h6M22 17h6"/></symbol>
+    <symbol id="i-map" viewBox="0 0 32 32"><path d="M3 7l8-3 10 3 8-3v21l-8 3-10-3-8 3z"/><path d="M11 4v21M21 7v21"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M16 9v7l5 3"/></symbol>
+    <symbol id="i-transfer" viewBox="0 0 32 32"><path d="M4 11h22M21 6l5 5-5 5"/><path d="M28 21H6M11 16l-5 5 5 5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<!-- =====================================================================
+     NAVEGACIÓN (compartida por todas las páginas)
+     ===================================================================== -->
+<header class="nav" id="nav">
+  <a class="logo" href="#inicio" aria-label="PERCONSUR, inicio"><span class="logo-mark" aria-hidden="true"><img class="std" src="assets/img/logo.webp" width="43" height="44" alt=""><img class="inv" src="assets/img/logo-inv.webp" width="43" height="44" alt=""></span>Perconsur</a>
+  <nav aria-label="Principal">
+    <ul class="nav-links">
+      <li><a href="#inicio" data-page="inicio">Inicio</a></li>
+      <li><a href="#nosotros" data-page="nosotros">Nosotros</a></li>
+      <li><a href="#servicios" data-page="servicios">Servicios</a></li>
+      <li><a href="#flota" data-page="flota">Flota</a></li>
+      <li><a href="#clientes" data-page="clientes">Clientes</a></li>
+      <li><a href="#contacto" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+  <a class="btn btn-solid nav-cta" href="#contacto">Cotizar un traslado</a>
+  <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuPanel">Menú</button>
+</header>
+<div class="menu-panel" id="menuPanel">
+  <nav aria-label="Menú móvil">
+    <ul>
+      <li style="--i:0"><a href="#inicio" data-page="inicio">Inicio</a></li>
+      <li style="--i:1"><a href="#nosotros" data-page="nosotros">Nosotros</a></li>
+      <li style="--i:2"><a href="#servicios" data-page="servicios">Servicios</a></li>
+      <li style="--i:3"><a href="#flota" data-page="flota">Flota</a></li>
+      <li style="--i:4"><a href="#clientes" data-page="clientes">Clientes</a></li>
+      <li style="--i:5"><a href="#contacto" data-page="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+  <a class="btn btn-solid" href="#contacto" style="--i:6">Cotizar un traslado</a>
+</div>
+
+<main id="main">
+
+<!-- =====================================================================
+     PÁGINA: INICIO
+     ===================================================================== -->
+<section class="page active" id="page-inicio" data-page="inicio" aria-labelledby="t-inicio">
+
+  <!-- Hero: el tráiler llega a cuadro y recorre la carretera con el scroll -->
+  <div class="hero" id="hero">
+    <div class="marca" aria-hidden="true">Perconsur</div>
+    <div class="hero-copy wrap">
+      <p class="micro in" style="--d:-2">Puerto de Manzanillo, Colima <span class="tnum">19°03′ N · 104°18′ O</span></p>
+      <h1 class="h-display" id="t-inicio" tabindex="-1" data-split>Todo lo que tu carga necesita.</h1>
+      <p class="lede in" style="--d:2">Transporte terrestre especializado en cargas provenientes de terminales marítimas.</p>
+      <div class="hero-actions in" style="--d:3">
+        <a class="btn btn-solid" href="#contacto">Cotizar un traslado <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+        <a class="btn" href="#servicios">Ver servicios</a>
+      </div>
+    </div>
+    <div class="road" id="road">
+      <div class="truck" id="heroTruck">
+        <div class="truck-in">
+          <svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión PERCONSUR con contenedor de 40 pies">
+            <ellipse cx="480" cy="284" rx="470" ry="8" fill="rgba(0,0,0,.12)"/>
+            <g class="body"><use href="#truck-body"/></g>
+            <g transform="translate(120 260)"><g class="wheel"><g class="wheel-in"><use href="#wh-r"/></g></g></g>
+            <g transform="translate(186 260)"><g class="wheel"><g class="wheel-in"><use href="#wh-r"/></g></g></g>
+            <g transform="translate(620 260)"><g class="wheel"><g class="wheel-in"><use href="#wh-t"/></g></g></g>
+            <g transform="translate(690 260)"><g class="wheel"><g class="wheel-in"><use href="#wh-t"/></g></g></g>
+            <g transform="translate(866 260)"><g class="wheel"><g class="wheel-in"><use href="#wh-t"/></g></g></g>
+            <g class="body"><use href="#truck-front"/></g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cifras: datos de la empresa que dan contexto de confianza -->
+  <div class="cifras wrap">
+    <ul class="cifras-row" id="cifras" aria-label="PERCONSUR en cifras">
+      <li data-reveal style="--i:0"><span class="num" aria-hidden="true"><span class="n" data-count="15">15</span><span class="plus">+</span></span><span class="lbl"><span class="visually-hidden">Más de 15 </span>años en carretera</span></li>
+      <li data-reveal style="--i:1"><span class="num"><span class="n" data-count="10">10</span></span><span class="lbl">tractocamiones propios</span></li>
+      <li data-reveal style="--i:2"><span class="num"><span class="n" data-count="3">3</span></span><span class="lbl">tipos de chasis: 20', 40' y 40/20</span></li>
+      <li data-reveal style="--i:3"><span class="num"><span class="n" data-count="7">7</span></span><span class="lbl">días a la semana de atención</span></li>
+    </ul>
+  </div>
+
+  <!-- Servicios (resumen) -->
+  <div class="sec servicios" id="sec-servicios">
+    <div class="marca" aria-hidden="true">Servicios</div>
+    <div class="wrap">
+      <div class="serv-head">
+        <h2 class="h-section" data-reveal><span class="light">Un solo proveedor</span><br>para toda la ruta.</h2>
+        <a class="btn" href="#servicios">Todos los servicios <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+    <div class="serv-visual">
+      <svg viewBox="0 0 640 160" aria-hidden="true" focusable="false"><use href="#contH"/></svg>
+    </div>
+    <div class="wrap">
+      <div class="serv-row">
+        <div data-reveal style="--i:0">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-import"/></svg>
+          <h3 class="h-item">Importación</h3>
+          <p class="small">Retiro del contenedor en el recinto portuario de Manzanillo y traslado directo a tu planta o almacén.</p>
+        </div>
+        <div data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-export"/></svg>
+          <h3 class="h-item">Exportación</h3>
+          <p class="small">Recolección de la carga en tu planta o almacén y traslado seguro a terminal portuaria.</p>
+        </div>
+        <div data-reveal style="--i:2">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>
+          <h3 class="h-item">Vacíos</h3>
+          <p class="small">Retorno de contenedores vacíos a la terminal y posicionamiento de vacíos en tu planta para exportación.</p>
+        </div>
+        <div data-reveal style="--i:3">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-transfer"/></svg>
+          <h3 class="h-item">Transferencias</h3>
+          <p class="small">Movimiento de contenedores entre terminales, patios y recintos fiscalizados dentro del puerto de Manzanillo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confiabilidad: pista vertical con el contenedor que baja al hacer scroll -->
+  <div class="sec pista-sec" id="sec-pista">
+    <div class="wrap">
+      <div class="pista-grid">
+        <div class="pista-copy">
+          <h2 class="h-section"><span class="light">Confiabilidad</span><br>en cada kilómetro</h2>
+          <p class="lede">Un contenedor no llega solo. Detrás de cada entrega hay una unidad en óptimas condiciones, un operador capacitado y una operación logística impecable.</p>
+        </div>
+        <div class="pista" id="pista" aria-hidden="true">
+          <div class="caja" id="caja"><svg viewBox="0 0 160 640" focusable="false"><use href="#contV"/></svg></div>
+        </div>
+        <div class="rasgos">
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-doc"/></svg>
+            <h3 class="h-item">Operación transparente</h3>
+            <p class="small">Te mantenemos informado en cada etapa del viaje, del retiro en puerto a la entrega. Cada traslado queda documentado con carta porte y te avisamos de cualquier cambio sin que tengas que preguntar.</p>
+          </div>
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+            <h3 class="h-item">Unidades bien mantenidas</h3>
+            <p class="small">Revisamos cada tractocamión y chasis antes de salir a carretera, con mantenimiento preventivo constante para evitar fallas y retrasos en tu entrega.</p>
+          </div>
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-id"/></svg>
+            <h3 class="h-item">Operadores con experiencia</h3>
+            <p class="small">Conocen las terminales de Manzanillo, sus accesos y horarios, y las carreteras hacia el interior del país. Esa experiencia se traduce en entregas a tiempo y sin contratiempos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Puerto de Manzanillo: sección azul -->
+  <div class="sec puerto" id="sec-puerto" data-blue>
+    <div class="marca" aria-hidden="true">Manzanillo</div>
+    <div class="wrap">
+      <div class="puerto-grid">
+        <div>
+          <h2 class="h-section" data-reveal><span class="light">Del muelle</span><br>a tu almacén,<br>sin escalas.</h2>
+          <p class="lede" data-reveal>Operamos en el puerto de Manzanillo, la principal puerta de entrada del Pacífico mexicano. Conocemos sus terminales, sus horarios y sus tiempos, y eso se nota en tu entrega.</p>
+          <div class="puerto-cta"><a class="btn btn-invert" href="#nosotros">Conoce a Perconsur</a></div>
+        </div>
+        <div class="barco" aria-hidden="true"><svg viewBox="0 0 360 1300" focusable="false"><use href="#barco"/></svg></div>
+        <div class="datos">
+          <div data-reveal>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
+            <h3 class="h-item">Presencia en el puerto</h3>
+            <p>Personal y unidades disponibles en Manzanillo para retirar o entregar contenedores en cuanto se liberan.</p>
+          </div>
+          <div data-reveal>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map"/></svg>
+            <h3 class="h-item">Cobertura por carretera</h3>
+            <p>Rutas frecuentes hacia Jalisco, el Bajío y el norte del país.</p>
+          </div>
+          <div data-reveal>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
+            <h3 class="h-item">Más de 15 años en servicio</h3>
+            <p>Experiencia acumulada moviendo carga de importación y exportación para la industria agrícola, automotriz y de alimentos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clientes -->
+  <div class="sec" id="sec-clientes">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4">
+          <h2 class="h-section"><span class="light">Confían</span><br>en nosotros</h2>
+          <p class="lede" style="margin-top:22px">Empresas que mueven su carga con Perconsur de forma recurrente.</p>
+        </div>
+        <div class="c-8">
+          <ul class="clientes-lista">
+            <li data-reveal><b>Bayer de México</b><span>Industria agrícola</span></li>
+            <li data-reveal><b>ALMEX Refacciones</b><span>Refacciones y partes automotrices</span></li>
+            <li data-reveal><b>Grupo Industrial Sweets</b><span>Industria de alimentos y confitería</span></li>
+          </ul>
+          <p class="small" style="margin-top:22px">¿Quieres ser el siguiente? <a class="link" href="#contacto">Cuéntanos qué mueves</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div class="sec cta-final">
+    <div class="wrap">
+      <h2 class="h-section" data-reveal><span class="light">¿Tienes carga</span><br>en Manzanillo?</h2>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#contacto">Cotizar un traslado <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+        <a class="btn" href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- =====================================================================
+     PÁGINA: NOSOTROS
+     ===================================================================== -->
+<section class="page" id="page-nosotros" data-page="nosotros" aria-labelledby="t-nosotros">
+  <div class="intro wrap">
+    <p class="micro in">Nosotros</p>
+    <h1 class="h-display" id="t-nosotros" tabindex="-1" data-split><span class="light">Más de 15 años</span><br>en carretera.</h1>
+    <p class="lede in" style="--d:2">Perconsur es una empresa mexicana de transporte de carga por carretera, especializada en el movimiento de contenedores marítimos.</p>
+  </div>
+
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-5">
+          <h2 class="h-section"><span class="light">Nuestra</span><br>historia</h2>
+        </div>
+        <div class="c-7">
+          <ol class="linea-tiempo">
+            <li>
+              <b>2011</b>
+              <h3 class="h-item">Inicio de operaciones</h3>
+              <p>Nuestros inicios, una unidad con un solo remolque transportando maíz y carga general.</p>
+            </li>
+            <li>
+              <b>2019</b>
+              <h3 class="h-item">Llegada al puerto de Manzanillo</h3>
+              <p>Nuestra llegada al puerto, con experiencia en rutas y operaciones logísticas.</p>
+            </li>
+            <li>
+              <b>2023</b>
+              <h3 class="h-item">Crecimiento de la flota y nuevos clientes</h3>
+              <p>Incorporación de unidades, expansión de operaciones y nuevos clientes satisfechos.</p>
+            </li>
+            <li>
+              <b>Hoy</b>
+              <h3 class="h-item">PERCONSUR</h3>
+              <p>Flota propia, operadores con licencia federal y control de cada viaje desde la oficina de Zapopan, Jalisco.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4">
+          <h2 class="h-section"><span class="light">Cómo</span><br>trabajamos</h2>
+        </div>
+        <div class="c-4" data-reveal>
+          <h3 class="h-item">Misión</h3>
+          <p class="small" style="margin-top:8px">Proveer servicios de transporte de carga por carretera con excelencia, seguridad y puntualidad, ofreciendo soluciones personalizadas que satisfagan las necesidades de nuestros clientes.</p>
+        </div>
+        <div class="c-4" data-reveal style="--i:1">
+          <h3 class="h-item">Visión</h3>
+          <p class="small" style="margin-top:8px">Ser una gran empresa de transporte de carga en México, reconocida por su confiabilidad, innovación y compromiso con la calidad.</p>
+        </div>
+        <div class="c-4"></div>
+        <div class="c-4" data-reveal>
+          <h3 class="h-item">Filosofía</h3>
+          <p class="small" style="margin-top:8px">En PERCONSUR, creemos en el trabajo honesto, la responsabilidad y el esfuerzo constante como pilares fundamentales para alcanzar el éxito.</p>
+        </div>
+        <div class="c-4" data-reveal style="--i:1">
+          <h3 class="h-item">Certificaciones</h3>
+          <p class="small" style="margin-top:8px"><span class="pend" title="Dato por confirmar">Certificaciones o registros con los que cuenta la empresa (por ejemplo, permiso SCT, OEA, CTPAT).</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">Datos</span><br>de la empresa</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Razón social</span><span>PERCONSUR DE NAYARIT GROUP</span></li>
+            <li data-reveal><span>Oficina central</span><span>Juan Manuel Ruvalcaba 18, Nextipac, 45220, Zapopan, Jalisco</span></li>
+            <li data-reveal><span>Operación portuaria</span><span>Carretera Libre Manzanillo - Colima S/N, El Frijol, 28803, Manzanillo, Colima</span></li>
+            <li data-reveal><span>Giro</span><span>Transporte de carga por carretera, contenedores de importación y exportación</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: SERVICIOS
+     ===================================================================== -->
+<section class="page" id="page-servicios" data-page="servicios" aria-labelledby="t-servicios">
+  <div class="intro wrap">
+    <p class="micro in">Servicios</p>
+    <h1 class="h-display" id="t-servicios" tabindex="-1" data-split><span class="light">Lo que hacemos</span><br>con tu contenedor.</h1>
+    <p class="lede in" style="--d:2">Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
+  </div>
+
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid serv-detalle">
+        <div class="c-6" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-import"/></svg>
+          <h2 class="h-sub">Importación</h2>
+          <p>Recibimos la liberación del contenedor, lo retiramos de la terminal en Manzanillo y lo trasladamos a tu planta o almacén. Coordinamos la descarga y el retorno del contenedor vacío al puerto.</p>
+        </div>
+        <div class="c-6" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-export"/></svg>
+          <h2 class="h-sub">Exportación</h2>
+          <p>Posicionamos el contenedor vacío en tu planta, esperamos la carga y lo entregamos en la terminal portuaria dentro de la ventana de embarque.</p>
+        </div>
+        <div class="c-6" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-truck"/></svg>
+          <h2 class="h-sub">Traslados dedicados</h2>
+          <p>Unidad completa para un solo cliente, con operador asignado y seguimiento del viaje de origen a destino. También transportamos carga general, además de contenedores.</p>
+        </div>
+        <div class="c-6" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>
+          <h2 class="h-sub">Maniobras generales</h2>
+          <p>Movimientos de contenedores en patios, plantas y recintos: posicionamiento, reacomodo, cambio de chasis y traslados cortos dentro de la zona portuaria o industrial.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <h2 class="h-section" style="margin-bottom:36px"><span class="light">Así se mueve</span><br>tu contenedor</h2>
+      <ol class="pasos">
+        <li data-reveal><h3 class="h-item">Liberación en puerto</h3><p>Recibimos de tu agente aduanal la liberación y programamos la unidad y el operador.</p></li>
+        <li data-reveal><h3 class="h-item">Retiro en la terminal</h3><p>La unidad entra al recinto portuario de Manzanillo, carga el contenedor y verifica sellos y número.</p></li>
+        <li data-reveal><h3 class="h-item">Traslado por carretera</h3><p>Viaje directo a tu planta con operador capacitado y rastreo GPS que compartimos contigo durante el trayecto.</p></li>
+        <li data-reveal><h3 class="h-item">Entrega y retorno de vacío</h3><p>Descarga en tu almacén y devolución del contenedor vacío al puerto dentro del plazo del naviero.</p></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">Rutas</span><br>frecuentes</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Origen</span><span>Puerto de Manzanillo, Colima</span></li>
+            <li data-reveal><span>Zona metropolitana de Guadalajara</span><span>Guadalajara, Zapopan, Tlaquepaque, El Salto, Tala, Tlajomulco, etc.</span></li>
+            <li data-reveal><span>Bajío</span><span>Guanajuato, Querétaro, Aguascalientes, San Luis Potosí y Zacatecas</span></li>
+            <li data-reveal><span>Norte</span><span>Saltillo, Monterrey, Apodaca y Reynosa</span></li>
+            <li data-reveal><span>Otros destinos</span><span>Toluca, Ecatepec, Cuautitlán Izcalli, Tultitlán, Azcapotzalco y Puebla</span></li>
+          </ul>
+          <div style="margin-top:28px"><a class="btn btn-solid" href="#contacto">Cotizar una ruta <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: FLOTA
+     ===================================================================== -->
+<section class="page" id="page-flota" data-page="flota" aria-labelledby="t-flota">
+  <div class="intro wrap">
+    <p class="micro in">Flota</p>
+    <h1 class="h-display" id="t-flota" tabindex="-1" data-split><span class="light">Unidades propias,</span><br>listas para trabajar.</h1>
+    <p class="lede in" style="--d:2">Tractocamiones y remolques con documentación vigente, mantenidos para operar de manera segura.</p>
+  </div>
+  <div class="flota-visual wrap in" style="--d:3">
+    <svg viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#truck"/></svg>
+  </div>
+
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">La flota</span><br>en números</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Tractocamiones</span><span>10 unidades propias</span></li>
+            <li data-reveal><span>Modelos</span><span>Años 2017 - 2019</span></li>
+            <li data-reveal><span>Chasis</span><span>Portacontenedor de 20', 40' y 40/20</span></li>
+            <li data-reveal><span>Seguro</span><span>Póliza de responsabilidad y daños vigente en toda la flota</span></li>
+            <li data-reveal><span>Rastreo</span><span>GPS en las unidades, con ubicación compartida con el cliente</span></li>
+            <li data-reveal><span>Mantenimiento</span><span>Programa de mantenimiento preventivo y correctivo</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <h2 class="h-section"><span class="light">Tipos</span><br>de chasis</h2>
+      <div class="chasis">
+        <div data-reveal style="--i:0">
+          <svg viewBox="0 0 300 70" aria-hidden="true" focusable="false"><use href="#ch20"/></svg>
+          <h3 class="h-item">Chasis de 20'</h3>
+          <p>Para un contenedor de 20 pies. Ideal para carga pesada y densa.</p>
+        </div>
+        <div data-reveal style="--i:1">
+          <svg viewBox="0 0 300 70" aria-hidden="true" focusable="false"><use href="#ch40"/></svg>
+          <h3 class="h-item">Chasis de 40'</h3>
+          <p>Para un contenedor de 40 pies estándar o high cube.</p>
+        </div>
+        <div data-reveal style="--i:2">
+          <svg viewBox="0 0 300 70" aria-hidden="true" focusable="false"><use href="#ch4020"/></svg>
+          <h3 class="h-item">Chasis 40/20</h3>
+          <p>Combinable: un contenedor de 40' o dos de 20' en el mismo viaje.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">Nuestros</span><br>operadores</h2></div>
+        <div class="c-8" data-reveal>
+          <p class="lede">Cada operador cuenta con documentos en regla, preparados y listos para salir a mover tu carga.</p>
+          <p class="small" style="margin-top:18px">Con amplia experiencia en la red de carreteras mexicanas, conocimiento de rutas alternas, manejo defensivo y capacidad para resolver problemas en el camino.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: CLIENTES
+     ===================================================================== -->
+<section class="page" id="page-clientes" data-page="clientes" aria-labelledby="t-clientes">
+  <div class="intro wrap">
+    <p class="micro in">Clientes</p>
+    <h1 class="h-display" id="t-clientes" tabindex="-1" data-split><span class="light">La carga</span><br>de la industria.</h1>
+    <p class="lede in" style="--d:2">Trabajamos con empresas que necesitan que su carga o contenedor llegue el día que lo programaron. Estos son algunos de los clientes que confían en nosotros.</p>
+  </div>
+
+  <div class="sec-tight">
+    <div class="wrap">
+      <ul class="clientes-lista con-logo">
+        <li data-reveal>
+          <span class="logo-cliente"><img src="assets/img/cliente-bayer.webp" alt="Bayer de México" width="207" height="208" loading="lazy" decoding="async"></span>
+          <span>Industria agrícola, transportamos sus semillas de maíz a diferentes lugares del país.</span>
+        </li>
+        <li data-reveal>
+          <span class="logo-cliente oscuro"><img src="assets/img/cliente-almex.webp" alt="ALMEX Refacciones" width="414" height="208" loading="lazy" decoding="async"></span>
+          <span>Refacciones y partes automotrices, confían en nosotros para transportar sus embarques.</span>
+        </li>
+        <li data-reveal>
+          <span class="logo-cliente"><img src="assets/img/cliente-sweets.webp" alt="Grupo Industrial Sweets, Dulces Tinajita" width="211" height="208" loading="lazy" decoding="async"></span>
+          <span>Industria de confitería, transportamos sus productos hacia sus diferentes almacenes.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">Lo que</span><br>dicen</h2></div>
+        <div class="c-8">
+          <blockquote class="testimonio" data-reveal>
+            “Agradezco a PERCONSUR su puntualidad y calidad de servicio.”
+            <footer>David Navarro, shipping forwarder en Manzanillo, Colima.</footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-tight rule">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="h-section"><span class="light">Sectores</span><br>que atendemos</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Agrícola</span><span>Semillas de maíz</span></li>
+            <li data-reveal><span>Automotriz</span><span>Refacciones y componentes</span></li>
+            <li data-reveal><span>Alimentos</span><span>Materias primas y producto terminado</span></li>
+            <li data-reveal><span>Otros</span><span>Maquinaria pesada</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: CONTACTO
+     ===================================================================== -->
+<section class="page" id="page-contacto" data-page="contacto" aria-labelledby="t-contacto">
+  <div class="intro wrap">
+    <p class="micro in">Contacto</p>
+    <h1 class="h-display" id="t-contacto" tabindex="-1" data-split><span class="light">Cuéntanos</span><br>qué mueves.</h1>
+    <p class="lede in" style="--d:2">Con el origen, el destino y el tipo de carga te enviamos una cotización. Si ya tienes fecha programada, mejor.</p>
+  </div>
+
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-7">
+          <form class="form" id="formCotiza" novalidate>
+            <div class="campo">
+              <label for="f-nombre">Nombre <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-nombre" type="text" name="nombre" autocomplete="name" required aria-describedby="e-nombre">
+              <span class="err" id="e-nombre" hidden></span>
+            </div>
+            <div class="campo">
+              <label for="f-empresa">Empresa</label>
+              <input id="f-empresa" type="text" name="empresa" autocomplete="organization">
+            </div>
+            <div class="campo">
+              <label for="f-correo">Correo <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-correo" type="email" name="correo" autocomplete="email" inputmode="email" required aria-describedby="e-correo">
+              <span class="err" id="e-correo" hidden></span>
+            </div>
+            <div class="campo">
+              <label for="f-telefono">Teléfono</label>
+              <input id="f-telefono" type="tel" name="telefono" autocomplete="tel">
+            </div>
+            <div class="campo">
+              <label for="f-modalidad">Modalidad</label>
+              <select id="f-modalidad" name="modalidad">
+                <option>Importación</option>
+                <option>Exportación</option>
+                <option>Traslado dedicado</option>
+                <option>Carga general</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="f-contenedor">Contenedor</label>
+              <select id="f-contenedor" name="contenedor">
+                <option>20'</option>
+                <option>40'</option>
+                <option>40' high cube</option>
+                <option>Dos de 20' (chasis 40/20)</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="f-origen">Origen</label>
+              <input id="f-origen" type="text" name="origen" placeholder="Puerto de Manzanillo">
+            </div>
+            <div class="campo">
+              <label for="f-destino">Destino</label>
+              <input id="f-destino" type="text" name="destino" placeholder="Ciudad o planta">
+            </div>
+            <div class="campo full">
+              <label for="f-mensaje">Mensaje</label>
+              <textarea id="f-mensaje" name="mensaje" placeholder="Fecha de liberación, peso aproximado, frecuencia de viajes..."></textarea>
+            </div>
+            <div class="full form-pie">
+              <button class="btn btn-solid" type="submit" id="f-enviar">Enviar solicitud <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button>
+              <span class="small" id="formNota">Nombre y correo son obligatorios. Preparamos el correo para logistica@perconsur.mx.</span>
+            </div>
+            <div class="full form-ok" id="formOk" tabindex="-1" hidden>
+              <p class="h-item">Tu solicitud está lista.</p>
+              <p class="small">Preparamos el correo para logistica@perconsur.mx. Si tu programa de correo no se abrió, copia la solicitud y envíala desde tu cuenta.</p>
+              <label class="visually-hidden" for="solicitudTexto">Texto de la solicitud</label>
+              <textarea id="solicitudTexto" class="solicitud" rows="7" readonly></textarea>
+              <div class="acciones">
+                <button class="btn" type="button" id="copiarSolicitud">Copiar solicitud</button>
+                <span class="estado" id="estadoSolicitud" aria-live="polite"></span>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="c-5">
+          <div class="contacto-datos">
+            <div>
+              <h3 class="h-item">Correo</h3>
+              <p><a href="mailto:logistica@perconsur.mx" id="correoLink">logistica@perconsur.mx</a><button class="copiar" type="button" data-copiar="logistica@perconsur.mx" data-seleccion="#correoLink" aria-describedby="estadoCorreo">Copiar</button><span class="estado" id="estadoCorreo" aria-live="polite"></span></p>
+            </div>
+            <div>
+              <h3 class="h-item">Teléfono y WhatsApp</h3>
+              <p><a href="tel:+525543139936">(55) 4313 9936</a><br><a href="https://wa.me/525543139936" target="_blank" rel="noopener">Escribir por WhatsApp</a></p>
+            </div>
+            <div>
+              <h3 class="h-item">Oficina central</h3>
+              <p>Juan Manuel Ruvalcaba 18<br>Nextipac, 45220<br>Zapopan, Jalisco</p>
+            </div>
+            <div>
+              <h3 class="h-item">Oficina Manzanillo | Pensión PACIMEX</h3>
+              <p>Carretera Libre Manzanillo - Colima S/N<br>El Frijol, 28803<br>Manzanillo, Colima</p>
+            </div>
+            <div>
+              <h3 class="h-item">Horario</h3>
+              <p>Lunes a viernes, 7:00 a 20:00 h<br>Sábado y domingo, 9:00 a 17:00 h</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =====================================================================
+     PIE (compartido)
+     ===================================================================== -->
+<footer class="pie">
+  <div class="wrap">
+    <p class="pie-lema">A donde sea,<br><span class="light">cuando sea.</span></p>
+    <div class="pie-grid">
+      <div>
+        <a class="logo" href="#inicio"><span class="logo-mark" aria-hidden="true"><img class="inv" src="assets/img/logo-inv.webp" width="43" height="44" alt="" loading="lazy" decoding="async"></span>Perconsur</a>
+        <p>Transporte de carga por carretera desde el puerto de Manzanillo.</p>
+      </div>
+      <nav aria-label="Secciones">
+        <p class="pie-tit">Empresa</p>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#flota">Flota</a></li>
+          <li><a href="#clientes">Clientes</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p class="pie-tit">Contacto</p>
+        <ul>
+          <li><a href="#contacto">Cotizar un traslado</a></li>
+          <li><a href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a></li>
+          <li><a href="tel:+525543139936">(55) 4313 9936</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="pie-tit">Oficinas</p>
+        <address>
+          <p>Juan Manuel Ruvalcaba 18<br>Nextipac, 45220<br>Zapopan, Jalisco, México</p>
+          <p>Carretera Libre Manzanillo - Colima S/N<br>El Frijol, 28803<br>Manzanillo, Colima</p>
+        </address>
+      </div>
+    </div>
+    <div class="pie-base">
+      <span>© 2026 PERCONSUR DE NAYARIT GROUP S.A DE C.V</span>
+      <span>Zapopan, Jalisco · Manzanillo, Colima</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Con soporte, el movimiento ligado al scroll lo hace CSS en el compositor. */
+  var cssScroll = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'));
+  var jsScroll = !cssScroll && !reduce;
+  function $(s, c){ return (c || document).querySelector(s); }
+  function $$(s, c){ return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+  var nav = $('#nav'), menuBtn = $('#menuBtn'), menuPanel = $('#menuPanel');
+  var main = $('#main'), pie = $('.pie');
+  var pages = $$('.page'), pageLinks = $$('a[data-page]');
+  var hero = $('#hero'), road = $('#road'), truck = $('#heroTruck'), wheels = $$('#heroTruck .wheel');
+  var pista = $('#pista'), caja = $('#caja'), pistaSec = $('#sec-pista');
+  var marcas = $$('.marca');
+  var current = null, menuOpen = false;
+
+  /* ---------- títulos: cada palabra en su máscara ---------- */
+  function splitWords(el){
+    var i = 0;
+    (function walk(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if(n.nodeType === 3){
+          var frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function(part){
+            if(!part) return;
+            if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'), inner = document.createElement('span');
+            w.className = 'w';
+            inner.textContent = part;
+            inner.style.setProperty('--wi', i++);
+            w.appendChild(inner);
+            frag.appendChild(w);
+          });
+          node.replaceChild(frag, n);
+        } else if(n.nodeType === 1 && n.tagName !== 'BR'){
+          walk(n);
+        }
+      });
+    })(el);
+    el.classList.add('split');
+  }
+  if(!reduce) $$('[data-split]').forEach(splitWords);
+
+  /* ---------- medidas en caché (nunca se leen durante el scroll) ---------- */
+  var geo = { vh: window.innerHeight, blues: [], heroH: 0, travel: 0, turn: 0, cajaTravel: 0, pista: null, secs: [] };
+  function absTop(el){ var t = 0; while(el){ t += el.offsetTop; el = el.offsetParent; } return t; }
+  function measure(){
+    geo.vh = window.innerHeight;
+    geo.blues = $$('[data-blue]').filter(function(b){ return b.offsetParent; }).map(function(b){
+      var t = absTop(b); return [t, t + b.offsetHeight];
+    });
+    if(current !== 'inicio') return;
+    var tw = truck.offsetWidth, rw = road.clientWidth;
+    /* en pantallas angostas el tráiler sigue avanzando aunque salga de cuadro */
+    geo.travel = Math.max(rw - tw, rw * .55);
+    /* giro de rueda = distancia / radio (rueda del tracto: 29 de 1000 unidades) */
+    var r = tw * .029;
+    geo.turn = geo.travel / r * 180 / Math.PI;
+    road.style.setProperty('--travel', Math.round(geo.travel) + 'px');
+    road.style.setProperty('--wheel-turn', geo.turn.toFixed(1) + 'deg');
+    road.style.setProperty('--wheel-in', ((tw + window.innerWidth * .08) / r * 180 / Math.PI).toFixed(1) + 'deg');
+    geo.heroH = hero.offsetHeight;
+    geo.cajaTravel = Math.max(0, pista.clientHeight - caja.offsetHeight);
+    pista.style.setProperty('--caja-travel', Math.round(geo.cajaTravel) + 'px');
+    if(jsScroll){
+      geo.pista = { top: absTop(pistaSec), h: pistaSec.offsetHeight };
+      geo.secs = marcas.map(function(m){ var s = m.parentNode; return { el: m, top: absTop(s), h: s.offsetHeight }; });
+    }
+  }
+
+  /* ---------- scroll: barra (sólida, sobre azul, se oculta al bajar) ---------- */
+  var lastY = window.scrollY, ticking = false;
+  function update(){
+    ticking = false;
+    var y = window.scrollY;
+    nav.classList.toggle('solid', y > 8);
+    var probe = y + 36, onBlue = false;
+    for(var i = 0; i < geo.blues.length; i++){ if(probe >= geo.blues[i][0] && probe <= geo.blues[i][1]){ onBlue = true; break; } }
+    nav.classList.toggle('on-blue', onBlue && !menuOpen);
+    var dy = y - lastY;
+    if(menuOpen || y < geo.vh * .6 || dy < -6) nav.classList.remove('hide');
+    else if(dy > 6 && !nav.contains(document.activeElement)) nav.classList.add('hide');
+    lastY = y;
+
+    /* respaldo sin scroll-driven animations: mismas curvas que el CSS */
+    if(!jsScroll || current !== 'inicio') return;
+    var start = Math.max(0, geo.heroH - geo.vh);
+    var p = clamp((y - start) / ((geo.heroH - start) * .9 || 1), 0, 1);
+    truck.style.transform = 'translate3d(' + Math.round(p * geo.travel) + 'px,0,0)';
+    var deg = 'rotate(' + (p * geo.turn).toFixed(1) + 'deg)';
+    wheels.forEach(function(w){ w.style.transform = deg; });
+    if(geo.pista){
+      var q = clamp((y + geo.vh - geo.pista.top) / (geo.pista.h + geo.vh), 0, 1);
+      caja.style.transform = 'translate3d(0,' + Math.round(q * geo.cajaTravel) + 'px,0)';
+    }
+    geo.secs.forEach(function(s){
+      var t = clamp((y + geo.vh - s.top) / (s.h + geo.vh), 0, 1);
+      s.el.style.transform = 'translate3d(' + Math.round((.5 - t) * 120) + 'px,0,0)';
+    });
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  var mTick = false;
+  function remeasure(){ if(mTick) return; mTick = true; requestAnimationFrame(function(){ mTick = false; measure(); update(); }); }
+  window.addEventListener('resize', remeasure);
+  window.addEventListener('load', remeasure);
+  if('ResizeObserver' in window) new ResizeObserver(remeasure).observe(document.body);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+  nav.addEventListener('focusin', function(){ nav.classList.remove('hide'); });
+
+  /* ---------- router por hash ---------- */
+  var titles = {
+    inicio: 'PERCONSUR — Transporte de carga por carretera desde Manzanillo',
+    nosotros: 'Nosotros — PERCONSUR', servicios: 'Servicios — PERCONSUR', flota: 'Flota — PERCONSUR',
+    clientes: 'Clientes — PERCONSUR', contacto: 'Contacto — PERCONSUR'
+  };
+  function show(name, moveFocus){
+    if(!document.getElementById('page-' + name)) name = 'inicio';
+    current = name;
+    pages.forEach(function(p){ p.classList.toggle('active', p.dataset.page === name); });
+    pageLinks.forEach(function(a){
+      if(a.dataset.page === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    setMenu(false);
+    window.scrollTo(0, 0);
+    lastY = 0;
+    document.title = titles[name];
+    if(moveFocus){ var h = $('#page-' + name + ' h1'); if(h) h.focus({ preventScroll: true }); }
+    measure(); update();
+  }
+  function route(e){ show((location.hash || '#inicio').slice(1), !!e); }
+  window.addEventListener('hashchange', route);
+
+  /* enlaces a la página actual o al contenido: sin cambiar de ruta */
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if(!a) return;
+    var h = a.getAttribute('href');
+    if(h === '#main'){
+      e.preventDefault();
+      var t = $('.page.active h1'); if(t) t.focus();
+      return;
+    }
+    if(h === '#' + current && (location.hash === h || (!location.hash && h === '#inicio'))){
+      e.preventDefault();
+      setMenu(false);
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    }
+  });
+
+  /* ---------- menú móvil ---------- */
+  function setMenu(open, returnFocus){
+    if(open === menuOpen) return;
+    menuOpen = open;
+    menuPanel.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.textContent = open ? 'Cerrar' : 'Menú';
+    root.classList.toggle('menu-open', open);
+    [main, pie].forEach(function(el){ if(open) el.setAttribute('inert', ''); else el.removeAttribute('inert'); });
+    nav.classList.remove('hide');
+    if(open){ var first = $('a', menuPanel); if(first) first.focus({ preventScroll: true }); }
+    else if(returnFocus) menuBtn.focus();
+    update();
+  }
+  menuBtn.addEventListener('click', function(){ setMenu(!menuOpen, true); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && menuOpen) setMenu(false, true); });
+  window.matchMedia('(min-width: 901px)').addEventListener('change', function(m){ if(m.matches) setMenu(false); });
+
+  route();
+
+  /* ---------- cifras: conteo al entrar en pantalla ---------- */
+  var cifras = $('#cifras');
+  if(cifras && !reduce && 'IntersectionObserver' in window){
+    var nums = $$('[data-count]', cifras);
+    var r0 = cifras.getBoundingClientRect();
+    /* sólo si aún no se ve: el valor final queda en el HTML y en reposo */
+    if(!cifras.offsetParent || r0.top > window.innerHeight){
+      nums.forEach(function(n){ n.style.minWidth = n.textContent.length + 'ch'; n.textContent = '0'; });
+      var io = new IntersectionObserver(function(entries){
+        if(!entries.some(function(en){ return en.isIntersecting; })) return;
+        io.disconnect();
+        var t0 = performance.now();
+        (function step(now){
+          var done = true;
+          nums.forEach(function(n, k){
+            var target = +n.dataset.count;
+            var p = clamp((now - t0 - k * 110) / 1300, 0, 1);
+            var e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+            n.textContent = Math.round(e * target);
+            if(p < 1) done = false;
+          });
+          if(!done) requestAnimationFrame(step);
+        })(t0);
+      }, { threshold: .4 });
+      io.observe(cifras);
+    }
+  }
+
+  /* ---------- copiar al portapapeles ---------- */
+  function selectNode(node){
+    if(node.select){ node.focus(); node.select(); return; }
+    var range = document.createRange(); range.selectNodeContents(node);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  }
+  function copy(text, status, fallbackNode){
+    function fail(){
+      if(fallbackNode) selectNode(fallbackNode);
+      status.textContent = 'Texto seleccionado: cópialo con Ctrl+C o ⌘+C.';
+    }
+    try{
+      navigator.clipboard.writeText(text).then(function(){
+        status.textContent = 'Copiado.';
+        setTimeout(function(){ status.textContent = ''; }, 2500);
+      }, fail);
+    }catch(err){ fail(); }
+  }
+  $$('[data-copiar]').forEach(function(b){
+    b.addEventListener('click', function(){
+      copy(b.dataset.copiar, document.getElementById(b.getAttribute('aria-describedby')), $(b.dataset.seleccion));
+    });
+  });
+
+  /* ---------- formulario: valida y arma el correo ---------- */
+  var form = $('#formCotiza'), ok = $('#formOk'), solicitud = '';
+  var reglas = {
+    nombre: function(v){ return v ? '' : 'Escribe tu nombre para saber a quién responder.'; },
+    correo: function(v){
+      if(!v) return 'Escribe tu correo para enviarte la cotización.';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Revisa el correo: debe verse como nombre@empresa.com.';
+    }
+  };
+  function check(name){
+    var input = form.elements[name], err = document.getElementById('e-' + name);
+    var msg = reglas[name](input.value.trim());
+    err.textContent = msg; err.hidden = !msg;
+    if(msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    return !msg;
+  }
+  Object.keys(reglas).forEach(function(name){
+    var input = form.elements[name];
+    input.addEventListener('blur', function(){ if(input.value.trim() || input.hasAttribute('aria-invalid')) check(name); });
+    input.addEventListener('input', function(){ if(input.hasAttribute('aria-invalid')) check(name); });
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var invalid = Object.keys(reglas).filter(function(name){ return !check(name); });
+    if(invalid.length){ form.elements[invalid[0]].focus(); return; }
+    var d = new FormData(form);
+    var asunto = 'Solicitud de cotización — ' + d.get('modalidad') + ' ' + d.get('contenedor');
+    var lineas = [
+      'Nombre: ' + d.get('nombre'),
+      'Empresa: ' + (d.get('empresa') || '-'),
+      'Correo: ' + d.get('correo'),
+      'Teléfono: ' + (d.get('telefono') || '-'),
+      'Modalidad: ' + d.get('modalidad'),
+      'Contenedor: ' + d.get('contenedor'),
+      'Origen: ' + (d.get('origen') || 'Puerto de Manzanillo'),
+      'Destino: ' + (d.get('destino') || '-'),
+      '',
+      d.get('mensaje') || ''
+    ];
+    solicitud = 'Para: logistica@perconsur.mx\nAsunto: ' + asunto + '\n\n' + lineas.join('\n');
+    $('#solicitudTexto').value = solicitud;
+    ok.hidden = false;
+    ok.focus({ preventScroll: true });
+    ok.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    window.location.href = 'mailto:logistica@perconsur.mx?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(lineas.join('\n'));
+  });
+  $('#copiarSolicitud').addEventListener('click', function(){
+    copy(solicitud, $('#estadoSolicitud'), $('#solicitudTexto'));
+  });
+})();
+</script>
+</body>
+</html>
