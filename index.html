@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-G7iMKPJHJtmeI+1SHuafaB2/gOHE78tLheKc7ddZjw4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR — Transporte de carga por carretera desde Manzanillo</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
 <meta name="theme-color" content="#F4F5F4">
@@ -504,6 +507,26 @@ main{min-height:100svh}
 .copiar:active{transform:scale(.96)}
 .estado{font-size:13px;color:var(--tinta-2);margin-left:8px}
 @media (max-width:760px){.form{grid-template-columns:1fr}}
+
+/* ---------- páginas legales ---------- */
+.legal-aside{position:sticky;top:calc(var(--nav-h) + 24px);align-self:start;display:grid;gap:18px}
+.legal-docs{list-style:none;border-top:1px solid var(--linea)}
+.legal-docs a{display:block;padding:12px 0;border-bottom:1px solid var(--linea);font-weight:500;transition:color var(--t-fast) ease}
+.legal-docs a[aria-current="page"]{color:var(--azul)}
+@media (hover:hover){.legal-docs a:hover{color:var(--azul)}}
+.legal{max-width:72ch}
+.legal h2{font-weight:500;font-size:clamp(21px,1.8vw,25px);line-height:1.2;letter-spacing:-.015em;margin:44px 0 12px}
+.legal h2:first-child{margin-top:0}
+.legal p,.legal li{font-size:16px;line-height:1.6;color:var(--tinta-2)}
+.legal p + p{margin-top:12px}
+.legal ul{margin:10px 0 0;padding-left:22px;display:grid;gap:6px}
+.legal b{font-weight:500;color:var(--tinta)}
+.legal a{border-bottom:1px solid currentColor;color:var(--tinta)}
+@media (hover:hover){.legal a:hover{color:var(--azul)}}
+@media (max-width:900px){.legal-aside{position:static}}
+.aviso-form a{border-bottom:1px solid currentColor}
+.pie-legal{display:flex;flex-wrap:wrap;gap:6px 18px}
+.pie-legal a{transition:color var(--t-fast) ease}
 
 /* ---------- pie ---------- */
 .pie{background:var(--asfalto);color:var(--blanco);padding:clamp(56px,7vw,104px) 0 calc(32px + env(safe-area-inset-bottom,0px));overflow:hidden}
@@ -1369,6 +1392,7 @@ main{min-height:100svh}
               <label for="f-mensaje">Mensaje</label>
               <textarea id="f-mensaje" name="mensaje" placeholder="Fecha de liberación, peso aproximado, frecuencia de viajes..."></textarea>
             </div>
+            <p class="full small aviso-form">PERCONSUR DE NAYARIT GROUP, S.A. de C.V. usará tus datos para responder tu solicitud, enviarte la cotización y, si lo contratas, prestarte el servicio. Conoce tus derechos en el <a href="#privacidad">Aviso de privacidad</a>.</p>
             <div class="full form-pie">
               <button class="btn btn-solid" type="submit" id="f-enviar">Enviar solicitud <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button>
               <span class="small" id="formNota">Nombre y correo son obligatorios. Preparamos el correo para <span id="formPara">logistica@perconsur.mx</span>.</span>
@@ -1418,6 +1442,185 @@ main{min-height:100svh}
   </div>
 </section>
 
+<!-- =====================================================================
+     PÁGINAS LEGALES
+     ===================================================================== -->
+<section class="page" id="page-privacidad" data-page="privacidad" aria-labelledby="t-privacidad">
+  <div class="intro wrap">
+    <p class="micro in">Legal</p>
+    <h1 class="h-display" id="t-privacidad" tabindex="-1" data-split><span class="light">Aviso de</span><br>privacidad.</h1>
+    <p class="lede in" style="--d:2">Cómo tratamos los datos personales que nos compartes al pedir una cotización o contratar un traslado.</p>
+  </div>
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <aside class="c-4 legal-aside">
+          <p class="small">Última actualización: 22 de octubre de 2026.</p>
+          <ul class="legal-docs">
+            <li><a href="#privacidad" data-page="privacidad">Aviso de privacidad</a></li>
+            <li><a href="#terminos" data-page="terminos">Términos y condiciones</a></li>
+            <li><a href="#cookies" data-page="cookies">Política de cookies</a></li>
+          </ul>
+        </aside>
+        <div class="c-8 legal">
+          <h2>1. Responsable de tus datos</h2>
+          <p>PERCONSUR DE NAYARIT GROUP, S.A. de C.V. (“PERCONSUR”), con domicilio en Juan Manuel Ruvalcaba 18, Nextipac, C.P. 45220, Zapopan, Jalisco, México, es responsable del tratamiento de tus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
+          <p>Para cualquier asunto de privacidad escríbenos a <a href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a> o llámanos al <a href="tel:+525543139936">(55) 4313 9936</a>.</p>
+
+          <h2>2. Datos que tratamos</h2>
+          <ul>
+            <li><b>Identificación y contacto:</b> nombre, empresa, correo electrónico y teléfono.</li>
+            <li><b>Datos de tu solicitud:</b> servicio y equipo que necesitas, origen, destino y el mensaje que nos escribas.</li>
+            <li><b>Si contratas el servicio:</b> datos de facturación (razón social, RFC y domicilio fiscal), y nombres y teléfonos de las personas de contacto en planta, almacén o campo.</li>
+          </ul>
+          <p>No pedimos datos personales sensibles. Te pedimos no incluirlos en tus mensajes.</p>
+
+          <h2>3. Cómo obtenemos tus datos</h2>
+          <p>Directamente de ti, cuando nos escribes por correo electrónico o WhatsApp, nos llamas o usas el formulario de cotización. El formulario no envía ni guarda datos en este sitio: prepara un correo en tu propio programa de correo y nosotros lo recibimos solo cuando tú lo envías.</p>
+
+          <h2>4. Para qué los usamos</h2>
+          <p>Usamos tus datos para estas finalidades, que son necesarias para la relación que nos pides:</p>
+          <ul>
+            <li>Atender tu solicitud y comunicarnos contigo.</li>
+            <li>Elaborar y enviarte la cotización.</li>
+            <li>Programar y prestar el servicio de transporte: coordinación con tus contactos, seguimiento del viaje y entrega.</li>
+            <li>Facturar, cobrar y cumplir las obligaciones legales, fiscales y de autotransporte que nos aplican.</li>
+          </ul>
+          <p>No usamos tus datos para mercadotecnia ni publicidad, y no los vendemos.</p>
+
+          <h2>5. Con quién los compartimos</h2>
+          <p>No transferimos tus datos a terceros, salvo a autoridades competentes cuando la ley lo exija. Para operar nos apoyamos en proveedores que los tratan por nuestra cuenta y con confidencialidad, como los servicios de correo electrónico, mensajería, alojamiento del sitio y contabilidad.</p>
+
+          <h2>6. Tus derechos (ARCO)</h2>
+          <p>Puedes acceder a tus datos, rectificarlos, cancelarlos u oponerte a su uso; también puedes revocar tu consentimiento o limitar el uso de tus datos. Para hacerlo, envía un correo a <a href="mailto:logistica@perconsur.mx?subject=Derechos%20ARCO">logistica@perconsur.mx</a> con el asunto “Derechos ARCO” e incluye:</p>
+          <ul>
+            <li>Tu nombre y un medio para responderte.</li>
+            <li>Una copia de tu identificación oficial o, si actúas en nombre de otra persona, el documento que acredite tu representación.</li>
+            <li>La descripción clara de los datos y del derecho que quieres ejercer, con los documentos que lo respalden.</li>
+          </ul>
+          <p>Te responderemos en un máximo de 20 días hábiles y, si procede, haremos efectiva tu solicitud dentro de los 15 días hábiles siguientes. El trámite es gratuito; solo podrían cobrarse los gastos de envío o de reproducción de documentos.</p>
+
+          <h2>7. Cookies y tecnologías de rastreo</h2>
+          <p>Este sitio no usa cookies, web beacons ni herramientas de analítica o publicidad. Consulta la <a href="#cookies" data-page="cookies">Política de cookies</a>.</p>
+
+          <h2>8. Conservación y seguridad</h2>
+          <p>Conservamos tus datos solo el tiempo necesario para las finalidades de este aviso y los plazos que exigen las leyes fiscales y mercantiles; después los eliminamos. Aplicamos medidas administrativas, técnicas y físicas para protegerlos contra daño, pérdida, alteración o uso no autorizado.</p>
+
+          <h2>9. Cambios a este aviso</h2>
+          <p>Publicaremos cualquier cambio en esta página, con la fecha de su última actualización.</p>
+
+          <h2>10. Autoridad</h2>
+          <p>Si consideras que tu derecho a la protección de datos personales ha sido vulnerado, puedes acudir a la autoridad competente en la materia.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-terminos" data-page="terminos" aria-labelledby="t-terminos">
+  <div class="intro wrap">
+    <p class="micro in">Legal</p>
+    <h1 class="h-display" id="t-terminos" tabindex="-1" data-split><span class="light">Términos y</span><br>condiciones.</h1>
+    <p class="lede in" style="--d:2">Las reglas para usar este sitio web y solicitar cotizaciones.</p>
+  </div>
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <aside class="c-4 legal-aside">
+          <p class="small">Última actualización: 22 de octubre de 2026.</p>
+          <ul class="legal-docs">
+            <li><a href="#privacidad" data-page="privacidad">Aviso de privacidad</a></li>
+            <li><a href="#terminos" data-page="terminos">Términos y condiciones</a></li>
+            <li><a href="#cookies" data-page="cookies">Política de cookies</a></li>
+          </ul>
+        </aside>
+        <div class="c-8 legal">
+          <h2>1. Titular del sitio</h2>
+          <p>Este sitio pertenece a PERCONSUR DE NAYARIT GROUP, S.A. de C.V. (“PERCONSUR”), con domicilio en Juan Manuel Ruvalcaba 18, Nextipac, C.P. 45220, Zapopan, Jalisco, México. Contacto: <a href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a> y <a href="tel:+525543139936">(55) 4313 9936</a>.</p>
+
+          <h2>2. Aceptación</h2>
+          <p>Al usar este sitio aceptas estos términos. Si no estás de acuerdo con ellos, te pedimos no usarlo.</p>
+
+          <h2>3. Información del sitio</h2>
+          <p>El contenido es informativo. Describe nuestros servicios, flota y rutas de forma general; la disponibilidad de unidades, rutas y horarios se confirma en cada cotización. Procuramos que la información esté actualizada, pero puede cambiar sin previo aviso.</p>
+
+          <h2>4. Cotizaciones y servicios</h2>
+          <p>Por este sitio no se contrata ningún servicio ni se realizan pagos. El formulario prepara un correo con tu solicitud para que lo envíes desde tu cuenta. Una cotización es válida solo cuando la confirmamos por escrito, con su vigencia y condiciones.</p>
+          <p>Cada traslado se rige por lo que acordemos por escrito, la carta porte y la legislación aplicable al autotransporte federal de carga.</p>
+
+          <h2>5. Uso permitido</h2>
+          <p>Te comprometes a usar el sitio de forma lícita. No está permitido:</p>
+          <ul>
+            <li>Enviar información falsa o de otra persona sin su autorización.</li>
+            <li>Intentar dañar, sobrecargar o acceder sin autorización al sitio o a sus servidores.</li>
+            <li>Extraer de forma automatizada los datos de contacto para enviar publicidad no solicitada.</li>
+          </ul>
+
+          <h2>6. Propiedad intelectual</h2>
+          <p>Los textos, ilustraciones, diseño y la marca PERCONSUR pertenecen a PERCONSUR o se usan con autorización. No puedes copiarlos ni usarlos con fines comerciales sin nuestro permiso por escrito.</p>
+          <p>Los nombres y logotipos de nuestros clientes son marcas de sus respectivos titulares y se muestran solo para referir la relación comercial.</p>
+
+          <h2>7. Sitios y servicios de terceros</h2>
+          <p>Los enlaces a WhatsApp, a tu programa de correo o a otros servicios te llevan fuera de este sitio. Esos servicios tienen sus propios términos y políticas de privacidad, de los que no somos responsables.</p>
+
+          <h2>8. Responsabilidad</h2>
+          <p>El sitio se ofrece tal como está. No garantizamos que funcione sin interrupciones o errores, y no somos responsables de daños derivados de su uso o de la imposibilidad de usarlo, en la medida que la ley lo permita.</p>
+
+          <h2>9. Datos personales</h2>
+          <p>Tratamos tus datos conforme a nuestro <a href="#privacidad" data-page="privacidad">Aviso de privacidad</a>.</p>
+
+          <h2>10. Cambios</h2>
+          <p>Podemos actualizar estos términos. La versión vigente es la publicada en esta página.</p>
+
+          <h2>11. Ley aplicable y jurisdicción</h2>
+          <p>Estos términos se rigen por las leyes federales de los Estados Unidos Mexicanos. Para cualquier controversia, las partes se someten a los tribunales competentes de Zapopan, Jalisco, y renuncian a cualquier otro fuero que pudiera corresponderles. Lo anterior no limita los derechos que la Ley Federal de Protección al Consumidor otorga a los consumidores.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-cookies" data-page="cookies" aria-labelledby="t-cookies">
+  <div class="intro wrap">
+    <p class="micro in">Legal</p>
+    <h1 class="h-display" id="t-cookies" tabindex="-1" data-split><span class="light">Política de</span><br>cookies.</h1>
+    <p class="lede in" style="--d:2">Este sitio no usa cookies. Aquí te explicamos qué significa.</p>
+  </div>
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="grid">
+        <aside class="c-4 legal-aside">
+          <p class="small">Última actualización: 22 de octubre de 2026.</p>
+          <ul class="legal-docs">
+            <li><a href="#privacidad" data-page="privacidad">Aviso de privacidad</a></li>
+            <li><a href="#terminos" data-page="terminos">Términos y condiciones</a></li>
+            <li><a href="#cookies" data-page="cookies">Política de cookies</a></li>
+          </ul>
+        </aside>
+        <div class="c-8 legal">
+          <h2>1. Qué son las cookies</h2>
+          <p>Son pequeños archivos que un sitio guarda en tu navegador para recordar información sobre tu visita, por ejemplo, para medir el tráfico o mostrar publicidad.</p>
+
+          <h2>2. Este sitio no usa cookies</h2>
+          <p>No usamos cookies, web beacons, píxeles, herramientas de analítica ni publicidad, y no guardamos información en tu navegador. Las fuentes tipográficas e imágenes se cargan desde nuestro propio sitio, sin servicios de terceros. Por eso no te pedimos aceptar cookies.</p>
+
+          <h2>3. Registros técnicos</h2>
+          <p>Como en cualquier sitio web, el proveedor de alojamiento puede registrar datos técnicos de cada visita, como la dirección IP, el navegador y la hora, para la seguridad y el funcionamiento del servicio.</p>
+
+          <h2>4. Enlaces a terceros</h2>
+          <p>Si abres WhatsApp, tu programa de correo u otro servicio desde nuestros enlaces, ese servicio puede usar sus propias cookies conforme a sus políticas.</p>
+
+          <h2>5. Cómo controlar las cookies</h2>
+          <p>Puedes ver, bloquear o borrar las cookies desde la configuración de privacidad de tu navegador.</p>
+
+          <h2>6. Cambios</h2>
+          <p>Si en el futuro usamos cookies o herramientas de analítica, actualizaremos esta política y, cuando corresponda, te pediremos tu consentimiento antes de activarlas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <!-- =====================================================================
@@ -1459,6 +1662,7 @@ main{min-height:100svh}
     </div>
     <div class="pie-base">
       <span>© 2026 PERCONSUR DE NAYARIT GROUP S.A DE C.V</span>
+      <nav class="pie-legal" aria-label="Legal"><a href="#privacidad">Aviso de privacidad</a><a href="#terminos">Términos y condiciones</a><a href="#cookies">Política de cookies</a></nav>
       <span>Zapopan, Jalisco · Manzanillo, Colima</span>
     </div>
   </div>
@@ -1583,7 +1787,8 @@ main{min-height:100svh}
   var titles = {
     inicio: 'PERCONSUR — Transporte de carga por carretera desde Manzanillo',
     nosotros: 'Nosotros — PERCONSUR', servicios: 'Servicios — PERCONSUR', flota: 'Flota — PERCONSUR',
-    clientes: 'Clientes — PERCONSUR', contacto: 'Contacto — PERCONSUR'
+    clientes: 'Clientes — PERCONSUR', contacto: 'Contacto — PERCONSUR',
+    privacidad: 'Aviso de privacidad — PERCONSUR', terminos: 'Términos y condiciones — PERCONSUR', cookies: 'Política de cookies — PERCONSUR'
   };
   function show(name, moveFocus){
     if(!document.getElementById('page-' + name)) name = 'inicio';
