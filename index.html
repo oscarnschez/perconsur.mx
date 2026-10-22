@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-G7iMKPJHJtmeI+1SHuafaB2/gOHE78tLheKc7ddZjw4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-5V4sAwsr67D4VH0EpRdUHfeN6WKs5YuaGPPQJbi2YZo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR — Transporte de carga por carretera desde Manzanillo</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -93,7 +93,7 @@ body{
   background:var(--papel);
   color:var(--tinta);
   font-family:var(--f-sans);
-  font-size:17px;
+  font-size:16px;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
   overflow-x:clip;
@@ -141,38 +141,30 @@ a,button,select,input,textarea{touch-action:manipulation}
 .h-section .light{font-weight:300}
 .c-4 .h-section{font-size:clamp(30px,3.6vw,58px)}
 .h-item{font-weight:500;font-size:20px;line-height:1.2;letter-spacing:-.01em;text-wrap:balance}
-.h-sub{font-weight:500;font-size:26px;line-height:1.15;letter-spacing:-.015em}
+.h-sub{font-weight:500;font-size:28px;line-height:1.15;letter-spacing:-.015em}
 .lede{font-size:clamp(18px,1.6vw,22px);line-height:1.4;max-width:34em;color:var(--tinta-2)}
 p{max-width:60ch}
 .small{font-size:14px;color:var(--tinta-2)}
-.micro{
-  display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:4px;
-  font-size:12.5px;font-weight:500;line-height:1.45;letter-spacing:.14em;text-transform:uppercase;
-  font-variant-numeric:tabular-nums;color:var(--tinta-2);
-}
-.micro::before{content:"";flex:none;width:22px;height:2px;background:var(--naranja)}
-.micro .tnum{color:var(--tinta-3)}
-.micro--campo::before{background:var(--verde)}
-.micro--inv{color:var(--sobre-verde)}
 .pend{
   color:var(--tinta-3);
-  border-bottom:1px dotted var(--tinta-3);
+  text-decoration:underline dotted;text-underline-offset:3px;
   cursor:help;
 }
-.link{border-bottom:1px solid currentColor;transition:color var(--t-fast) ease,border-color var(--t-fast) ease}
+.link{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;transition:color var(--t-fast) ease}
 
 /* ---------- botones ---------- */
 .btn{
   display:inline-flex;align-items:center;gap:12px;
   min-height:52px;padding:0 26px;
-  border:1.5px solid var(--tinta);border-radius:999px;
+  border:1.5px solid transparent;border-radius:999px;background:var(--papel-2);
   font-weight:500;font-size:16px;letter-spacing:-.005em;white-space:nowrap;
   transition:background-color var(--t-fast) ease,color var(--t-fast) ease,border-color var(--t-fast) ease,transform var(--t-base) var(--ease-out);
 }
 .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--t-base) var(--ease-out)}
 .btn:active{transform:scale(.97)}
 .btn-solid{background:var(--tinta);color:var(--papel)}
-.btn-invert{border-color:var(--blanco);color:var(--blanco)}
+.btn-invert{background:rgba(255,255,255,.16);color:var(--blanco)}
+.btn-soft{background:var(--papel-2)}
 @media (hover:hover){
   .btn:hover{background:var(--tinta);color:var(--papel)}
   .btn:hover svg{transform:translateX(4px)}
@@ -189,11 +181,12 @@ p{max-width:60ch}
   display:flex;align-items:center;justify-content:space-between;gap:16px;
   transition:transform .4s var(--ease-out),background-color var(--t-base) ease,color var(--t-base) ease,box-shadow var(--t-base) ease;
 }
-.nav.solid{background:rgba(244,245,244,.86);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 1px 0 var(--linea)}
+.nav.solid{background:var(--papel)}
 .nav.on-blue{color:var(--blanco)}
-.nav.on-blue.solid{background:rgba(53,79,163,.86);box-shadow:0 1px 0 rgba(255,255,255,.18)}
-.nav.on-green.solid{background:rgba(47,125,79,.9)}
-.nav.hide{transform:translateY(-100%);transition:transform .24s var(--ease-in),background-color var(--t-base) ease,color var(--t-base) ease,box-shadow var(--t-base) ease}
+.nav.on-blue.solid{background:var(--azul)}
+.nav.on-dark.solid{background:var(--asfalto)}
+.nav.on-green.solid{background:var(--verde)}
+.nav.hide{transform:translateY(-100%);transition:transform .24s var(--ease-in),background-color var(--t-base) ease,color var(--t-base) ease}
 .logo{font-weight:700;font-size:22px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
 .logo-mark{position:relative;flex:none;width:146px;height:48px}  /* logotipo horizontal: 1622 x 533 */
 .pie .logo-mark{width:158px;height:52px}
@@ -204,7 +197,7 @@ p{max-width:60ch}
 .nav-links{display:flex;gap:4px;list-style:none}
 .nav-links a{
   display:block;padding:10px 14px;border-radius:999px;
-  font-size:15px;font-weight:500;letter-spacing:-.005em;
+  font-size:16px;font-weight:500;letter-spacing:-.005em;
   transition:background-color var(--t-fast) ease,color var(--t-fast) ease;
 }
 @media (hover:hover){
@@ -216,7 +209,7 @@ p{max-width:60ch}
 .nav.on-green .nav-links a[aria-current="page"],.nav.on-green .nav-cta{color:var(--verde)}
 .nav-cta{margin-left:10px}
 .nav.on-blue .nav-cta{background:var(--blanco);border-color:var(--blanco);color:var(--azul)}
-.menu-btn{display:none;min-height:44px;align-items:center;font-weight:500;font-size:15px;padding:0 16px;border:1.5px solid currentColor;border-radius:999px}
+.menu-btn{display:none;min-height:44px;align-items:center;font-weight:500;font-size:16px;padding:0 16px;border:1.5px solid currentColor;border-radius:999px}
 .menu-panel{
   position:fixed;inset:0;z-index:49;overflow-y:auto;
   background:var(--papel);
@@ -226,7 +219,7 @@ p{max-width:60ch}
 }
 .menu-panel.open{visibility:visible;opacity:1;transform:none;transition:opacity .3s var(--ease-out),transform .45s var(--ease-out),visibility 0s}
 .menu-panel ul{list-style:none;display:grid;gap:6px}
-.menu-panel ul a{display:block;padding:16px 0;border-bottom:1px solid var(--linea);font-size:30px;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
+.menu-panel ul a{display:block;padding:14px 0;font-size:30px;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
 .menu-panel ul a[aria-current="page"]{color:var(--azul)}
 .menu-panel .btn{margin-top:28px}
 @media (max-width:900px){
@@ -247,26 +240,10 @@ main{min-height:100svh}
 @media (max-width:900px){.grid > *{grid-column:span 12}}
 .sec{position:relative;padding:clamp(72px,10vw,140px) 0}
 .sec-tight{padding:clamp(48px,7vw,96px) 0}
-.rule{border-top:1px solid var(--linea)}
+.rule{background:var(--papel-2)}
 
-/* ---------- marca de agua ---------- */
-.marca{
-  position:absolute;left:0;right:0;pointer-events:none;user-select:none;
-  font-weight:700;text-transform:uppercase;white-space:nowrap;
-  font-size:clamp(120px,24vw,420px);line-height:1;letter-spacing:-.04em;
-  color:var(--marca);
-}
 
-/* ---------- HERO ---------- */
-.hero{
-  position:relative;min-height:clamp(560px,86svh,980px);overflow:hidden;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding-top:calc(var(--nav-h) + 24px);
-}
-.hero .marca{top:auto;bottom:-3vw;text-align:right;right:-2vw}
-.hero-copy{position:relative;z-index:2;padding-bottom:clamp(40px,7vh,96px)}
-.hero-copy .micro{margin-bottom:clamp(20px,3vh,32px)}
-.hero-copy .lede{margin-top:28px}
+/* ---------- carretera y tráiler ---------- */
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
 .road{
   position:relative;z-index:1;height:118px;
@@ -274,7 +251,7 @@ main{min-height:100svh}
 }
 .road::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:14px;
-  background:linear-gradient(to bottom,#2A2A2A 0 2px,var(--asfalto) 2px);
+  background:var(--asfalto);
 }
 .truck{
   position:absolute;bottom:14px;left:0;
@@ -284,56 +261,13 @@ main{min-height:100svh}
 /* Tractocamión por capas: carrocería, ruedas (capas HTML que giran en el
    compositor) y piezas delanteras. Coordenadas del dibujo: 1000 x 300. */
 .rig{position:relative;aspect-ratio:10/3}
-.rig::before{content:"";position:absolute;left:1%;right:1%;bottom:4%;height:6%;
-  background:radial-gradient(closest-side,rgba(0,0,0,.32),rgba(0,0,0,.12) 60%,transparent)}
+.rig::before{content:"";position:absolute;left:3%;right:3%;bottom:5%;height:4%;border-radius:50%;
+  background:rgba(0,0,0,.22);filter:blur(5px)}
 .rig>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .rig .wh{position:absolute;top:75.667%;left:calc((var(--cx) - 27) * .1%);width:5.4%;aspect-ratio:1}
 .rig .wh-in,.rig .wh svg{display:block;width:100%;height:100%}
 .rig-a,.rig-b{transform-origin:56% 93%}
 .truck .rig{margin-bottom:-2%}  /* el suelo del dibujo (y=280) queda sobre el asfalto */
-
-/* ---------- CIFRAS (prueba de confianza) ---------- */
-.cifras{padding-block:clamp(32px,4vw,56px) 0}
-.cifras-row{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--linea)}
-.cifras-row li{display:grid;align-content:start;gap:12px;padding:26px 24px 6px 0;border-right:1px solid var(--linea);min-width:0}
-.cifras-row li + li{padding-left:24px}
-.cifras-row li:last-child{border-right:0}
-.num{display:flex;align-items:flex-start;font-weight:300;font-size:clamp(60px,7.4vw,124px);line-height:.88;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
-.num .n{display:inline-block}
-.num .plus{color:var(--naranja-tx);font-weight:400;font-size:.6em;line-height:1;margin-left:.04em}
-.cifras .lbl{font-size:15px;line-height:1.35;color:var(--tinta-2);max-width:22ch}
-@media (max-width:900px){
-  .cifras-row{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cifras-row li:nth-child(2){border-right:0}
-  .cifras-row li:nth-child(3){padding-left:0}
-  .cifras-row li:nth-child(n+3){border-top:1px solid var(--linea)}
-  .cifras-row li{padding-bottom:26px}
-}
-
-/* ---------- DIVISIONES (portada) ---------- */
-.divisiones{overflow:hidden}
-.divisiones .marca{top:24%;padding-left:6vw}
-.serv-head{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;margin-bottom:clamp(32px,5vw,64px)}
-@media (max-width:900px){.serv-head{grid-template-columns:1fr;justify-items:start}}
-.div-grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--linea)}
-.division{display:flex;flex-direction:column;gap:14px;min-width:0;padding:clamp(28px,3vw,44px) clamp(20px,3vw,48px) 8px 0}
-.division+.division{padding-left:clamp(20px,3vw,48px);padding-right:0;border-left:1px solid var(--linea)}
-.division-art{margin-bottom:clamp(10px,1.6vw,22px);border-bottom:4px solid var(--asfalto)}
-.division-art svg{width:100%;height:auto;margin-bottom:-2%;overflow:visible}
-.division .h-sub{max-width:22ch;text-wrap:balance}
-.division-txt{color:var(--tinta-2)}
-.div-list{list-style:none;margin-top:6px;border-top:1px solid var(--linea)}
-.div-list li{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--linea);font-weight:500}
-.div-list .ico{width:28px;height:28px;flex:none;color:var(--azul)}
-.division--campo .div-list .ico{color:var(--verde)}
-.link-go{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;margin-top:10px;padding-bottom:2px;font-weight:500;border-bottom:1.5px solid currentColor;transition:color var(--t-fast) ease}
-.link-go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--t-base) var(--ease-out)}
-@media (hover:hover){.link-go:hover{color:var(--azul)}.division--campo .link-go:hover{color:var(--verde)}.link-go:hover svg{transform:translateX(4px)}}
-@media (max-width:900px){
-  .div-grid{grid-template-columns:1fr}
-  .division,.division+.division{padding:30px 0;border-left:0}
-  .division+.division{border-top:1px solid var(--linea)}
-}
 
 /* ---------- CONFIABILIDAD (pista vertical) ---------- */
 .pista-sec{position:relative}
@@ -347,7 +281,7 @@ main{min-height:100svh}
 }
 .pista::before{
   content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;
-  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.55) 0 28px,transparent 28px 56px);
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.55) 0 28px,transparent 28px 56px); /* taste-skill-ignore: marcas de carril del dibujo */
 }
 .pista .caja{
   position:absolute;left:6%;top:0;width:42%;
@@ -367,13 +301,14 @@ main{min-height:100svh}
 }
 
 /* ---------- PUERTO (sección azul) ---------- */
-.puerto{background:var(--azul);color:var(--blanco);overflow:hidden}
-.puerto .marca{color:rgba(255,255,255,.07);top:6%;padding-left:4vw}
+.puerto{background:var(--azul);color:var(--blanco);overflow:hidden;overflow:clip}
 .puerto-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(240px,360px) minmax(0,1fr);column-gap:clamp(24px,5vw,80px);align-items:center}
 .puerto .lede{color:var(--sobre-azul);margin-top:22px}
-.puerto .h-section{font-size:clamp(32px,4vw,64px)}
+.puerto .h-section{font-size:clamp(40px,4vw,58px)}
 .puerto .barco{display:flex;justify-content:center}
 .puerto .barco svg{width:100%;max-width:380px;height:auto}
+/* el texto acompaña al buque mientras entra a puerto */
+@media (min-width:901px){.puerto-grid{align-items:start}.puerto-grid > :not(.barco){position:sticky;top:calc(var(--nav-h) + 14vh)}}
 .datos{display:grid;gap:34px}
 .datos .h-item{margin-bottom:6px}
 .datos p{color:var(--sobre-azul);font-size:16px}
@@ -386,48 +321,41 @@ main{min-height:100svh}
 
 /* ---------- CAMPO (sección verde) ---------- */
 .campo-band{background:var(--verde);color:var(--blanco);overflow:hidden;padding-bottom:0;--road:clamp(30px,3.6vw,52px)}
-.campo-band .marca{color:rgba(255,255,255,.07);top:4%;padding-left:4vw}
 .campo-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);column-gap:clamp(24px,6vw,120px);align-items:start}
-.campo-band .h-section{font-size:clamp(32px,4vw,64px);margin-top:18px}
+.campo-band .h-section{font-size:clamp(40px,4vw,58px);margin-top:18px}
 .campo-band .lede{color:var(--sobre-verde);margin-top:22px}
 .campo-band .datos p{color:var(--sobre-verde)}
 .campo-band .datos .ico{stroke:var(--blanco)}
 @media (hover:hover){.campo-band .btn-invert:hover{color:var(--verde)}}
 .campo-scene{position:relative;height:clamp(230px,27vw,400px);margin-top:clamp(8px,2vw,32px)}
 .campo-field{position:absolute;left:0;right:0;bottom:var(--road);width:100%;height:88%}
-.campo-road{position:absolute;left:0;right:0;bottom:0;height:var(--road);
-  background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.07) 46px 50px),
-    linear-gradient(#9A7A50 0 3px,#86683F 3px 34%,#7A5D37 34% 38%,#86683F 38% 70%,#7A5D37 70% 74%,#6F5432 74%)}
+.campo-road{position:absolute;left:0;right:0;bottom:0;height:var(--road);background:#86683F;border-top:4px solid #9A7A50}
 .campo-rig{position:absolute;left:50%;bottom:calc(var(--road) * .52);width:min(1000px,80vw);transform:translateX(-50%)}
 .campo-rig .rig{margin-bottom:-2%}
 @media (max-width:900px){.campo-grid{grid-template-columns:1fr;row-gap:48px}.campo-rig{width:94vw}}
 
 /* ---------- CLIENTES ---------- */
-.clientes-lista{list-style:none;border-top:1px solid var(--linea)}
+.clientes-lista{list-style:none;display:grid;gap:4px}
 .clientes-lista li{
   display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:24px;
-  padding:26px 0;border-bottom:1px solid var(--linea);
+  padding:24px;background:var(--papel-2);
 }
 .clientes-lista b{font-weight:700;font-size:clamp(28px,4vw,60px);letter-spacing:-.025em;line-height:1;text-transform:uppercase}
 .clientes-lista span{color:var(--tinta-2);font-size:15px;text-align:right;max-width:26ch}
 @media (max-width:640px){.clientes-lista li{grid-template-columns:1fr}.clientes-lista span{text-align:left}}
 .con-logo li{grid-template-columns:minmax(200px,280px) minmax(0,1fr);align-items:center;gap:clamp(20px,4vw,56px)}
-.con-logo .logo-cliente{max-width:none;display:flex;align-items:center;justify-content:center;height:136px;padding:16px 24px;background:var(--blanco);border:1px solid var(--linea);border-radius:4px}
+.con-logo .logo-cliente{max-width:none;display:flex;align-items:center;justify-content:center;height:136px;padding:16px 24px;background:var(--blanco)}
 .con-logo .logo-cliente.oscuro{background:var(--asfalto);border-color:var(--asfalto)}
 .con-logo .logo-cliente img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain}
 .con-logo li > span:last-child{text-align:left;max-width:42ch;font-size:clamp(17px,1.5vw,20px);line-height:1.4;color:var(--tinta-2)}
 @media (max-width:640px){.con-logo li{grid-template-columns:1fr}.con-logo .logo-cliente{height:120px}}
 
-/* ---------- CTA final ---------- */
-.cta-final{border-top:1px solid var(--linea)}
-.cta-final .h-section{margin-bottom:28px}
 
 /* ---------- páginas interiores ---------- */
 .intro{padding-top:calc(var(--nav-h) + clamp(48px,9vh,120px))}
 .intro .lede{margin-top:26px}
-.intro .micro{margin-bottom:22px}
 .div-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
-.div-tabs a{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px 0 14px;border:1.5px solid var(--tinta);border-radius:999px;font-weight:500;transition:background-color var(--t-fast) ease,color var(--t-fast) ease,border-color var(--t-fast) ease}
+.div-tabs a{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px 0 14px;background:var(--papel-2);border-radius:999px;font-weight:500;transition:background-color var(--t-fast) ease,color var(--t-fast) ease,border-color var(--t-fast) ease}
 .div-tabs .ico{width:24px;height:24px;color:var(--azul)}
 .div-tabs .is-campo .ico{color:var(--verde)}
 @media (hover:hover){.div-tabs a:hover{background:var(--azul);border-color:var(--azul);color:var(--blanco)}.div-tabs a.is-campo:hover{background:var(--verde);border-color:var(--verde)}.div-tabs a:hover .ico{color:currentColor}}
@@ -439,41 +367,40 @@ main{min-height:100svh}
 .div-head-art svg{width:100%;height:auto;margin-bottom:-2%;overflow:visible}
 @media (max-width:900px){.div-head{grid-template-columns:1fr}}
 .division-sec--campo .serv-detalle .ico{color:var(--verde)}
-.serv-detalle > div{border-top:1px solid var(--linea);padding-top:26px}
+.serv-detalle > div{padding-top:8px}
 .serv-detalle .ico{width:38px;height:38px;margin-bottom:18px;color:var(--azul)}
 .serv-detalle p{margin-top:10px;color:var(--tinta-2)}
-.pasos{list-style:none;counter-reset:paso;border-top:1px solid var(--linea)}
+.pasos{list-style:none;display:grid;gap:4px}
 .pasos li{
-  counter-increment:paso;display:grid;grid-template-columns:72px minmax(0,1fr) minmax(0,1.4fr);gap:24px;
-  padding:28px 0;border-bottom:1px solid var(--linea);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:24px;
+  padding:26px 24px;background:var(--papel);
 }
-.pasos li::before{content:counter(paso,decimal-leading-zero);font-weight:300;font-size:34px;line-height:1;letter-spacing:-.03em;color:var(--tinta-3);font-variant-numeric:tabular-nums}
 .pasos p{color:var(--tinta-2);font-size:16px}
-@media (max-width:760px){.pasos li{grid-template-columns:56px minmax(0,1fr)}.pasos p{grid-column:2}}
-.linea-tiempo{position:relative;list-style:none;border-left:2px solid var(--tinta);padding-left:28px;display:grid;gap:34px}
+@media (max-width:760px){.pasos li{grid-template-columns:1fr;gap:8px}}
+.linea-tiempo{position:relative;list-style:none;border-left:4px solid var(--tinta);padding-left:28px;display:grid;gap:34px}
 .linea-tiempo li{position:relative}
-.linea-tiempo li::before{content:"";position:absolute;left:-35px;top:8px;width:12px;height:12px;background:var(--papel);border:2px solid var(--tinta);border-radius:50%}
+.linea-tiempo li::before{content:"";position:absolute;left:-40px;top:6px;width:16px;height:16px;background:var(--tinta);border-radius:50%}
 .linea-tiempo b{display:block;font-size:14px;letter-spacing:.04em;color:var(--tinta-3);margin-bottom:4px;font-variant-numeric:tabular-nums}
 .linea-tiempo .h-item{margin-bottom:6px}
 .linea-tiempo p{color:var(--tinta-2);font-size:16px}
-.ficha{list-style:none;border-top:1px solid var(--linea)}
-.ficha li{display:grid;grid-template-columns:minmax(140px,.7fr) minmax(0,1fr);gap:16px;padding:18px 0;border-bottom:1px solid var(--linea)}
+.ficha{list-style:none;display:grid;gap:4px}
+.ficha li{display:grid;grid-template-columns:minmax(140px,.7fr) minmax(0,1fr);gap:16px;padding:16px 20px;background:var(--papel-2)}
 .ficha li span:first-child{color:var(--tinta-3);font-size:15px}
 .ficha li span:last-child{font-weight:500}
 @media (max-width:520px){.ficha li{grid-template-columns:1fr;gap:4px}}
 .flota-visual{margin:clamp(24px,5vw,60px) 0 0}
 .flota-visual svg{width:100%;height:auto}
 .chasis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px}
-.chasis > div{border-top:2px solid var(--tinta);padding-top:18px}
+.chasis > div{background:var(--papel-2);padding:24px}
 .chasis svg{width:100%;height:auto;margin-bottom:16px}
 .chasis p{font-size:15px;color:var(--tinta-2)}
 @media (max-width:760px){.chasis{grid-template-columns:1fr}}
 .equipo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 40px;margin-top:40px}
-.equipo > div{border-top:2px solid var(--verde);padding-top:22px;min-width:0}
+.equipo > div{background:var(--papel-2);padding:24px;min-width:0}
 .equipo svg{width:100%;height:auto;margin-bottom:16px;overflow:visible}
 .equipo p{font-size:15px;color:var(--tinta-2);margin-top:6px}
 @media (max-width:760px){.equipo{grid-template-columns:1fr}}
-.testimonio{border-left:2px solid var(--naranja);padding-left:24px;font-size:clamp(20px,2vw,26px);line-height:1.3;font-weight:300;max-width:34em}
+.testimonio{border-left:4px solid var(--naranja);padding-left:24px;font-size:clamp(20px,2vw,26px);line-height:1.3;font-weight:300;max-width:34em}
 .testimonio footer{margin-top:14px;font-size:15px;font-weight:500}
 
 /* ---------- contacto ---------- */
@@ -487,32 +414,32 @@ main{min-height:100svh}
   font:inherit;font-size:16px;color:var(--tinta);
   background:transparent;border:0;border-bottom:1.5px solid var(--tinta);
   padding:10px 0;border-radius:0;
-  transition:border-color var(--t-fast) ease,box-shadow var(--t-fast) ease;
+  transition:border-color var(--t-fast) ease;
 }
 .form textarea{min-height:120px;resize:vertical}
-.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-bottom-color:var(--azul);box-shadow:0 1.5px 0 var(--azul)}
-.form [aria-invalid="true"]{border-bottom-color:var(--error);box-shadow:0 1.5px 0 var(--error)}
+.form input:focus,.form select:focus,.form textarea:focus{outline:none;border-bottom:3px solid var(--azul);padding-bottom:8.5px}
+.form [aria-invalid="true"]{border-bottom:3px solid var(--error);padding-bottom:8.5px}
 .form select{-webkit-appearance:none;appearance:none;padding-right:24px;background:transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23161616' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right center}
 .err{font-size:14px;color:var(--error)}
 .form-pie{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center}
-.form-ok{display:grid;gap:10px;padding:22px 24px;background:var(--blanco);border:1px solid var(--linea);border-left:3px solid var(--azul);border-radius:4px;animation:rise .45s var(--ease-out) both}
-.form .solicitud{min-height:0;font-size:14px;line-height:1.5;color:var(--tinta-2);border:1px solid var(--linea);border-radius:4px;padding:10px 12px;background:var(--papel);resize:none}
+.form-ok{display:grid;gap:10px;padding:22px 24px;background:var(--papel-2);border-left:4px solid var(--azul);animation:rise .45s var(--ease-out) both}
+.form .solicitud{min-height:0;font-size:14px;line-height:1.5;color:var(--tinta-2);border:0;border-radius:4px;padding:10px 12px;background:var(--papel);resize:none}
 .form-ok .acciones{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px}
 .contacto-datos{display:grid;gap:30px}
 .contacto-datos .h-item{margin-bottom:6px}
 .contacto-datos p{color:var(--tinta-2)}
-.contacto-datos a{border-bottom:1px solid var(--linea);transition:border-color var(--t-fast) ease}
-@media (hover:hover){.contacto-datos a:hover{border-bottom-color:var(--tinta)}}
-.copiar{display:inline-flex;align-items:center;min-height:32px;margin-left:8px;padding:0 12px;border:1px solid var(--linea);border-radius:999px;font-size:13px;font-weight:500;color:var(--tinta);vertical-align:middle;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
-@media (hover:hover){.copiar:hover{border-color:var(--tinta)}}
+.contacto-datos a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+@media (hover:hover){.contacto-datos a:hover{color:var(--azul)}}
+.copiar{display:inline-flex;align-items:center;min-height:32px;margin-left:8px;padding:0 12px;background:var(--papel-2);border-radius:999px;font-size:13px;font-weight:500;color:var(--tinta);vertical-align:middle;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
+@media (hover:hover){.copiar:hover{background:var(--plata-2)}}
 .copiar:active{transform:scale(.96)}
 .estado{font-size:13px;color:var(--tinta-2);margin-left:8px}
 @media (max-width:760px){.form{grid-template-columns:1fr}}
 
 /* ---------- páginas legales ---------- */
 .legal-aside{position:sticky;top:calc(var(--nav-h) + 24px);align-self:start;display:grid;gap:18px}
-.legal-docs{list-style:none;border-top:1px solid var(--linea)}
-.legal-docs a{display:block;padding:12px 0;border-bottom:1px solid var(--linea);font-weight:500;transition:color var(--t-fast) ease}
+.legal-docs{list-style:none;display:grid;gap:4px}
+.legal-docs a{display:block;padding:12px 16px;background:var(--papel-2);font-weight:500;transition:color var(--t-fast) ease}
 .legal-docs a[aria-current="page"]{color:var(--azul)}
 @media (hover:hover){.legal-docs a:hover{color:var(--azul)}}
 .legal{max-width:72ch}
@@ -522,28 +449,181 @@ main{min-height:100svh}
 .legal p + p{margin-top:12px}
 .legal ul{margin:10px 0 0;padding-left:22px;display:grid;gap:6px}
 .legal b{font-weight:500;color:var(--tinta)}
-.legal a{border-bottom:1px solid currentColor;color:var(--tinta)}
+.legal a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;color:var(--tinta)}
 @media (hover:hover){.legal a:hover{color:var(--azul)}}
 @media (max-width:900px){.legal-aside{position:static}}
-.aviso-form a{border-bottom:1px solid currentColor}
+.aviso-form a{text-decoration:underline;text-underline-offset:3px}
 .pie-legal{display:flex;flex-wrap:wrap;gap:6px 18px}
 .pie-legal a{transition:color var(--t-fast) ease}
 
-/* ---------- pie ---------- */
-.pie{background:var(--asfalto);color:var(--blanco);padding:clamp(56px,7vw,104px) 0 calc(32px + env(safe-area-inset-bottom,0px));overflow:hidden}
-.pie-lema{max-width:none;font-weight:700;text-transform:uppercase;font-size:clamp(40px,7vw,120px);line-height:.92;letter-spacing:-.03em;text-wrap:balance;margin-bottom:clamp(48px,7vw,96px)}
-.pie-lema .light{font-weight:300;color:var(--naranja)}
-.pie-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr);gap:32px;padding-top:32px;border-top:1px solid rgba(255,255,255,.16)}
-.pie .logo{margin-bottom:18px}
-.pie-grid p,.pie-grid li{color:var(--sobre-asfalto);font-size:15px}
-.pie-grid .pie-tit{font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px}
-.pie ul{list-style:none;display:grid;gap:4px}
-.pie ul a{display:inline-block;padding:4px 0;transition:color var(--t-fast) ease}
-.pie address{font-style:normal;display:grid;gap:14px}
-@media (hover:hover){.pie a:hover{color:var(--blanco)}}
-.pie-base{margin-top:56px;padding-top:22px;border-top:1px solid rgba(255,255,255,.16);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(255,255,255,.55)}
-@media (max-width:900px){.pie-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.pie-grid{grid-template-columns:1fr}}
+/* ---------- HERO: la tarjeta sobre el campo azul ---------- */
+.hero{position:relative;background:var(--azul);padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 40px) var(--mx) 0;display:flex;justify-content:center;align-items:flex-start;overflow:hidden}
+/* las esquinas superiores llevan la muesca de una cantonera de contenedor */
+.hero-card{position:relative;width:min(100%,920px);background:var(--papel);padding:clamp(40px,5vw,64px) clamp(24px,5vw,64px) 0;text-align:center;display:flex;flex-direction:column;align-items:center;
+  clip-path:polygon(0 22px,22px 22px,22px 0,calc(100% - 22px) 0,calc(100% - 22px) 22px,100% 22px,100% 100%,0 100%)}
+.hero-title{font-size:clamp(44px,5.6vw,86px);max-width:12em}
+.hero-lede{margin-top:28px;font-size:clamp(18px,1.6vw,22px);line-height:1.4;max-width:30em;color:var(--tinta)}
+.hero-detalles{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 18px;margin-top:22px;font-size:16px;color:var(--tinta-2)}
+.hero-detalles li{display:flex;align-items:center;gap:18px}
+.hero-detalles li + li::before{content:"";width:9px;height:9px;background:var(--naranja);transform:rotate(45deg)}
+.hero-card .hero-actions{justify-content:center;margin:32px 0 clamp(40px,6vh,72px)}
+.hero-card .road{align-self:stretch;margin:auto calc(clamp(24px,5vw,64px) * -1) 0;height:150px}
+.road::after{background:var(--asfalto)}
+@media (max-width:640px){
+  .hero{padding:calc(var(--nav-h) + env(safe-area-inset-top,0px) + 24px) 12px 0}
+  .hero-card{padding-left:16px;padding-right:16px}
+  .hero-card .road{margin-left:-16px;margin-right:-16px}
+  .hero-title{font-size:10.6vw}
+  .hero-card .road{height:110px}
+  .hero-detalles{flex-direction:column;gap:6px}
+  .hero-detalles li + li::before{display:none}
+}
+
+/* ---------- presentación: título, nota y datos ---------- */
+.intro-sec{padding:clamp(96px,10vw,140px) 0 clamp(80px,9vw,120px)}
+.intro-top{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:end}
+.h-intro{grid-column:1 / 8;font-weight:300;font-size:clamp(40px,4.6vw,72px);line-height:1;letter-spacing:-.03em;text-transform:uppercase;text-wrap:balance}
+.intro-nota{grid-column:9 / 13;font-size:18px;line-height:1.55}
+.hechos{list-style:none;display:flex;justify-content:space-between;gap:32px;margin-top:clamp(64px,8vw,120px)}
+.hechos li{display:grid;gap:8px;max-width:16em}
+.hecho{display:block;font-weight:300;font-size:clamp(44px,4.6vw,72px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.hecho .n{display:inline-block}
+.hecho-lbl{font-size:16px;line-height:1.4;color:var(--tinta-2)}
+@media (max-width:900px){
+  .intro-top{display:block}.h-intro{font-size:11vw}.intro-nota{margin-top:20px;font-size:16px}
+  .hechos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:32px}
+}
+
+/* ---------- rutas: boletas a lo largo del borde ---------- */
+.rutas{background:var(--asfalto);color:var(--papel);min-height:100svh;padding:clamp(110px,12vw,160px) 0 0;overflow:hidden;display:flex;flex-direction:column}
+.rutas-copy{padding-left:max(var(--mx),18vw)}
+.rutas .h-section{color:var(--papel)}
+.rutas-p{margin-top:24px;max-width:22em;font-size:clamp(22px,2vw,28px);line-height:1.3;font-weight:300}
+.boletas{margin-top:auto;padding:clamp(48px,6vw,80px) var(--mx) 0;display:flex;gap:12px;align-items:flex-end}
+.boleta{flex:1 1 0;min-width:0;height:var(--h);margin-bottom:-12px;background:var(--papel);color:var(--tinta);padding:20px 18px;display:flex;flex-direction:column;gap:3px;font-size:14px;line-height:1.45;transform:rotate(var(--r,0deg));transform-origin:50% 100%}
+.boleta b{font-weight:700;margin-bottom:2px}
+.boleta-raya{color:var(--tinta-3);white-space:nowrap;overflow:hidden;margin-bottom:6px}
+.boleta--campo{background:#E4EFE7}
+.boleta .link{margin-top:8px;align-self:flex-start;font-weight:500}
+@media (max-width:760px){
+  .rutas-copy{padding-left:var(--mx)}.rutas-p{font-size:22px}
+  .boletas{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;align-items:end}
+  .boleta{height:auto;margin-bottom:0}
+  .boleta:nth-last-child(-n+2){margin-bottom:-12px}
+}
+
+/* ---------- el contenedor en 3D ---------- */
+.contenedor-sec{padding:clamp(96px,10vw,160px) 0}
+.cont-head{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:end;margin-bottom:clamp(32px,4vw,56px)}
+.cont-head .h-section{grid-column:1 / 7}
+.cont-intro{grid-column:8 / 13;font-size:clamp(18px,1.5vw,22px);line-height:1.4}
+.cont-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.cont-visor{position:relative;aspect-ratio:16 / 10;background:var(--papel-2);cursor:grab;touch-action:pan-y;outline-offset:4px}
+.cont-visor.arrastrando{cursor:grabbing}
+.cont-visor canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cont-poster{position:absolute;left:10%;right:10%;bottom:16%;width:80%;height:auto;transition:opacity var(--t-base) ease}
+.cont-visor.listo .cont-poster{opacity:0}
+.cont-pista{position:absolute;left:18px;bottom:14px;font-size:14px;color:var(--tinta-2);pointer-events:none}
+.cont-datos{display:grid;gap:18px;align-content:start}
+.seg{display:inline-flex;justify-self:start;background:var(--papel-2);padding:4px;gap:4px}
+.seg-b{min-height:44px;padding:0 18px;font-weight:500;font-size:16px;transition:background-color var(--t-fast) ease,color var(--t-fast) ease}
+.seg-b[aria-pressed="true"]{background:var(--tinta);color:var(--papel)}
+@media (hover:hover){.seg-b:not([aria-pressed="true"]):hover{background:var(--plata-2)}}
+.cont-ficha{display:grid;gap:4px}
+.cont-ficha div{display:flex;justify-content:space-between;gap:16px;padding:12px 16px;background:var(--papel-2);font-size:16px}
+.cont-ficha dt{color:var(--tinta-2)}
+.cont-ficha dd{font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+.cont-acciones{display:flex;flex-wrap:wrap;gap:12px}
+@media (max-width:900px){
+  .cont-head{display:block}.cont-intro{margin-top:16px}
+  .cont-grid{grid-template-columns:1fr}
+}
+
+/* ---------- campo: la cosecha en cuatro momentos ---------- */
+.campo-band .campo-grid{align-items:end}
+.campo-band .h-section{margin-top:0}
+.momentos-head{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:clamp(64px,8vw,112px)}
+.momentos-head .h-sub{color:var(--blanco)}
+.momentos-ctl{display:flex;gap:8px}
+.ctl{width:48px;height:48px;display:grid;place-items:center;background:var(--papel);color:var(--verde-osc);transition:transform var(--t-fast) ease,background-color var(--t-fast) ease}
+.ctl svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#momAtras svg{transform:rotate(180deg)}
+.ctl:active{transform:scale(.94)}
+@media (hover:hover){.ctl:hover{background:var(--blanco)}}
+.momentos-barra{height:6px;margin-top:16px;background:rgba(255,255,255,.22)}
+.momentos-barra span{display:block;height:100%;background:var(--blanco);transform-origin:0 50%;transform:scaleX(.3);transition:transform .2s ease}
+.momentos{list-style:none;display:flex;gap:32px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--mx);padding:40px var(--mx) clamp(48px,6vw,80px);scrollbar-width:none}
+.momentos::-webkit-scrollbar{display:none}
+.momentos li{flex:0 0 280px;scroll-snap-align:start;display:flex;flex-direction:column}
+.momentos b{font-size:18px;font-weight:700}
+.momentos p{margin-top:8px;font-size:16px;line-height:1.5;color:var(--sobre-verde)}
+.mom-pic{margin-top:var(--gap);width:100%;height:auto;aspect-ratio:4 / 5;background:var(--verde-osc)}
+.mom-pic--claro{background:#DCE8DF}
+@media (max-width:900px){
+  .momentos-ctl,.momentos-barra{display:none}
+  .momentos{display:grid;gap:28px;overflow:visible;scroll-snap-type:none}
+  .momentos li{display:grid;grid-template-columns:minmax(0,38%) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:20px;align-items:start}
+  .momentos b,.momentos p{grid-column:2}
+  .mom-pic{grid-column:1;grid-row:1 / span 2;margin-top:0}
+}
+
+/* ---------- clientes: la lista impresa ---------- */
+.prueba{background:var(--azul);padding:clamp(96px,10vw,140px) var(--mx) 0;overflow:hidden;display:flex;justify-content:center}
+.prueba-card{width:min(100%,760px);margin-bottom:-48px;background:var(--papel);padding:56px 56px 112px;text-align:center;transform:rotate(-1.5deg)}
+.prueba-tit{font-size:28px;font-weight:700;text-transform:uppercase;letter-spacing:-.01em}
+.prueba-logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px;aspect-ratio:16 / 5}
+.prueba-logos span{display:flex;align-items:center;justify-content:center;padding:14px;background:var(--blanco)}
+.prueba-logos .oscuro{background:var(--asfalto)}
+.prueba-logos img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.prueba-nombres{margin:28px auto 0;max-width:none;font-size:22px;line-height:1.7}
+.prueba-cita{margin-top:28px;font-size:22px;line-height:1.35;font-weight:300}
+.prueba-cita footer{margin-top:10px;font-size:14px;font-weight:500}
+.prueba-mas{margin:24px auto 0}
+@media (max-width:760px){.prueba-card{width:92%;padding:28px 28px 88px;transform:rotate(-1deg)}.prueba-tit{font-size:22px}.prueba-nombres{font-size:18px}.prueba-cita{font-size:18px}}
+
+/* ---------- contacto: tarjeta de visita sobre el puerto ---------- */
+.visita{position:relative;min-height:min(100svh,820px);background:var(--azul-2);overflow:hidden;padding:60px var(--mx);display:flex;align-items:center}
+.visita-pic{position:absolute;left:38%;top:50%;width:min(30vw,420px);transform:translate(-50%,-50%) rotate(-90deg)}
+.visita-pic svg{width:100%;height:auto}
+.visita-card{position:relative;margin-left:auto;width:min(100%,380px);background:var(--papel);padding:32px;border-radius:8px;display:flex;flex-direction:column;gap:16px;font-size:16px}
+.visita-tit{font-size:28px;font-weight:300;line-height:1.1;letter-spacing:-.01em}
+.visita-horas{display:grid;gap:6px}
+.visita-horas div{display:flex;justify-content:space-between;gap:12px}
+.visita-horas dt{color:var(--tinta-2)}
+.visita-btn{justify-content:center;width:100%;margin-top:8px}
+@media (max-width:760px){
+  .visita{padding:0 0 32px;min-height:0}
+  .visita-pic{position:relative;left:auto;top:auto;width:100%;height:70svh;transform:none;display:flex;justify-content:center;align-items:center;overflow:hidden}
+  .visita-pic svg{width:auto;height:180vw;transform:rotate(-90deg)}
+  .visita-card{width:auto;margin:-80px 16px 0}
+}
+
+/* ---------- pie: el reverso de la tarjeta ---------- */
+.pie{background:var(--asfalto);padding:clamp(80px,9vw,120px) 0 calc(48px + env(safe-area-inset-bottom,0px));color:var(--tinta)}
+.postal{position:relative;margin:0 calc((100% - 0px) / 12);min-height:420px;background:var(--papel);padding:72px 56px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;row-gap:40px}
+.postal-ondas{position:absolute;left:0;top:-25px;width:100%;height:50px;fill:var(--papel)}
+.postal-izq .postal-firma{font-size:28px;font-weight:700;line-height:1.05;text-transform:uppercase;letter-spacing:-.02em;margin-bottom:16px;max-width:none}
+.postal-izq p{font-size:16px;line-height:1.55}
+.postal-nav{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:24px;font-weight:500}
+.postal-der{display:flex;flex-direction:column;align-items:flex-start;gap:24px}
+.postal-sello{align-self:flex-end;width:146px;height:auto;padding:8px;background:var(--blanco);transform:rotate(2deg)}
+.pie address{font-style:normal;display:grid;gap:12px;font-size:18px;line-height:1.4}
+.postal-pie{grid-column:1 / -1;max-width:none;text-align:center;font-size:14px;color:var(--tinta-2)}
+.pie a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;transition:color var(--t-fast) ease}
+.pie .postal-nav a{text-decoration:none}
+@media (hover:hover){.pie a:hover{color:var(--azul)}}
+@media (max-width:1100px){.postal{margin:0 var(--mx);padding:64px 40px 32px;column-gap:40px}.pie address{font-size:16px}}
+@media (max-width:760px){
+  .postal{margin:0 12px;grid-template-columns:1fr;padding:48px 24px 24px}
+  .postal-sello{width:110px;position:absolute;top:24px;right:20px}
+  .postal-izq .postal-firma{font-size:22px;padding-right:124px}
+  .pie address{font-size:16px}
+}
+/* telón: el contenido sube como una hoja y descubre el pie */
+@media (min-width:901px) and (min-height:760px){
+  main{position:relative;z-index:1;background:var(--papel)}
+  .pie{position:sticky;bottom:0;z-index:0}
+}
 
 /* =====================================================================
    MOVIMIENTO
@@ -578,8 +658,6 @@ main{min-height:100svh}
     .truck .wh{animation:roll linear both;animation-timeline:--sec;animation-range:exit 0% exit 90%}
     /* contenedor bajando por la pista */
     .pista .caja{animation:descend linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
-    /* marcas de agua: deriva lateral leve */
-    .marca{animation:drift linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
     /* buque: entra a puerto */
     .puerto .barco svg{animation:sail linear both;animation-timeline:--sec;animation-range:cover 0% cover 100%}
     /* Campo: el tractocamión con jaula entra a cuadro sobre el camino.
@@ -588,14 +666,17 @@ main{min-height:100svh}
     .campo-rig .rig{animation:campo-drive linear both;animation-timeline:--escena;animation-range:entry 0% cover 55%}
     .campo-rig .wh{animation:campo-roll linear both;animation-timeline:--escena;animation-range:entry 0% cover 55%}
     .campo-field{animation:field-drift linear both;animation-timeline:--escena;animation-range:cover 0% cover 100%}
-    /* bloques de contenido: aparecen al entrar, con escalonado por columna */
-    [data-reveal]{animation:reveal cubic-bezier(.2,.6,.25,1) both;animation-timeline:view();animation-range:entry calc(var(--i,0) * 9%) entry calc(72% + var(--i,0) * 9%)}
     /* línea de tiempo: se dibuja hasta la mitad de la pantalla */
     .linea-tiempo{view-timeline:--tl block;view-timeline-inset:0}
-    .linea-tiempo::after{content:"";position:absolute;left:-2px;top:0;bottom:0;width:2px;background:var(--azul);transform-origin:top;animation:grow linear both;animation-timeline:--tl;animation-range:cover 50vh cover calc(100% - 50vh)}
+    .linea-tiempo::after{content:"";position:absolute;left:-4px;top:0;bottom:0;width:4px;background:var(--azul);transform-origin:top;animation:grow linear both;animation-timeline:--tl;animation-range:cover 50vh cover calc(100% - 50vh)}
     .linea-tiempo li{view-timeline:--hito block;view-timeline-inset:0}
     .linea-tiempo li::before{animation:hito linear both;animation-timeline:--hito;animation-range:cover calc(50vh + 6px) cover calc(50vh + 20px)}
   }
+}
+/* bloques de contenido: aparecen una sola vez al entrar, escalonados por columna */
+@media (prefers-reduced-motion: no-preference){
+  .js [data-reveal]{transition:opacity .7s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(var(--i,0) * 90ms)}
+  .js [data-reveal]:not(.is-in){opacity:0;transform:translateY(28px)}
 }
 @keyframes drive{from{transform:none}to{transform:translateX(var(--travel))}}
 @keyframes roll{from{transform:none}to{transform:rotate(var(--wheel-turn))}}
@@ -605,13 +686,13 @@ main{min-height:100svh}
 @keyframes campo-drive{from{transform:translateX(-48%)}to{transform:none}}
 @keyframes campo-roll{from{transform:rotate(-1058deg)}to{transform:none}}
 @keyframes field-drift{from{transform:translateX(2%)}to{transform:translateX(-2%)}}
-@keyframes reveal{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @keyframes hito{to{background:var(--azul);border-color:var(--azul)}}
 
 @media print{
   *,*::before,*::after{animation:none !important;transition:none !important}
   .nav,.menu-panel,.skip,.road{display:none}
+  [data-reveal]{opacity:1 !important;transform:none !important}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-delay:0s !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
@@ -663,6 +744,7 @@ main{min-height:100svh}
     <symbol id="i-map" viewBox="0 0 32 32"><path d="M3 7l8-3 10 3 8-3v21l-8 3-10-3-8 3z"/><path d="M11 4v21M21 7v21"/></symbol>
     <symbol id="i-clock" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M16 9v7l5 3"/></symbol>
     <symbol id="i-transfer" viewBox="0 0 32 32"><path d="M4 11h22M21 6l5 5-5 5"/><path d="M28 21H6M11 16l-5 5 5 5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 32 32"><path d="M5 16h21M19 9l7 7-7 7"/></symbol>
   </defs>
 </svg>
 
@@ -705,178 +787,178 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page active" id="page-inicio" data-page="inicio" aria-labelledby="t-inicio">
 
-  <!-- Hero: el tráiler llega a cuadro y recorre la carretera con el scroll -->
-  <div class="hero" id="hero">
-    <div class="marca" aria-hidden="true">Perconsur</div>
-    <div class="hero-copy wrap">
-      <p class="micro in" style="--d:-2">Puerto de Manzanillo, Colima <span class="tnum">19°03′ N · 104°18′ O</span></p>
-      <h1 class="h-display" id="t-inicio" tabindex="-1" data-split>Todo lo que tu carga necesita.</h1>
-      <p class="lede in" style="--d:2">Transporte de carga por carretera en dos divisiones: contenedores desde el puerto de Manzanillo y cosecha del campo a la planta.</p>
-      <div class="hero-actions in" style="--d:3">
+  <!-- Hero: la tarjeta de la empresa sobre el campo azul; el tráiler recorre su pie con el scroll -->
+  <div class="hero" id="hero" data-band="azul">
+    <div class="hero-card">
+      <h1 class="h-display hero-title" id="t-inicio" tabindex="-1" data-split>Todo lo que tu carga necesita.</h1>
+      <p class="hero-lede in" style="--d:2">Transporte de carga por carretera desde el puerto de Manzanillo, y del campo a la planta.</p>
+      <ul class="hero-detalles in" style="--d:3" aria-label="Datos de PERCONSUR">
+        <li>División Puerto: contenedores</li>
+        <li>División Campo: cosecha</li>
+        <li>Lunes a domingo</li>
+      </ul>
+      <div class="hero-actions in" style="--d:4">
         <a class="btn btn-solid" href="#contacto">Cotizar un traslado <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-        <a class="btn" href="#servicios">Ver servicios</a>
+        <a class="btn btn-soft" href="#servicios">Ver servicios</a>
       </div>
-    </div>
-    <div class="road" id="road">
-      <div class="truck" id="heroTruck">
-        <div class="truck-in">
-          <div class="rig" role="img" aria-label="Tractocamión PERCONSUR con contenedor de 40 pies">
-            <svg class="rig-a" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#trailer-cont-a"/><use href="#tractor-a"/></svg>
-            <span class="wh" style="--cx:90"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
-            <span class="wh" style="--cx:159"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
-            <span class="wh" style="--cx:559"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
-            <span class="wh" style="--cx:627"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
-            <span class="wh" style="--cx:884"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
-            <svg class="rig-b" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#tractor-b"/></svg>
+      <div class="road" id="road">
+        <div class="truck" id="heroTruck">
+          <div class="truck-in">
+            <div class="rig" role="img" aria-label="Tractocamión PERCONSUR con contenedor de 40 pies">
+              <svg class="rig-a" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#trailer-cont-a"/><use href="#tractor-a"/></svg>
+              <span class="wh" style="--cx:90"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
+              <span class="wh" style="--cx:159"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
+              <span class="wh" style="--cx:559"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
+              <span class="wh" style="--cx:627"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
+              <span class="wh" style="--cx:884"><span class="wh-in"><svg viewBox="0 0 54 54" focusable="false"><use href="#wheel"/></svg></span></span>
+              <svg class="rig-b" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#tractor-b"/></svg>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Cifras: datos de la empresa que dan contexto de confianza -->
-  <div class="cifras wrap">
-    <ul class="cifras-row" id="cifras" aria-label="PERCONSUR en cifras">
-      <li data-reveal style="--i:0"><span class="num" aria-hidden="true"><span class="n" data-count="15">15</span><span class="plus">+</span></span><span class="lbl"><span class="visually-hidden">Más de 15 </span>años en carretera</span></li>
-      <li data-reveal style="--i:1"><span class="num"><span class="n" data-count="10">10</span></span><span class="lbl">tractocamiones propios</span></li>
-      <li data-reveal style="--i:2"><span class="num"><span class="n" data-count="2">2</span></span><span class="lbl">divisiones: Puerto y Campo</span></li>
-      <li data-reveal style="--i:3"><span class="num"><span class="n" data-count="7">7</span></span><span class="lbl">días a la semana de atención</span></li>
-    </ul>
-  </div>
-
-  <!-- Divisiones: Puerto y Campo -->
-  <div class="sec divisiones" id="sec-divisiones">
-    <div class="marca" aria-hidden="true">Divisiones</div>
+  <!-- Presentación: título, nota y la fila de datos -->
+  <div class="sec intro-sec">
     <div class="wrap">
-      <div class="serv-head">
-        <h2 class="h-section" data-reveal><span class="light">Dos divisiones,</span><br>una sola operación.</h2>
-        <a class="btn" href="#servicios">Todos los servicios <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+      <div class="intro-top">
+        <h2 class="h-intro" data-reveal>Más de 15 años en carretera.</h2>
+        <p class="intro-nota" data-reveal style="--i:1">Empresa mexicana con flota propia y oficina en Zapopan, Jalisco. Movemos contenedores desde el puerto de Manzanillo y cosecha del campo a plantas de Guanajuato, Jalisco y Sinaloa.</p>
       </div>
-      <div class="div-grid">
-        <article class="division" data-reveal style="--i:0">
-          <div class="division-art"><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con contenedor de 40 pies"><use href="#rig-cont"/></svg></div>
-          <p class="micro">División Puerto</p>
-          <h3 class="h-sub">Contenedores desde el puerto de Manzanillo</h3>
-          <p class="division-txt">Retiramos, trasladamos y entregamos contenedores de importación y exportación entre las terminales de Manzanillo y tu planta o almacén.</p>
-          <ul class="div-list">
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-import"/></svg>Importación</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-export"/></svg>Exportación</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>Retorno y posicionamiento de vacíos</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-transfer"/></svg>Transferencias entre terminales y recintos</li>
-          </ul>
-          <a class="link-go" href="#division-puerto">Servicios de la División Puerto <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-        </article>
-        <article class="division division--campo" data-reveal style="--i:1">
-          <div class="division-art"><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con tolva para cosecha"><use href="#rig-tolva"/></svg></div>
-          <p class="micro micro--campo">División Campo</p>
-          <h3 class="h-sub">Cosecha del campo a la planta</h3>
-          <p class="division-txt">Asignamos tolvas y jaulas a cada solicitud de carga y llevamos el producto del campo a la planta destino.</p>
-          <ul class="div-list">
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-tolva"/></svg>Carga de cosecha en tolva</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-jaula"/></svg>Carga de cosecha en jaula</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Asignación de unidades por solicitud</li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-plant"/></svg>Entrega en planta destino</li>
-          </ul>
-          <a class="link-go" href="#division-campo">Servicios de la División Campo <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-        </article>
-      </div>
+      <ul class="hechos" id="cifras" aria-label="PERCONSUR en cifras">
+        <li data-reveal style="--i:0"><span class="hecho"><span class="n" data-count="15">15</span>+</span><span class="hecho-lbl">años en servicio, desde 2011</span></li>
+        <li data-reveal style="--i:1"><span class="hecho"><span class="n" data-count="10">10</span></span><span class="hecho-lbl">tractocamiones propios, modelos 2017 a 2019</span></li>
+        <li data-reveal style="--i:2"><span class="hecho"><span class="n" data-count="2">2</span></span><span class="hecho-lbl">divisiones: Puerto y Campo</span></li>
+        <li data-reveal style="--i:3"><span class="hecho"><span class="n" data-count="7">7</span></span><span class="hecho-lbl">días a la semana de atención</span></li>
+      </ul>
     </div>
   </div>
 
-  <!-- Confiabilidad: pista vertical con el tractocamión que baja al hacer scroll -->
-  <div class="sec pista-sec" id="sec-pista">
-    <div class="wrap">
-      <div class="pista-grid">
-        <div class="pista-copy">
-          <h2 class="h-section"><span class="light">Confiabilidad</span><br>en cada kilómetro</h2>
-          <p class="lede">Un contenedor no llega solo. Detrás de cada entrega hay una unidad en óptimas condiciones, un operador capacitado y una operación logística impecable.</p>
-        </div>
-        <div class="pista" id="pista" aria-hidden="true">
-          <div class="caja" id="caja"><svg viewBox="0 0 160 1000" focusable="false"><use href="#truck-top"/></svg></div>
-        </div>
-        <div class="rasgos">
-          <div>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-doc"/></svg>
-            <h3 class="h-item">Operación transparente</h3>
-            <p class="small">Te mantenemos informado en cada etapa del viaje, del retiro en puerto a la entrega. Cada traslado queda documentado con carta porte y te avisamos de cualquier cambio sin que tengas que preguntar.</p>
-          </div>
-          <div>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
-            <h3 class="h-item">Unidades bien mantenidas</h3>
-            <p class="small">Revisamos cada tractocamión y chasis antes de salir a carretera, con mantenimiento preventivo constante para evitar fallas y retrasos en tu entrega.</p>
-          </div>
-          <div>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-id"/></svg>
-            <h3 class="h-item">Operadores con experiencia</h3>
-            <p class="small">Conocen las terminales de Manzanillo, sus accesos y horarios, y las carreteras hacia el interior del país. Esa experiencia se traduce en entregas a tiempo y sin contratiempos.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Puerto de Manzanillo: sección azul -->
+  <!-- División Puerto: sección azul con el buque -->
   <div class="sec puerto" id="sec-puerto" data-band="azul">
-    <div class="marca" aria-hidden="true">Manzanillo</div>
     <div class="wrap">
       <div class="puerto-grid">
         <div>
-          <h2 class="h-section" data-reveal><span class="light">Del muelle</span><br>a tu almacén,<br>sin escalas.</h2>
-          <p class="lede" data-reveal>Operamos en el puerto de Manzanillo, la principal puerta de entrada del Pacífico mexicano. Conocemos sus terminales, sus horarios y sus tiempos, y eso se nota en tu entrega.</p>
-          <div class="puerto-cta"><a class="btn btn-invert" href="#nosotros">Conoce a Perconsur</a></div>
+          <h2 class="h-section" data-reveal><span class="light">Del muelle</span><br>a tu almacén.</h2>
+          <p class="lede" data-reveal>La División Puerto opera en Manzanillo, la principal puerta de entrada del Pacífico mexicano. Conocemos sus terminales, sus horarios y sus tiempos, y eso se nota en tu entrega.</p>
+          <div class="puerto-cta"><a class="btn btn-invert" href="#division-puerto">Servicios de la División Puerto</a></div>
         </div>
         <div class="barco" aria-hidden="true"><svg viewBox="0 0 360 1300" focusable="false"><use href="#barco"/></svg></div>
         <div class="datos">
           <div data-reveal>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-import"/></svg>
+            <h3 class="h-item">Importación y exportación</h3>
+            <p>Retiramos el contenedor en la terminal y lo entregamos en tu planta, o lo llevamos de tu planta al puerto para su embarque.</p>
+          </div>
+          <div data-reveal>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>
+            <h3 class="h-item">Vacíos y transferencias</h3>
+            <p>Retorno y posicionamiento de vacíos, y movimientos entre terminales, patios y recintos.</p>
+          </div>
+          <div data-reveal>
             <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-anchor"/></svg>
             <h3 class="h-item">Presencia en el puerto</h3>
-            <p>Personal y unidades disponibles en Manzanillo para retirar o entregar contenedores en cuanto se liberan.</p>
-          </div>
-          <div data-reveal>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map"/></svg>
-            <h3 class="h-item">Cobertura por carretera</h3>
-            <p>Rutas frecuentes hacia Jalisco, el Bajío y el norte del país.</p>
-          </div>
-          <div data-reveal>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
-            <h3 class="h-item">Más de 15 años en servicio</h3>
-            <p>Experiencia acumulada moviendo carga de importación y exportación para la industria agrícola, automotriz y de alimentos.</p>
+            <p>Personal y unidades en Manzanillo, en la Pensión PACIMEX de El Frijol, para retirar o entregar en cuanto se libera.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Campo: sección verde -->
-  <div class="sec campo-band" id="sec-campo" data-band="verde">
-    <div class="marca" aria-hidden="true">Campo</div>
+  <!-- Rutas: las boletas de viaje a lo largo del borde -->
+  <div class="sec rutas" id="sec-rutas" data-band="asfalto">
+    <div class="wrap rutas-copy">
+      <h2 class="h-section" data-reveal><span class="light">Rutas desde</span><br>Manzanillo.</h2>
+      <p class="rutas-p" data-reveal>Del puerto a Guadalajara, el Bajío, el centro y el norte. Cotizamos cualquier destino.</p>
+    </div>
+    <div class="boletas" role="list" aria-label="Rutas frecuentes">
+      <article class="boleta" role="listitem" style="--h:40svh">
+        <b>Manzanillo → Guadalajara</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Guadalajara</span><span>Zapopan</span><span>Tlaquepaque</span><span>El Salto</span><span>Tala</span><span>Tlajomulco</span>
+      </article>
+      <article class="boleta" role="listitem" style="--h:34svh;--r:-1.5deg">
+        <b>Manzanillo → Bajío</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Guanajuato</span><span>Querétaro</span><span>Aguascalientes</span><span>San Luis Potosí</span><span>Zacatecas</span>
+      </article>
+      <article class="boleta" role="listitem" style="--h:44svh">
+        <b>Manzanillo → Norte</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Saltillo</span><span>Monterrey</span><span>Apodaca</span><span>Reynosa</span>
+      </article>
+      <article class="boleta" role="listitem" style="--h:38svh;--r:1deg">
+        <b>Manzanillo → Centro</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Toluca</span><span>Ecatepec</span><span>Cuautitlán Izcalli</span><span>Tultitlán</span><span>Azcapotzalco</span><span>Puebla</span>
+      </article>
+      <article class="boleta boleta--campo" role="listitem" style="--h:30svh">
+        <b>Campo → Planta</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Guanajuato</span><span>Jalisco</span><span>Sinaloa</span>
+      </article>
+      <article class="boleta" role="listitem" style="--h:42svh;--r:-1deg">
+        <b>Otro destino</b><span class="boleta-raya" aria-hidden="true">· · · · · · · · · · · · · · · ·</span>
+        <span>Cotizamos cualquier ruta a partir del puerto de Manzanillo.</span>
+        <a class="link" href="#contacto">Cotizar una ruta</a>
+      </article>
+    </div>
+  </div>
+
+  <!-- El contenedor en 3D: elige tamaño, gíralo y ábrelo -->
+  <div class="sec contenedor-sec" id="sec-contenedor">
     <div class="wrap">
-      <div class="campo-grid">
-        <div>
-          <p class="micro micro--inv">División Campo</p>
-          <h2 class="h-section" data-reveal><span class="light">Del campo</span><br>a la planta.</h2>
-          <p class="lede" data-reveal>Durante la cosecha coordinamos cada carga con el encargado en campo: hora, lugar de carga y planta destino. La unidad llega cuando el producto está listo.</p>
-          <div class="puerto-cta"><a class="btn btn-invert" href="#division-campo">Conoce la División Campo</a></div>
+      <div class="cont-head">
+        <h2 class="h-section" data-reveal><span class="light">Elige tu</span><br>contenedor.</h2>
+        <p class="cont-intro" data-reveal style="--i:1">Gíralo, ábrelo y compara medidas. Lo llevamos sobre chasis de 20', 40' o 40/20, uno por viaje.</p>
+      </div>
+      <div class="cont-grid">
+        <div class="cont-visor" id="visor3d" tabindex="0" role="img" aria-label="Contenedor de 40 pies en 3D. Arrástralo o usa las flechas para girarlo.">
+          <svg class="cont-poster" viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch40"/></svg>
+          <p class="cont-pista" aria-hidden="true">Arrastra para girar</p>
         </div>
-        <div class="datos">
-          <div data-reveal>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-corn"/></svg>
-            <h3 class="h-item">Tolvas y jaulas</h3>
-            <p>Unidades para maíz en grano y en mazorca, listas para cada tipo de cosecha.</p>
+        <div class="cont-datos">
+          <div class="seg" role="group" aria-label="Tamaño de contenedor">
+            <button type="button" class="seg-b" data-size="20" aria-pressed="false">20'</button>
+            <button type="button" class="seg-b" data-size="40" aria-pressed="true">40'</button>
+            <button type="button" class="seg-b" data-size="40hc" aria-pressed="false">40' HC</button>
           </div>
-          <div data-reveal>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
-            <h3 class="h-item">Al ritmo de la cosecha</h3>
-            <p>Trabajamos con el productor y la planta para que cada carga salga a tiempo.</p>
-          </div>
-          <div data-reveal>
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-plant"/></svg>
-            <h3 class="h-item">Directo a la planta</h3>
-            <p>Llevamos el producto del campo a plantas en Guanajuato, Jalisco y Sinaloa.</p>
+          <h3 class="h-sub" id="contNombre">Contenedor de 40 pies</h3>
+          <dl class="cont-ficha" id="contFicha">
+            <div><dt>Medidas exteriores</dt><dd data-k="ext">12.19 × 2.44 × 2.59 m</dd></div>
+            <div><dt>Medidas interiores</dt><dd data-k="int">12.03 × 2.35 × 2.39 m</dd></div>
+            <div><dt>Capacidad</dt><dd data-k="vol">67 m³</dd></div>
+            <div><dt>Carga útil máxima</dt><dd data-k="kg">26,700 kg</dd></div>
+            <div><dt>Chasis</dt><dd data-k="chasis">40' o 40/20</dd></div>
+          </dl>
+          <p class="small">Valores típicos de un contenedor seco estándar; varían por fabricante. El peso que puede viajar por carretera lo limita la NOM-012-SCT-2: te lo confirmamos al cotizar.</p>
+          <div class="cont-acciones">
+            <button type="button" class="btn btn-soft" id="btnPuertas" aria-pressed="false">Abrir puertas</button>
+            <a class="btn btn-solid" id="btnCotizarCont" href="#contacto">Cotizar este contenedor <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- División Campo: sección verde, la cosecha en cuatro momentos -->
+  <div class="sec campo-band" id="sec-campo" data-band="verde">
+    <div class="wrap">
+      <div class="campo-grid">
+        <h2 class="h-section" data-reveal><span class="light">Del campo</span><br>a la planta.</h2>
+        <div>
+          <p class="lede" data-reveal>La División Campo lleva maíz en grano y en mazorca, en tolva y en jaula. Coordinamos cada carga con el encargado en campo y la planta que la recibe.</p>
+          <div class="puerto-cta"><a class="btn btn-invert" href="#division-campo">Servicios de la División Campo</a></div>
+        </div>
+      </div>
+      <div class="momentos-head">
+        <h3 class="h-sub">Así se mueve la cosecha</h3>
+        <div class="momentos-ctl"><button type="button" class="ctl" id="momAtras" aria-label="Anterior"><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button><button type="button" class="ctl" id="momAdelante" aria-label="Siguiente"><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></button></div>
+      </div>
+      <div class="momentos-barra" aria-hidden="true"><span id="momBarra"></span></div>
+    </div>
+    <ol class="momentos" id="momentos">
+      <li style="--gap:120px"><b>La planta pide</b><p>Indica el lugar de carga, la fecha y el producto que hay que mover.</p><svg class="mom-pic" viewBox="380 40 176 220" role="img" aria-label="Maizal listo para cosecha"><use href="#maizal" width="1200" height="260"/></svg></li>
+      <li style="--gap:64px"><b>Asignamos unidades</b><p>Tolvas o jaulas, operador y hora para cada solicitud.</p><svg class="mom-pic mom-pic--claro" viewBox="680 40 240 300" role="img" aria-label="Tractocamión PERCONSUR"><use href="#rig-tolva" width="1000" height="300"/></svg></li>
+      <li style="--gap:140px"><b>Carga en campo</b><p>El operador se presenta con el encargado de cosecha en el lugar indicado.</p><svg class="mom-pic mom-pic--claro" viewBox="40 0 240 300" role="img" aria-label="Jaula cargada de mazorca"><use href="#rig-jaula" width="1000" height="300"/></svg></li>
+      <li style="--gap:88px"><b>Entrega en planta</b><p>Traslado a la planta destino, descarga y regreso por la siguiente carga.</p><svg class="mom-pic mom-pic--claro" viewBox="190 40 240 300" role="img" aria-label="Tolva con compuertas de descarga"><use href="#rig-tolva" width="1000" height="300"/></svg></li>
+    </ol>
     <div class="campo-scene" aria-hidden="true">
       <svg class="campo-field" viewBox="0 0 1200 260" preserveAspectRatio="xMidYMax slice" focusable="false"><use href="#maizal"/></svg>
       <div class="campo-road"></div>
@@ -894,34 +976,65 @@ main{min-height:100svh}
     </div>
   </div>
 
-  <!-- Clientes -->
-  <div class="sec" id="sec-clientes">
+  <!-- Confiabilidad: pista vertical con el tractocamión que baja al hacer scroll -->
+  <div class="sec pista-sec" id="sec-pista">
     <div class="wrap">
-      <div class="grid">
-        <div class="c-4">
-          <h2 class="h-section"><span class="light">Confían</span><br>en nosotros</h2>
-          <p class="lede" style="margin-top:22px">Empresas que mueven su carga con Perconsur de forma recurrente.</p>
+      <div class="pista-grid">
+        <div class="pista-copy">
+          <h2 class="h-section"><span class="light">Sin sorpresas</span><br>en el camino.</h2>
+          <p class="lede">Un contenedor no llega solo. Detrás de cada entrega hay una unidad en óptimas condiciones, un operador capacitado y una operación logística impecable.</p>
         </div>
-        <div class="c-8">
-          <ul class="clientes-lista">
-            <li data-reveal><b>Bayer de México</b><span>Industria agrícola</span></li>
-            <li data-reveal><b>ALMEX Refacciones</b><span>Refacciones y partes automotrices</span></li>
-            <li data-reveal><b>Grupo Industrial Sweets</b><span>Industria de alimentos y confitería</span></li>
-          </ul>
-          <p class="small" style="margin-top:22px">¿Quieres ser el siguiente? <a class="link" href="#contacto">Cuéntanos qué mueves</a>.</p>
+        <div class="pista" id="pista" aria-hidden="true">
+          <div class="caja" id="caja"><svg viewBox="0 0 160 1000" focusable="false"><use href="#truck-top"/></svg></div>
+        </div>
+        <div class="rasgos">
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-doc"/></svg>
+            <h3 class="h-item">Operación transparente</h3>
+            <p>Te mantenemos informado en cada etapa del viaje, del retiro en puerto a la entrega. Cada traslado queda documentado con carta porte y te avisamos de cualquier cambio.</p>
+          </div>
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+            <h3 class="h-item">Unidades bien mantenidas</h3>
+            <p>Revisamos cada tractocamión y chasis antes de salir a carretera, con mantenimiento preventivo constante para evitar fallas y retrasos.</p>
+          </div>
+          <div>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-id"/></svg>
+            <h3 class="h-item">Operadores con experiencia</h3>
+            <p>Conocen las terminales de Manzanillo, sus accesos y horarios, y las carreteras hacia el interior del país.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Cierre -->
-  <div class="sec cta-final">
-    <div class="wrap">
-      <h2 class="h-section" data-reveal><span class="light">¿Tienes carga</span><br>en Manzanillo?</h2>
-      <div class="hero-actions">
-        <a class="btn btn-solid" href="#contacto">Cotizar un traslado <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
-        <a class="btn" href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a>
+  <!-- Clientes: la lista impresa en una tarjeta -->
+  <div class="sec prueba" id="sec-clientes" data-band="azul">
+    <div class="prueba-card" data-reveal>
+      <h2 class="prueba-tit">Confían en nosotros</h2>
+      <div class="prueba-logos">
+        <span><img src="assets/img/cliente-bayer.webp" alt="Bayer de México" width="207" height="208" loading="lazy" decoding="async"></span>
+        <span class="oscuro"><img src="assets/img/cliente-almex.webp" alt="ALMEX Refacciones" width="456" height="204" loading="lazy" decoding="async"></span>
+        <span><img src="assets/img/cliente-sweets.webp" alt="Grupo Industrial Sweets, Dulces Tinajita" width="211" height="208" loading="lazy" decoding="async"></span>
       </div>
+      <p class="prueba-nombres">Bayer de México&nbsp;·&nbsp;ALMEX Refacciones&nbsp;·&nbsp;Grupo Industrial Sweets</p>
+      <blockquote class="prueba-cita">“Agradezco a PERCONSUR su puntualidad y calidad de servicio.”<footer>David Navarro, shipping forwarder en Manzanillo, Colima</footer></blockquote>
+      <p class="prueba-mas"><a class="link" href="#clientes">Conoce a nuestros clientes</a></p>
+    </div>
+  </div>
+
+  <!-- Contacto: la tarjeta de visita sobre el puerto -->
+  <div class="sec visita" id="sec-visita" data-band="azul">
+    <div class="visita-pic" aria-hidden="true"><svg viewBox="0 0 360 1300" focusable="false"><use href="#barco"/></svg></div>
+    <div class="visita-card">
+      <h2 class="visita-tit">¿Tienes carga en Manzanillo?</h2>
+      <p>Juan Manuel Ruvalcaba 18, Nextipac<br>45220 Zapopan, Jalisco</p>
+      <dl class="visita-horas">
+        <div><dt>Lunes a viernes</dt><dd class="tnum">7:00 a 20:00</dd></div>
+        <div><dt>Sábado y domingo</dt><dd class="tnum">9:00 a 17:00</dd></div>
+      </dl>
+      <p><a class="link" href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a><br><a class="link" href="mailto:divisioncampo@perconsur.mx">divisioncampo@perconsur.mx</a></p>
+      <a class="btn btn-solid visita-btn" href="#contacto">Cotizar un traslado <svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
 
@@ -932,7 +1045,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-nosotros" data-page="nosotros" aria-labelledby="t-nosotros">
   <div class="intro wrap">
-    <p class="micro in">Nosotros</p>
     <h1 class="h-display" id="t-nosotros" tabindex="-1" data-split><span class="light">Más de 15 años</span><br>en carretera.</h1>
     <p class="lede in" style="--d:2">Perconsur es una empresa mexicana de transporte de carga por carretera, especializada en el movimiento de contenedores marítimos.</p>
   </div>
@@ -1020,7 +1132,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-servicios" data-page="servicios" aria-labelledby="t-servicios">
   <div class="intro wrap">
-    <p class="micro in">Servicios</p>
     <h1 class="h-display" id="t-servicios" tabindex="-1" data-split><span class="light">Lo que hacemos</span><br>con tu carga.</h1>
     <p class="lede in" style="--d:2">Trabajamos en dos divisiones: Puerto, para contenedores marítimos desde Manzanillo, y Campo, para la cosecha que va del campo a la planta.</p>
     <nav class="div-tabs in" style="--d:3" aria-label="Divisiones">
@@ -1034,9 +1145,8 @@ main{min-height:100svh}
     <div class="wrap">
       <div class="div-head">
         <div>
-          <p class="micro">División Puerto</p>
-          <h2 class="h-section" tabindex="-1"><span class="light">Contenedores</span><br>desde Manzanillo</h2>
-          <p class="lede">Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
+          <h2 class="h-section" tabindex="-1"><span class="light">División</span><br>Puerto</h2>
+          <p class="lede">Contenedores desde Manzanillo. Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
         </div>
         <div class="div-head-art" data-reveal><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con contenedor de 40 pies"><use href="#rig-cont"/></svg></div>
       </div>
@@ -1110,9 +1220,8 @@ main{min-height:100svh}
     <div class="wrap">
       <div class="div-head">
         <div>
-          <p class="micro micro--campo">División Campo</p>
-          <h2 class="h-section" tabindex="-1"><span class="light">Cosecha</span><br>del campo a la planta</h2>
-          <p class="lede">Asignamos unidades a cada solicitud de carga, las coordinamos con el encargado en campo y llevamos el producto a la planta destino.</p>
+          <h2 class="h-section" tabindex="-1"><span class="light">División</span><br>Campo</h2>
+          <p class="lede">Cosecha del campo a la planta. Asignamos unidades a cada solicitud de carga, las coordinamos con el encargado en campo y llevamos el producto a la planta destino.</p>
         </div>
         <div class="div-head-art" data-reveal><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con jaula de tablas"><use href="#rig-jaula"/></svg></div>
       </div>
@@ -1176,7 +1285,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-flota" data-page="flota" aria-labelledby="t-flota">
   <div class="intro wrap">
-    <p class="micro in">Flota</p>
     <h1 class="h-display" id="t-flota" tabindex="-1" data-split><span class="light">Unidades propias,</span><br>listas para trabajar.</h1>
     <p class="lede in" style="--d:2">Tractocamiones y remolques con documentación vigente, mantenidos para operar de manera segura.</p>
   </div>
@@ -1205,8 +1313,7 @@ main{min-height:100svh}
 
   <div class="sec-tight rule">
     <div class="wrap">
-      <p class="micro">División Puerto</p>
-      <h2 class="h-section" style="margin-top:18px"><span class="light">Tipos</span><br>de chasis</h2>
+      <h2 class="h-section"><span class="light">Chasis de la</span><br>División Puerto</h2>
       <div class="chasis">
         <div data-reveal style="--i:0">
           <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch20"/></svg>
@@ -1229,8 +1336,7 @@ main{min-height:100svh}
 
   <div class="sec-tight rule">
     <div class="wrap">
-      <p class="micro micro--campo">División Campo</p>
-      <h2 class="h-section" style="margin-top:18px"><span class="light">Equipo</span><br>de campo</h2>
+      <h2 class="h-section"><span class="light">Equipo de la</span><br>División Campo</h2>
       <div class="equipo">
         <div data-reveal style="--i:0">
           <svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con tolva"><use href="#rig-tolva"/></svg>
@@ -1264,7 +1370,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-clientes" data-page="clientes" aria-labelledby="t-clientes">
   <div class="intro wrap">
-    <p class="micro in">Clientes</p>
     <h1 class="h-display" id="t-clientes" tabindex="-1" data-split><span class="light">La carga</span><br>de la industria.</h1>
     <p class="lede in" style="--d:2">Trabajamos con empresas que necesitan que su carga o contenedor llegue el día que lo programaron. Estos son algunos de los clientes que confían en nosotros.</p>
   </div>
@@ -1324,7 +1429,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-contacto" data-page="contacto" aria-labelledby="t-contacto">
   <div class="intro wrap">
-    <p class="micro in">Contacto</p>
     <h1 class="h-display" id="t-contacto" tabindex="-1" data-split><span class="light">Cuéntanos</span><br>qué mueves.</h1>
     <p class="lede in" style="--d:2">Con el origen, el destino y el tipo de carga te enviamos una cotización. Si ya tienes fecha programada, mejor.</p>
   </div>
@@ -1444,7 +1548,6 @@ main{min-height:100svh}
      ===================================================================== -->
 <section class="page" id="page-privacidad" data-page="privacidad" aria-labelledby="t-privacidad">
   <div class="intro wrap">
-    <p class="micro in">Legal</p>
     <h1 class="h-display" id="t-privacidad" tabindex="-1" data-split><span class="light">Aviso de</span><br>privacidad.</h1>
     <p class="lede in" style="--d:2">Cómo tratamos los datos personales que nos compartes al pedir una cotización o contratar un traslado.</p>
   </div>
@@ -1516,7 +1619,6 @@ main{min-height:100svh}
 
 <section class="page" id="page-terminos" data-page="terminos" aria-labelledby="t-terminos">
   <div class="intro wrap">
-    <p class="micro in">Legal</p>
     <h1 class="h-display" id="t-terminos" tabindex="-1" data-split><span class="light">Términos y</span><br>condiciones.</h1>
     <p class="lede in" style="--d:2">Las reglas para usar este sitio web y solicitar cotizaciones.</p>
   </div>
@@ -1579,7 +1681,6 @@ main{min-height:100svh}
 
 <section class="page" id="page-cookies" data-page="cookies" aria-labelledby="t-cookies">
   <div class="intro wrap">
-    <p class="micro in">Legal</p>
     <h1 class="h-display" id="t-cookies" tabindex="-1" data-split><span class="light">Política de</span><br>cookies.</h1>
     <p class="lede in" style="--d:2">Este sitio no usa cookies. Aquí te explicamos qué significa.</p>
   </div>
@@ -1625,41 +1726,23 @@ main{min-height:100svh}
      ===================================================================== -->
 <footer class="pie">
   <div class="wrap">
-    <p class="pie-lema">A donde sea,<br><span class="light">cuando sea.</span></p>
-    <div class="pie-grid">
-      <div>
-        <a class="logo" href="#inicio"><span class="logo-mark"><img class="inv" src="assets/img/logo-h-inv.webp" width="158" height="52" alt="PERCONSUR" loading="lazy" decoding="async"></span></a>
-        <p>Transporte de carga por carretera. División Puerto y División Campo.</p>
+    <div class="postal">
+      <svg class="postal-ondas" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 50V25a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0a50 25 0 0 1 100 0V50Z"/></svg>
+      <div class="postal-izq">
+        <p class="postal-firma">A donde sea, cuando sea.</p>
+        <p>Transporte de carga por carretera. División Puerto y División Campo. Escríbenos con el origen, el destino y el tipo de carga, y te respondemos con tu cotización.</p>
+        <nav class="postal-nav" aria-label="Secciones"><a href="#nosotros">Nosotros</a><a href="#servicios">Servicios</a><a href="#flota">Flota</a><a href="#clientes">Clientes</a><a href="#contacto">Contacto</a></nav>
       </div>
-      <nav aria-label="Secciones">
-        <p class="pie-tit">Empresa</p>
-        <ul>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#servicios">Servicios</a></li>
-          <li><a href="#flota">Flota</a></li>
-          <li><a href="#clientes">Clientes</a></li>
-        </ul>
-      </nav>
-      <div>
-        <p class="pie-tit">Contacto</p>
-        <ul>
-          <li><a href="#contacto">Cotizar un traslado</a></li>
-          <li><a href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a></li>
-          <li><a href="mailto:divisioncampo@perconsur.mx">divisioncampo@perconsur.mx</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="pie-tit">Oficinas</p>
+      <div class="postal-der">
+        <img class="postal-sello" src="assets/img/logo-h.webp" width="146" height="48" alt="PERCONSUR" loading="lazy" decoding="async">
         <address>
-          <p>Juan Manuel Ruvalcaba 18<br>Nextipac, 45220<br>Zapopan, Jalisco, México</p>
-          <p>Carretera Libre Manzanillo - Colima S/N<br>El Frijol, 28803<br>Manzanillo, Colima</p>
+          <a href="mailto:logistica@perconsur.mx">logistica@perconsur.mx</a>
+          <a href="mailto:divisioncampo@perconsur.mx">divisioncampo@perconsur.mx</a>
+          <span>Juan Manuel Ruvalcaba 18, Nextipac, 45220 Zapopan, Jalisco</span>
+          <span>Carretera Libre Manzanillo - Colima S/N, El Frijol, 28803 Manzanillo, Colima</span>
         </address>
       </div>
-    </div>
-    <div class="pie-base">
-      <span>© 2026 PERCONSUR DE NAYARIT GROUP S.A DE C.V</span>
-      <nav class="pie-legal" aria-label="Legal"><a href="#privacidad">Aviso de privacidad</a><a href="#terminos">Términos y condiciones</a><a href="#cookies">Política de cookies</a></nav>
-      <span>Zapopan, Jalisco · Manzanillo, Colima</span>
+      <p class="postal-pie">© 2026 PERCONSUR DE NAYARIT GROUP S.A DE C.V · <a href="#privacidad">Aviso de privacidad</a> · <a href="#terminos">Términos y condiciones</a> · <a href="#cookies">Política de cookies</a></p>
     </div>
   </div>
 </footer>
@@ -1748,6 +1831,7 @@ main{min-height:100svh}
     for(var i = 0; i < geo.bands.length; i++){ if(probe >= geo.bands[i][0] && probe <= geo.bands[i][1]){ band = geo.bands[i][2]; break; } }
     nav.classList.toggle('on-blue', !!band && !menuOpen);
     nav.classList.toggle('on-green', band === 'verde' && !menuOpen);
+    nav.classList.toggle('on-dark', band === 'asfalto' && !menuOpen);
     var dy = y - lastY;
     if(menuOpen || y < geo.vh * .6 || dy < -6) nav.classList.remove('hide');
     else if(dy > 6 && !nav.contains(document.activeElement)) nav.classList.add('hide');
@@ -1856,6 +1940,17 @@ main{min-height:100svh}
   window.matchMedia('(min-width: 901px)').addEventListener('change', function(m){ if(m.matches) setMenu(false); });
 
   route();
+
+  /* ---------- bloques que aparecen al entrar (una sola vez) ---------- */
+  var reveals = $$('[data-reveal]');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('is-in'); });
+  } else {
+    var rio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('is-in'); rio.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    reveals.forEach(function(el){ rio.observe(el); });
+  }
 
   /* ---------- cifras: conteo al entrar en pantalla ---------- */
   var cifras = $('#cifras');
@@ -1973,6 +2068,54 @@ main{min-height:100svh}
   $('#copiarSolicitud').addEventListener('click', function(){
     copy(solicitud, $('#estadoSolicitud'), $('#solicitudTexto'));
   });
+
+  /* ---------- contenedor en 3D (img2threejs): se carga al acercarse ---------- */
+  var visor = $('#visor3d'), segBtns = $$('.seg-b'), btnPuertas = $('#btnPuertas');
+  var DATOS = {
+    '20':   { nombre: 'Contenedor de 20 pies', ext: '6.06 × 2.44 × 2.59 m', int: '5.90 × 2.35 × 2.39 m', vol: '33 m³', kg: '28,200 kg', chasis: "20' o 40/20", equipo: "20'", aria: 'Contenedor de 20 pies' },
+    '40':   { nombre: 'Contenedor de 40 pies', ext: '12.19 × 2.44 × 2.59 m', int: '12.03 × 2.35 × 2.39 m', vol: '67 m³', kg: '26,700 kg', chasis: "40' o 40/20", equipo: "40'", aria: 'Contenedor de 40 pies' },
+    '40hc': { nombre: 'Contenedor de 40 pies high cube', ext: '12.19 × 2.44 × 2.90 m', int: '12.03 × 2.35 × 2.69 m', vol: '76 m³', kg: '26,500 kg', chasis: "40' o 40/20", equipo: "40' high cube", aria: 'Contenedor de 40 pies high cube' }
+  };
+  var tam = '40', api = null, puertas = false;
+  function pintarDatos(){
+    var d = DATOS[tam];
+    $('#contNombre').textContent = d.nombre;
+    $$('#contFicha dd').forEach(function(dd){ dd.textContent = d[dd.dataset.k]; });
+    segBtns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.size === tam)); });
+    if(visor) visor.setAttribute('aria-label', d.aria + ' en 3D. Arrástralo o usa las flechas para girarlo.');
+  }
+  segBtns.forEach(function(b){ b.addEventListener('click', function(){ tam = b.dataset.size; pintarDatos(); if(api) api.setSize(tam); }); });
+  if(btnPuertas) btnPuertas.addEventListener('click', function(){
+    puertas = !puertas; btnPuertas.setAttribute('aria-pressed', String(puertas));
+    btnPuertas.textContent = puertas ? 'Cerrar puertas' : 'Abrir puertas';
+    if(api) api.setDoors(puertas);
+  });
+  var btnCot = $('#btnCotizarCont');
+  if(btnCot) btnCot.addEventListener('click', function(){ var s = form && form.elements.contenedor; if(s) s.value = DATOS[tam].equipo; });
+  if(visor && 'IntersectionObserver' in window){
+    var cargado = false;
+    var vio = new IntersectionObserver(function(es){
+      if(cargado || !es.some(function(e){ return e.isIntersecting; })) return;
+      cargado = true; vio.disconnect();
+      var cv = document.createElement('canvas');
+      if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
+      import('./assets/js/contenedor3d.js').then(function(m){
+        api = m.mount(visor, { reduce: reduce, onReady: function(){ visor.classList.add('listo'); } });
+        api.setSize(tam); api.setDoors(puertas);
+      }).catch(function(){ /* sin módulo: queda el dibujo */ });
+    }, { rootMargin: '400px 0px' });
+    vio.observe(visor);
+  }
+
+  /* ---------- momentos de la cosecha: fila con desplazamiento ---------- */
+  var mom = $('#momentos'), barra = $('#momBarra');
+  if(mom){
+    var paso = function(dir){ var li = $('li', mom); mom.scrollBy({ left: dir * (li ? li.offsetWidth + 32 : 300), behavior: reduce ? 'auto' : 'smooth' }); };
+    $('#momAtras').addEventListener('click', function(){ paso(-1); });
+    $('#momAdelante').addEventListener('click', function(){ paso(1); });
+    var marcar = function(){ var max = mom.scrollWidth - mom.clientWidth; barra.style.transform = 'scaleX(' + (max > 0 ? Math.max(0.12, (mom.scrollLeft + mom.clientWidth) / mom.scrollWidth) : 1) + ')'; };
+    mom.addEventListener('scroll', marcar, { passive: true }); window.addEventListener('resize', marcar); marcar();
+  }
 })();
 </script>
 
