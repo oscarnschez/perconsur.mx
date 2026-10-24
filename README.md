@@ -27,7 +27,10 @@ redirige `www.perconsur.mx` a `perconsur.mx`.
 | `404.html` | Página para direcciones que no existen. |
 | `src/index.js` | Redirige `www` al dominio principal; lo demás lo sirven los archivos estáticos. |
 
-### Conectar el repositorio (una sola vez)
+### Conectar el repositorio (hecho)
+
+Ya está conectado (Workers Builds, rama `main`, token "perconsur build token"). Los pasos quedan como referencia:
+
 
 1. En el panel de Cloudflare: **Workers & Pages → Create → Import a repository**, elige
    `oscarnschez/perconsur.mx`, rama `main`. Cloudflare lee `wrangler.jsonc`; el comando de build va vacío y
