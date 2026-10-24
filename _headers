@@ -1,0 +1,21 @@
+# Encabezados de seguridad para todo el sitio. La política de scripts (con sus
+# hashes) vive en la etiqueta <meta> de index.html; aquí sólo se añade lo que una
+# <meta> no puede declarar, como frame-ancestors.
+/*
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000
+
+# Fuentes: cambian casi nunca
+/assets/fonts/*
+  Cache-Control: public, max-age=2592000
+
+# Imágenes y el visor 3D: un día en caché, se revalidan en segundo plano
+/assets/img/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/js/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

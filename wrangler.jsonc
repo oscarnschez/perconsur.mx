@@ -1,0 +1,13 @@
+// Despliegue en Cloudflare Workers (sólo archivos estáticos, sin código de servidor).
+// Cloudflare publica la raíz del repositorio; .assetsignore deja fuera lo que no es del sitio.
+{
+  "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+  "name": "perconsur",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": { "enabled": true }
+}
