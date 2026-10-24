@@ -58,7 +58,7 @@
   --t-base:.32s;
   --t-slow:.6s;
   /* medida */
-  --nav-h:52px;
+  --nav-h:72px;
   --maxw:1200px;
   --gutter:clamp(20px,4vw,40px);
   --r-xl:28px;
@@ -185,7 +185,7 @@ p{max-width:64ch}
 .nav.solid::after{opacity:1}
 .nav-in{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .logo{display:flex;align-items:center;flex:none;border-radius:6px}
-.logo img{height:36px;width:auto}
+.logo img{height:52px;width:auto}   /* 158 × 52: la imagen (402 × 132) se ve nítida hasta 2× */
 .nav-links{display:flex;gap:2px;list-style:none}
 .nav-links a{display:block;padding:8px 12px;border-radius:999px;font-size:14px;font-weight:500;letter-spacing:-.006em;color:rgba(29,29,31,.78);transition:color var(--t-fast) ease,background-color var(--t-fast) ease}
 .nav-links a[aria-current="page"]{color:var(--ink)}
@@ -212,7 +212,7 @@ p{max-width:64ch}
 .menu-panel li,.menu-panel .btn{opacity:0;transform:translateY(-6px);transition:opacity var(--t-fast) ease,transform var(--t-fast) var(--ease)}
 .menu-panel.open li,.menu-panel.open .btn{opacity:1;transform:none;transition:opacity var(--t-base) ease,transform var(--t-base) var(--ease);transition-delay:calc(40ms + var(--i,0) * 30ms)}
 .menu-panel .btn{margin-top:24px}
-@media (max-width:900px){.nav-links,.nav-cta{display:none}.menu-btn{display:block}}
+@media (max-width:900px){.nav-links,.nav-cta{display:none}.menu-btn{display:block}:root{--nav-h:64px}.logo img{height:44px}}
 @media (min-width:901px){.menu-panel{display:none}}
 
 /* ---------- páginas (router por hash) ---------- */
@@ -463,7 +463,7 @@ main{min-height:100svh}
 /* ---------- pie ---------- */
 .pie{background:var(--bg-2);color:var(--ink-2);font-size:14px;line-height:1.5;padding:56px 0 calc(28px + env(safe-area-inset-bottom,0px))}
 .pie-top{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px;padding-bottom:36px;border-bottom:1px solid var(--line)}
-.pie-marca img{height:36px;width:auto}
+.pie-marca img{height:48px;width:auto}
 .pie-marca p{margin-top:16px;max-width:34ch}
 .pie h2{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-.006em}
 .pie ul{list-style:none;display:grid;gap:8px}
