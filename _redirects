@@ -1,0 +1,9 @@
+# Rutas limpias hacia las secciones del sitio (el sitio usa enlaces con #)
+/nosotros    /#nosotros    301
+/servicios   /#servicios   301
+/flota       /#flota       301
+/clientes    /#clientes    301
+/contacto    /#contacto    301
+/privacidad  /#privacidad  301
+/terminos    /#terminos    301
+/cookies     /#cookies     301
