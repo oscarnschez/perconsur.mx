@@ -15,7 +15,8 @@ La fecha va en formato legible y en el atributo `datetime` (`AAAA-MM-DD`).
 
 ## Publicación en Cloudflare
 
-El sitio se publica como Worker de sólo archivos estáticos (`wrangler.jsonc`), sin código de servidor.
+El sitio se publica como Worker (`wrangler.jsonc`): los archivos estáticos de la raíz más `src/index.js`, que sólo
+redirige `www.perconsur.mx` a `perconsur.mx`.
 
 | Archivo | Para qué sirve |
 | --- | --- |
@@ -24,6 +25,7 @@ El sitio se publica como Worker de sólo archivos estáticos (`wrangler.jsonc`),
 | `_headers` | Encabezados de seguridad y caché. La CSP con los hashes de los scripts sigue en la `<meta>` de `index.html`. |
 | `_redirects` | Rutas limpias (`/contacto`, `/flota`…) hacia las secciones con `#`. |
 | `404.html` | Página para direcciones que no existen. |
+| `src/index.js` | Redirige `www` al dominio principal; lo demás lo sirven los archivos estáticos. |
 
 ### Conectar el repositorio (una sola vez)
 
@@ -31,9 +33,8 @@ El sitio se publica como Worker de sólo archivos estáticos (`wrangler.jsonc`),
    `oscarnschez/perconsur.mx`, rama `main`. Cloudflare lee `wrangler.jsonc`; el comando de build va vacío y
    el de despliegue es `npx wrangler deploy`.
 2. Cada merge a `main` publica el sitio automáticamente.
-3. Con el dominio ya activo en Cloudflare: en el Worker **perconsur → Settings → Domains & Routes → Add →
-   Custom domain**, agrega `perconsur.mx` y `www.perconsur.mx`.
-4. Para que `www` lleve al dominio principal: **Rules → Redirect Rules → Redirect from WWW to root**.
+3. Los dominios `perconsur.mx` y `www.perconsur.mx` ya están asignados al Worker
+   (**perconsur → Settings → Domains & Routes**); la redirección de `www` la hace `src/index.js`.
 
 Para probar en local: `npx wrangler dev` (http://localhost:8787).
 
