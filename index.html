@@ -470,6 +470,10 @@ main{min-height:100svh}
 .pie address{font-style:normal}
 .pie a{color:var(--ink-2);transition:color var(--t-fast) ease}
 @media (hover:hover){.pie a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}}
+.nota-marcas{max-width:68ch;margin-top:20px}
+.nota-marcas.t-center{margin-inline:auto}
+.pie-aviso{max-width:none;padding-top:20px;font-size:13px;line-height:1.5}
+.pie-aviso a{text-decoration:underline;text-underline-offset:2px}
 .pie-base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-top:20px;font-size:13px}
 @media (max-width:900px){.pie-top{grid-template-columns:repeat(2,minmax(0,1fr))}.pie-marca{grid-column:1 / -1}}
 @media (max-width:480px){.pie-top{grid-template-columns:1fr}}
@@ -802,6 +806,7 @@ main{min-height:100svh}
         <li class="oscuro"><img src="assets/img/cliente-almex.webp" alt="ALMEX Refacciones" width="456" height="204" loading="lazy" decoding="async"></li>
         <li><img src="assets/img/cliente-sweets.webp" alt="Grupo Industrial Sweets, Dulces Tinajita" width="211" height="208" loading="lazy" decoding="async"></li>
       </ul>
+      <p class="t-small nota-marcas t-center">Los nombres y logotipos de nuestros clientes son marcas de sus respectivos titulares. Se muestran solo para identificar la relación comercial y no implican patrocinio, respaldo ni afiliación. <a class="link" href="#marcas">Aviso sobre marcas</a>.</p>
       <blockquote class="cita" data-reveal>
         <p>“Agradezco a PERCONSUR su puntualidad y calidad de servicio.”</p>
         <footer>David Navarro, shipping forwarder en Manzanillo, Colima</footer>
@@ -1194,6 +1199,7 @@ main{min-height:100svh}
           <div><h3>Grupo Industrial Sweets</h3><p>Industria de confitería, transportamos sus productos hacia sus diferentes almacenes.</p></div>
         </li>
       </ul>
+      <p class="t-small nota-marcas">Los nombres y logotipos de nuestros clientes son marcas de sus respectivos titulares. Se muestran solo para identificar la relación comercial y no implican patrocinio, respaldo ni afiliación. <a class="link" href="#marcas">Aviso sobre marcas</a>.</p>
     </div>
   </div>
 
@@ -1430,7 +1436,7 @@ main{min-height:100svh}
     <div class="wrap">
       <div class="grid">
         <aside class="c-4 legal-aside">
-          <p class="t-small">Última actualización: 22 de octubre de 2026.</p>
+          <p class="t-small">Última actualización: 24 de octubre de 2026.</p>
           <ul class="legal-docs">
             <li><a href="#privacidad" data-page="privacidad">Aviso de privacidad</a></li>
             <li><a href="#terminos" data-page="terminos">Términos y condiciones</a></li>
@@ -1461,21 +1467,25 @@ main{min-height:100svh}
 
           <h2>6. Propiedad intelectual</h2>
           <p>Los textos, ilustraciones, diseño y la marca PERCONSUR pertenecen a PERCONSUR o se usan con autorización. No puedes copiarlos ni usarlos con fines comerciales sin nuestro permiso por escrito.</p>
-          <p>Los nombres y logotipos de nuestros clientes son marcas de sus respectivos titulares y se muestran solo para referir la relación comercial.</p>
 
-          <h2>7. Sitios y servicios de terceros</h2>
+          <h2 id="marcas" tabindex="-1">7. Marcas y logotipos de terceros</h2>
+          <p>Los nombres, logotipos y marcas de nuestros clientes y de otros terceros que aparecen en este sitio pertenecen a sus respectivos titulares.</p>
+          <p>Los mostramos únicamente para identificar a empresas a las que hemos prestado servicios de transporte. Su presencia no significa que esas empresas patrocinen, respalden o estén afiliadas a PERCONSUR, ni que avalen el contenido de este sitio.</p>
+          <p>No está permitido copiar, descargar ni usar esos logotipos a partir de este sitio. Si eres titular de alguna de estas marcas y prefieres que la retiremos, escríbenos a <a href="mailto:logistica@perconsur.mx?subject=Uso%20de%20marca">logistica@perconsur.mx</a> y la quitaremos a la brevedad.</p>
+
+          <h2>8. Sitios y servicios de terceros</h2>
           <p>Los enlaces a tu programa de correo o a otros servicios te llevan fuera de este sitio. Esos servicios tienen sus propios términos y políticas de privacidad, de los que no somos responsables.</p>
 
-          <h2>8. Responsabilidad</h2>
+          <h2>9. Responsabilidad</h2>
           <p>El sitio se ofrece tal como está. No garantizamos que funcione sin interrupciones o errores, y no somos responsables de daños derivados de su uso o de la imposibilidad de usarlo, en la medida que la ley lo permita.</p>
 
-          <h2>9. Datos personales</h2>
+          <h2>10. Datos personales</h2>
           <p>Tratamos tus datos conforme a nuestro <a href="#privacidad" data-page="privacidad">Aviso de privacidad</a>.</p>
 
-          <h2>10. Cambios</h2>
+          <h2>11. Cambios</h2>
           <p>Podemos actualizar estos términos. La versión vigente es la publicada en esta página.</p>
 
-          <h2>11. Ley aplicable y jurisdicción</h2>
+          <h2>12. Ley aplicable y jurisdicción</h2>
           <p>Estos términos se rigen por las leyes federales de los Estados Unidos Mexicanos. Para cualquier controversia, las partes se someten a los tribunales competentes de Zapopan, Jalisco, y renuncian a cualquier otro fuero que pudiera corresponderles. Lo anterior no limita los derechos que la Ley Federal de Protección al Consumidor otorga a los consumidores.</p>
         </div>
       </div>
@@ -1565,6 +1575,7 @@ main{min-height:100svh}
         </ul>
       </nav>
     </div>
+    <p class="pie-aviso">PERCONSUR y su logotipo son marcas de PERCONSUR DE NAYARIT GROUP, S.A. de C.V. Los nombres y logotipos de clientes que aparecen en este sitio pertenecen a sus respectivos titulares y se muestran solo como referencia. <a href="#marcas">Aviso sobre marcas</a>.</p>
     <div class="pie-base">
       <p>© 2026 PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
