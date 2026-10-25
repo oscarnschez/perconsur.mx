@@ -67,3 +67,17 @@ npx esbuild src/3d/contenedor3d.ts src/3d/campo3d.ts --bundle --format=esm --spl
 ```
 
 Si cambia el nombre de `comun-*.js`, borra el anterior. La página pide los visores con `?v=<versión del pie>`, así que al subir la versión los navegadores descargan el visor nuevo en vez de usar el que tienen en caché.
+
+## Presentación corporativa
+
+`presentacion.html` es la presentación corporativa (divisiones, equipo, cómo trabajamos, servicios y
+área de operación), enlazada desde Nosotros y el pie de página. Se genera a partir de las diapositivas de
+`src/presentacion/slides/`, las mismas de la presentación hecha en Claude:
+
+```
+python3 src/presentacion/build.py
+```
+
+y después se recalcula el hash del script en su CSP, como en `index.html`. Usa las fuentes Archivo e
+Inter (variables, en `assets/fonts/`) y las imágenes de `assets/img/presentacion/`. Se navega con las
+flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n.

@@ -1,0 +1,21 @@
+{
+  "v": 4,
+  "createdOnFiles": { "v": 1, "at": "2026-10-25T08:15:00Z" },
+  "lists": "css",
+  "title": "PERCONSUR — Presentación corporativa",
+  "cover": "portada",
+  "order": ["portada", "cifras", "divisiones", "puerto", "puerto-servicios", "puerto-equipo", "puerto-proceso", "campo", "campo-equipo", "campo-proceso", "cobertura", "ventajas", "contacto"],
+  "sections": {
+    "s1": { "description": "Quiénes somos: transporte de carga por carretera desde 2011.", "start": "portada" },
+    "s2": { "description": "Dos divisiones: Puerto y Campo.", "start": "divisiones" },
+    "s3": { "description": "División Puerto: servicios, equipo y proceso.", "start": "puerto" },
+    "s4": { "description": "División Campo: equipo y proceso.", "start": "campo" },
+    "s5": { "description": "Área de operación desde Manzanillo.", "start": "cobertura" },
+    "s6": { "description": "Por qué PERCONSUR y contacto.", "start": "ventajas" }
+  },
+  "faces": {
+    "archivo": { "family": "Archivo", "href": "https://fonts.googleapis.com/css2?family=Archivo:wght@500..900&display=swap" },
+    "inter": { "family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" }
+  },
+  "designSystems": []
+}

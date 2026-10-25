@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Presentación corporativa — PERCONSUR</title>
+<meta name="description" content="Presentación corporativa de PERCONSUR: divisiones Puerto y Campo, equipo, cómo trabajamos, servicios y área de operación.">
+<meta name="theme-color" content="#0B1533">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Archivo";src:url("assets/fonts/archivo-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Inter";src:url("assets/fonts/inter-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+html,body{margin:0;height:100%;background:#070D20;overflow:hidden;overscroll-behavior:none}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+
+/* el lienzo mide 1920×1080 como en la presentación y se escala a la ventana; el marco fijo evita que el teléfono aleje la vista */
+#marco{position:fixed;inset:0;overflow:hidden}
+#marco{touch-action:pan-y;cursor:pointer;user-select:none;-webkit-user-select:none}
+#escenario{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.slide{position:absolute;left:0;top:0;width:1920px;height:1080px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;visibility:hidden}
+.slide.activa,.slide.saliendo{visibility:visible}
+.slide.saliendo{z-index:1}
+.slide.activa{z-index:2}
+.slide *{box-sizing:border-box;margin:0}
+.slide div:not([style*="display"]){display:flex;flex-direction:column}
+.slide h1{font-size:96px;font-weight:600;line-height:1.1}
+.slide h2{font-size:64px;font-weight:600;line-height:1.15}
+.slide h3{font-size:44px;font-weight:600;line-height:1.2}
+.slide p{font-size:32px;line-height:1.4}
+.slide img{display:block}
+.slide table{border-collapse:collapse;width:100%}
+.slide td{padding:.35em .6em;text-align:left;border-bottom:1px solid rgba(14,26,60,.1)}
+.slide .ico{display:block;flex:none}
+
+/* carretera de la portada y del cierre */
+.cr{position:absolute;overflow:hidden}
+.cr>div{position:absolute}
+.cr-cielo{left:0;right:0;top:0;height:120px;background:linear-gradient(180deg,rgba(242,111,34,0),rgba(242,111,34,.16))}
+.cr-via{left:0;right:0;top:120px;bottom:0;background:linear-gradient(180deg,#1A2333,#0E141F)}
+.cr-borde{left:0;right:0;top:120px;height:5px;background:#5D6F96}
+.cr-borde2{left:0;right:0;bottom:24px;height:4px;background:#3A4766}
+.cr-linea{top:226px;left:0;width:4200px;height:10px;background:repeating-linear-gradient(90deg,#F2B705 0 140px,rgba(0,0,0,0) 140px 300px);animation:cr-avanza .9s linear infinite}
+@keyframes cr-avanza{to{transform:translateX(-300px)}}
+.cr-viento{left:0;height:3px;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.45));animation:cr-viento 1.4s linear infinite}
+@keyframes cr-viento{from{transform:translateX(2100px)}to{transform:translateX(-700px)}}
+.cr-poste{left:0;top:30px;width:6px;height:92px;background:#33415F;animation:cr-poste 2.2s linear infinite}
+@keyframes cr-poste{from{transform:translateX(2000px)}to{transform:translateX(-200px)}}
+
+/* mapa de rutas: se dibuja cada vez que se llega a la diapositiva */
+.mp{position:absolute;overflow:visible}
+.mp text{font-family:"Inter",Arial,sans-serif}
+.mp-ruta{fill:none;stroke:#7F9CF5;stroke-width:3.5;stroke-linecap:round;opacity:.9}
+.activa .mp-ruta{animation:mp-traza 1.4s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes mp-traza{to{stroke-dashoffset:0}}
+.mp-punto{fill:#F4F5F7;opacity:0}
+.mp-verde{fill:#5CC08A}
+.activa .mp-punto{animation:mp-aparece .5s ease-out forwards}
+@keyframes mp-aparece{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+.mp-et{fill:#DCE4F7;font-size:24px;opacity:0}
+.activa .mp-et,.activa .mp-viaja{animation:mp-texto .6s ease-out forwards}
+@keyframes mp-texto{to{opacity:1}}
+.mp-viaja{fill:#F7A23A;opacity:0}
+.mp-pulso{fill:none;stroke:#F7A23A;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:mp-pulso 2.4s ease-out infinite}
+@keyframes mp-pulso{from{transform:scale(.4);opacity:.95}to{transform:scale(3.2);opacity:0}}
+.mp-campo{fill:none;stroke:#5CC08A;stroke-width:4;transform-box:fill-box;transform-origin:center;opacity:0}
+.activa .mp-campo{animation:mp-aparece .6s ease-out forwards,mp-respira 2.8s ease-in-out infinite}
+@keyframes mp-respira{50%{stroke-width:7}}
+
+/* controles */
+.progreso{position:fixed;left:0;top:0;right:0;height:4px;background:rgba(255,255,255,.08);z-index:5}
+.progreso span{display:block;height:100%;width:0;background:#F7A23A;transition:width .5s cubic-bezier(.65,0,.35,1)}
+.barra{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;background:rgba(11,21,51,.78);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 8px 30px rgba(0,0,0,.35);z-index:5;transition:opacity .4s ease,transform .4s ease}
+.barra.oculta{opacity:0;transform:translate(-50%,12px);pointer-events:none}
+.barra button,.barra a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:44px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:#F4F5F7;font:500 15px/1 "Inter",Arial,sans-serif;text-decoration:none;cursor:pointer}
+.barra svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.barra button:disabled{opacity:.35;cursor:default}
+.barra .cuenta{min-width:72px;text-align:center;color:#C9D3EA;font:500 15px/1 "Inter",Arial,sans-serif;font-variant-numeric:tabular-nums}
+.barra .sep{width:1px;height:24px;background:rgba(255,255,255,.18);margin:0 4px}
+.barra :focus-visible{outline:3px solid rgba(247,162,58,.7);outline-offset:0}
+@media (hover:hover){.barra button:not(:disabled):hover,.barra a:hover{background:rgba(255,255,255,.12)}}
+.gira{display:none}
+@media (orientation:portrait) and (max-width:700px){
+  .gira{display:block;position:fixed;left:0;right:0;top:calc(50% + 31vw);text-align:center;color:#8E9BBF;font:500 14px/1.4 "Inter",Arial,sans-serif;z-index:4;pointer-events:none}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){
+  .cr *,.mp *{animation:none !important}
+  .mp-ruta{stroke-dashoffset:0 !important}
+  .mp-punto,.mp-et,.mp-campo{opacity:1 !important}
+  .mp-viaja{display:none}
+}
+</style>
+<noscript><style>
+html,body{overflow:auto;height:auto}
+#marco{position:static;overflow:visible}
+#escenario{position:static;transform:none;width:1920px;height:auto;zoom:.25;cursor:auto}
+@media (min-width:960px){#escenario{zoom:.5}}
+@media (min-width:1440px){#escenario{zoom:.75}}
+.slide{position:relative;visibility:visible;margin-bottom:24px}
+.barra,.progreso,.gira{display:none}
+</style></noscript>
+</head>
+<body>
+<div class="progreso" aria-hidden="true"><span></span></div>
+<div id="marco">
+<main id="escenario" aria-label="Presentación">
+<!--DIAPOSITIVAS-->
+</main>
+</div>
+<p class="gira" aria-hidden="true">Gira tu teléfono para verla más grande</p>
+<nav class="barra" aria-label="Controles de la presentación">
+  <a href="./" aria-label="Volver a perconsur.mx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></a>
+  <span class="sep" aria-hidden="true"></span>
+  <button type="button" id="ant" aria-label="Diapositiva anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <span class="cuenta" id="cuenta" aria-live="polite">1 / 13</span>
+  <button type="button" id="sig" aria-label="Diapositiva siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+  <span class="sep" aria-hidden="true"></span>
+  <button type="button" id="pantalla" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</nav>
+<script>
+(function(){
+  'use strict';
+  var esc = document.getElementById('escenario'), marco = document.getElementById('marco');
+  var slides = [].slice.call(document.querySelectorAll('.slide')), N = slides.length;
+  var cuenta = document.getElementById('cuenta'), ant = document.getElementById('ant'), sig = document.getElementById('sig');
+  var barra = document.querySelector('.barra'), prog = document.querySelector('.progreso span');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i = 0, escala = 1, anims = [];
+
+  function ajusta(){
+    var w = window.innerWidth, h = window.innerHeight; escala = Math.min(w / 1920, h / 1080);
+    esc.style.transform = 'translate(' + (w - 1920 * escala) / 2 + 'px,' + (h - 1080 * escala) / 2 + 'px) scale(' + escala + ')';
+  }
+  window.addEventListener('resize', ajusta); ajusta();
+
+  // entradas de los elementos (data-build-in="tipo orden auto")
+  var EF = {
+    fade:  [{opacity:0},{opacity:1}],
+    rise:  [{opacity:0,transform:'translateY(60px)'},{opacity:1,transform:'none'}],
+    drop:  [{opacity:0,transform:'translateY(-60px)'},{opacity:1,transform:'none'}],
+    left:  [{opacity:0,transform:'translateX(-360px)'},{opacity:1,transform:'none'}],
+    right: [{opacity:0,transform:'translateX(360px)'},{opacity:1,transform:'none'}],
+    scale: [{opacity:0,transform:'scale(.85)'},{opacity:1,transform:'none'}],
+    pop:   [{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'scale(1.06)',offset:.7},{opacity:1,transform:'none'}]
+  };
+  function anima(el, kf, op){ var a = el.animate(kf, op); anims.push(a); return a; }
+  function para(){ anims.forEach(function(a){ a.cancel(); }); anims = []; slides.forEach(function(s){ s.classList.remove('saliendo'); }); }
+  function construye(s, omitir){
+    if(reduce) return;
+    [].forEach.call(s.querySelectorAll('[data-build-in]'), function(el){
+      if(omitir.indexOf(el) >= 0) return;
+      var p = el.getAttribute('data-build-in').split(/\s+/), tipo = EF[p[0]] ? p[0] : 'fade', orden = parseInt(p[1], 10) || 1;
+      anima(el, EF[tipo], { duration: tipo === 'left' || tipo === 'right' ? 900 : 700, delay: 250 + (orden - 1) * 220, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+    });
+  }
+  function estado(){
+    slides.forEach(function(s, k){ var on = k === i; if(on) s.removeAttribute('aria-hidden'); else s.setAttribute('aria-hidden', 'true'); s.inert = !on; });
+    cuenta.textContent = (i + 1) + ' / ' + N;
+    ant.disabled = i === 0; sig.disabled = i === N - 1;
+    prog.style.width = ((i + 1) / N * 100) + '%';
+    if(history.replaceState) history.replaceState(null, '', '#' + (i + 1));
+  }
+  // la transición la define la diapositiva que se deja: fade, push o magic (mueve el elemento compartido)
+  function ir(n){
+    if(n < 0 || n >= N || n === i) return;
+    para();
+    var a = slides[i], b = slides[n], dir = n > i ? 1 : -1;
+    var t = (dir > 0 ? a : b).getAttribute('data-transition') || 'fade';
+    if(t === 'magic' && Math.abs(n - i) > 1) t = 'fade';
+    a.classList.remove('activa'); a.classList.add('saliendo'); b.classList.add('activa');
+    var ease = 'cubic-bezier(.65,0,.35,1)', fin, magicos = [];
+    if(reduce || t === 'fade'){
+      anima(b, [{opacity:0},{opacity:1}], { duration: reduce ? 250 : 650, easing: 'ease' });
+      fin = anima(a, [{opacity:1},{opacity:0}], { duration: reduce ? 250 : 650, easing: 'ease' });
+    } else if(t === 'push'){
+      anima(b, [{transform:'translateX(' + dir * 1920 + 'px)'},{transform:'none'}], { duration: 750, easing: ease });
+      fin = anima(a, [{transform:'none'},{transform:'translateX(' + -dir * 1920 + 'px)'}], { duration: 750, easing: ease });
+    } else {
+      [].forEach.call(b.querySelectorAll('[data-magic]'), function(el){
+        var o = a.querySelector('[data-magic="' + el.getAttribute('data-magic') + '"]'); if(!o) return;
+        var r1 = o.getBoundingClientRect(), r2 = el.getBoundingClientRect(); magicos.push(el);
+        anima(el, [{transformOrigin:'0 0',transform:'translate(' + (r1.left - r2.left) / escala + 'px,' + (r1.top - r2.top) / escala + 'px) scale(' + r1.width / r2.width + ',' + r1.height / r2.height + ')'},{transformOrigin:'0 0',transform:'none'}], { duration: 950, easing: ease });
+        anima(o, [{opacity:0},{opacity:0}], { duration: 950 });
+      });
+      anima(b, [{opacity:0},{opacity:1}], { duration: 380, easing: 'ease-out' });
+      fin = anima(a, [{opacity:1},{opacity:0}], { duration: 700, easing: 'ease' });
+    }
+    fin.onfinish = function(){ a.classList.remove('saliendo'); };
+    construye(b, magicos);
+    i = n; estado();
+  }
+  function siguiente(){ ir(i + 1); }
+  function anterior(){ ir(i - 1); }
+
+  sig.addEventListener('click', siguiente);
+  ant.addEventListener('click', anterior);
+  document.addEventListener('keydown', function(e){
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    var enControl = e.target.closest && e.target.closest('button, a');
+    var k = e.key;
+    if(k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || (!enControl && (k === ' ' || k === 'Enter'))){ e.preventDefault(); siguiente(); }
+    else if(k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace'){ e.preventDefault(); anterior(); }
+    else if(k === 'Home'){ e.preventDefault(); ir(0); }
+    else if(k === 'End'){ e.preventDefault(); ir(N - 1); }
+    else if(k === 'f' || k === 'F'){ pantalla(); }
+  });
+  // toque o clic: a la izquierda regresa, en el resto avanza; deslizar también cambia de diapositiva
+  var x0 = null, y0 = null;
+  marco.addEventListener('pointerdown', function(e){ x0 = e.clientX; y0 = e.clientY; });
+  marco.addEventListener('pointerup', function(e){
+    if(x0 === null) return;
+    var dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){ if(dx < 0) siguiente(); else anterior(); return; }
+    if(Math.abs(dx) < 10 && Math.abs(dy) < 10){ if(e.clientX < window.innerWidth * 0.3) anterior(); else siguiente(); }
+  });
+
+  var btnP = document.getElementById('pantalla'), raiz = document.documentElement;
+  function pantalla(){
+    if(!raiz.requestFullscreen) return;
+    if(document.fullscreenElement) document.exitFullscreen(); else raiz.requestFullscreen().catch(function(){});
+  }
+  if(!raiz.requestFullscreen) btnP.hidden = true;
+  btnP.addEventListener('click', pantalla);
+  document.addEventListener('fullscreenchange', function(){ btnP.setAttribute('aria-label', document.fullscreenElement ? 'Salir de pantalla completa' : 'Pantalla completa'); });
+
+  // la barra se esconde para no tapar la diapositiva y vuelve al mover el ratón o tocar la pantalla
+  var reloj = 0;
+  var muestra = function(){ barra.classList.remove('oculta'); clearTimeout(reloj); reloj = setTimeout(function(){ if(!barra.contains(document.activeElement)) barra.classList.add('oculta'); }, 2800); };
+  document.addEventListener('pointermove', muestra); document.addEventListener('pointerdown', muestra); barra.addEventListener('focusin', muestra); muestra();
+
+  var inicial = parseInt((location.hash || '').slice(1), 10);
+  i = inicial >= 1 && inicial <= N ? inicial - 1 : 0;
+  slides[i].classList.add('activa'); estado(); construye(slides[i], []);
+})();
+</script>
+</body>
+</html>
