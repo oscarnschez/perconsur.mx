@@ -340,7 +340,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
 
 /* clientes */
 .logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:20px}
-.logos li{flex:0 0 calc((100% - 60px) / 4);min-width:0;display:flex;align-items:center;justify-content:center;height:clamp(120px,13vw,168px);padding:24px 32px;border-radius:var(--r-lg);background:var(--bg)}
+.logos li{flex:0 0 calc((100% - 40px) / 3);min-width:0;display:flex;align-items:center;justify-content:center;height:clamp(120px,13vw,168px);padding:24px 32px;border-radius:var(--r-lg);background:var(--bg)}
 .sec:not(.sec--tone) .logos li{background:var(--bg-2)}
 .logos img{max-height:100%;max-width:min(100%,220px);width:auto;height:auto;object-fit:contain}
 .logos .oscuro{background:var(--dark) !important}
@@ -352,7 +352,6 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
   .logos li:hover img,.clientes li:hover .logo-cliente img{transform:scale(1.05)}
   .logos:has(li:hover) li:not(:hover){opacity:.55;filter:grayscale(1)}
 }
-@media (max-width:900px){.logos li{flex-basis:calc((100% - 40px) / 3)}}
 @media (max-width:620px){.logos{gap:12px}.logos li{flex-basis:calc((100% - 12px) / 2);height:112px;padding:18px 20px}}
 .cita{max-width:880px;margin:clamp(48px,6vw,72px) auto 0;text-align:center}
 .cita p{max-width:none;font-family:var(--f-display);font-weight:600;font-size:clamp(24px,2.8vw,36px);line-height:1.2;letter-spacing:-.024em;text-wrap:balance}
@@ -863,10 +862,9 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         <h2 class="t-headline">Empresas que confían en nosotros.</h2>
       </div>
       <ul class="logos" data-reveal>
-        <li><img src="assets/img/cliente-bayer.webp" alt="Bayer de México" width="207" height="208" loading="lazy" decoding="async"></li>
+        <li><img src="assets/img/cliente-bayer.webp" alt="Bayer de México (antes Monsanto)" width="207" height="208" loading="lazy" decoding="async"></li>
         <li class="oscuro"><img src="assets/img/cliente-almex.webp" alt="ALMEX Refacciones" width="456" height="204" loading="lazy" decoding="async"></li>
         <li><img src="assets/img/cliente-sweets.webp" alt="Grupo Industrial Sweets, Dulces Tinajita" width="211" height="208" loading="lazy" decoding="async"></li>
-        <li><img src="assets/img/cliente-monsanto.webp" alt="Bayer (antes Monsanto)" width="480" height="153" loading="lazy" decoding="async"></li>
         <li><img src="assets/img/cliente-jyo.webp" alt="J&amp;O Soluciones Integrales en Logística" width="270" height="104" loading="lazy" decoding="async"></li>
         <li class="oscuro"><img src="assets/img/cliente-share.webp" alt="Share Transporte" width="225" height="240" loading="lazy" decoding="async"></li>
         <li><img src="assets/img/cliente-pipogo.webp" alt="Pipo-go" width="480" height="194" loading="lazy" decoding="async"></li>
@@ -1529,8 +1527,8 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="wrap">
       <ul class="clientes">
         <li data-reveal>
-          <span class="logo-cliente"><img src="assets/img/cliente-bayer.webp" alt="Bayer de México" width="207" height="208" loading="lazy" decoding="async"></span>
-          <div><h3>Bayer de México</h3><p>Industria agrícola, transportamos sus semillas de maíz a diferentes lugares del país.</p></div>
+          <span class="logo-cliente"><img src="assets/img/cliente-bayer.webp" alt="Bayer de México (antes Monsanto)" width="207" height="208" loading="lazy" decoding="async"></span>
+          <div><h3>Bayer de México (antes Monsanto)</h3><p>Industria agrícola: semillas y biotecnología para el campo. Transportamos sus semillas de maíz a diferentes lugares del país.</p></div>
         </li>
         <li data-reveal>
           <span class="logo-cliente oscuro"><img src="assets/img/cliente-almex.webp" alt="ALMEX Refacciones" width="456" height="204" loading="lazy" decoding="async"></span>
@@ -1539,10 +1537,6 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         <li data-reveal>
           <span class="logo-cliente"><img src="assets/img/cliente-sweets.webp" alt="Grupo Industrial Sweets, Dulces Tinajita" width="211" height="208" loading="lazy" decoding="async"></span>
           <div><h3>Grupo Industrial Sweets</h3><p>Industria de confitería, transportamos sus productos hacia sus diferentes almacenes.</p></div>
-        </li>
-        <li data-reveal>
-          <span class="logo-cliente"><img src="assets/img/cliente-monsanto.webp" alt="Bayer (antes Monsanto)" width="480" height="153" loading="lazy" decoding="async"></span>
-          <div><h3>Bayer (antes Monsanto)</h3><p>Industria agrícola: semillas y biotecnología para el campo.</p></div>
         </li>
         <li data-reveal>
           <span class="logo-cliente"><img src="assets/img/cliente-jyo.webp" alt="J&amp;O Soluciones Integrales en Logística" width="270" height="104" loading="lazy" decoding="async"></span>
@@ -1942,7 +1936,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.5.7</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.5.8</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
