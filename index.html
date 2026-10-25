@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-6kVFfQgPzS60QawIXm3GP9Zcj1/o3bpUBPI7ZJH4hHs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-r+1aT1nKtIfdhXkhg6GniLfJLnY3lVRYxil1KdKfP+Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -1936,7 +1936,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.5.10</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.5.11</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -1946,6 +1946,8 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
   'use strict';
   var root = document.documentElement;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // la versión del pie entra en la URL de los visores 3D: cada publicación los descarga de nuevo aunque haya copia en caché
+  var VER = (document.querySelector('.pie-version .tnum') || {}).textContent || '0';
   function $(s, c){ return (c || document).querySelector(s); }
   function $$(s, c){ return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
 
@@ -2250,7 +2252,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         cargado = true; vio.disconnect();
         var cv = document.createElement('canvas');
         if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
-        import('./assets/js/contenedor3d.js').then(function(m){
+        import('./assets/js/contenedor3d.js?v=' + VER).then(function(m){
           api = m.mount(visor, { reduce: reduce, onReady: function(){ visor.classList.add('listo'); } });
           api.setSize(tam); api.setDoors(puertas);
         }).catch(function(){ /* sin módulo: queda el dibujo */ });
@@ -2293,7 +2295,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         cargadoC = true; vioC.disconnect();
         var cv = document.createElement('canvas');
         if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
-        import('./assets/js/campo3d.js').then(function(m){
+        import('./assets/js/campo3d.js?v=' + VER).then(function(m){
           apiC = m.mount(visorC, { reduce: reduce, onReady: function(){ visorC.classList.add('listo'); } });
           apiC.setTipo(tipo); apiC.setCarga(llena);
         }).catch(function(){ /* sin módulo: queda el dibujo */ });

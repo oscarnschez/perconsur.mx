@@ -1,6 +1,7 @@
 // Visor 3D de la División Campo: remolque tolva y remolque jaula, arrastrar para girar y cargar la cosecha.
 // Geometría procedimental (sin archivos externos); comparte luces, entorno y renderizador con el visor del contenedor.
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import * as C40 from './container40';
 
 type Tipo = 'tolva' | 'jaula';
@@ -142,28 +143,73 @@ function monton(ancho: number, largo: number, alto: number, semilla: number, nx 
   return geo;
 }
 // mazorca: perfil torneado, base ancha y punta afilada, acostada sobre X
+const L_MAZ = 0.24, R_MAZ = 0.048;
+const radioMazorca = (t: number) =>
+  R_MAZ * (0.8 + 0.2 * Math.sin(Math.min(t / 0.22, 1) * Math.PI / 2)) * (1 - 0.62 * Math.pow(Math.max(0, (t - 0.25) / 0.75), 1.7));
+const acostar = (geo: THREE.BufferGeometry) => { geo.translate(0, -L_MAZ / 2, 0); geo.rotateZ(Math.PI / 2); return geo; };
 function geoMazorca() {
-  const L = 0.24, R = 0.048, pts: THREE.Vector2[] = [new THREE.Vector2(0, 0)];
-  for (let k = 0; k <= 16; k++) {
-    const t = k / 16, cuerpo = 0.8 + 0.2 * Math.sin(Math.min(t / 0.22, 1) * Math.PI / 2);
-    const punta = 1 - 0.62 * Math.pow(Math.max(0, (t - 0.25) / 0.75), 1.7);
-    pts.push(new THREE.Vector2(R * cuerpo * punta * (k === 0 ? .82 : 1), t * L));
-  }
-  pts.push(new THREE.Vector2(0, L));
-  const geo = new THREE.LatheGeometry(pts, 14); geo.translate(0, -L / 2, 0); geo.rotateZ(Math.PI / 2);
-  return geo;
+  const pts: THREE.Vector2[] = [new THREE.Vector2(0, 0)];
+  for (let k = 0; k <= 10; k++) pts.push(new THREE.Vector2(radioMazorca(k / 10) * (k === 0 ? .82 : 1), k / 10 * L_MAZ));
+  pts.push(new THREE.Vector2(0, L_MAZ));
+  return acostar(new THREE.LatheGeometry(pts, 10));
+}
+// totomoxtle: hojas que envuelven la mazorca y se juntan en una punta; una va abierta y deja ver los granos
+function geoTotomoxtle() {
+  const hojas: [number, number, number, boolean][] = [   // inicio y abertura del ángulo, separación de la mazorca, abierta
+    [0, 2.2, 0.004, false], [1.9, 2.1, 0.007, false], [4.4, 1.3, 0.010, false], [3.7, 1.5, 0.006, true],
+  ];
+  const piezas = hojas.map(([ini, ab, sep, abierta]) => {
+    const pts: THREE.Vector2[] = [];
+    for (let k = 0; k <= 11; k++) {
+      const t = k / 11, y = -0.012 + t * (L_MAZ + (abierta ? 0.01 : 0.075));
+      const tc = Math.min(1, Math.max(0, y / L_MAZ)), base = radioMazorca(tc) + sep;
+      let r: number;
+      if (abierta) r = base + 0.05 * Math.pow(Math.max(0, (t - 0.35) / 0.65), 1.6);   // se despega hacia fuera
+      else if (y > L_MAZ * 0.8) r = base * Math.max(0.06, 1 - (y - L_MAZ * 0.8) / (L_MAZ * 0.2 + 0.075)); // se cierra en punta
+      else r = base;
+      pts.push(new THREE.Vector2(r, y));
+    }
+    return new THREE.LatheGeometry(pts, 4, ini, ab);
+  });
+  return acostar(mergeGeometries(piezas)!);
+}
+// fibras de la hoja seca a lo largo de la mazorca (u da la vuelta, v corre a lo largo)
+function texTotomoxtle() {
+  const r = azar(31);
+  return lienzo(128, 256, g => {
+    g.fillStyle = '#c9ad74'; g.fillRect(0, 0, 128, 256);
+    for (let i = 0; i < 90; i++) {
+      const x = r() * 128, w = 0.6 + r() * 1.8, luz = 50 + r() * 28;
+      g.fillStyle = `hsla(${40 + r() * 8},${30 + r() * 25}%,${luz}%,.55)`; g.fillRect(x, 0, w, 256);
+    }
+    for (let i = 0; i < 14; i++) { g.fillStyle = `rgba(110,74,30,${.12 + r() * .16})`; g.fillRect(r() * 128, r() * 256, 1 + r() * 3, 20 + r() * 60); }
+  }, [1, 1]);
+}
+// fondo de la carga: hojas sueltas y granos desgranados
+function texCama() {
+  const r = azar(41);
+  return lienzo(256, 256, g => {
+    g.fillStyle = '#6e5228'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 260; i++) {
+      const x = r() * 256, y = r() * 256, a = r() * Math.PI, l = 14 + r() * 26;
+      g.save(); g.translate(x, y); g.rotate(a);
+      g.fillStyle = `hsl(${38 + r() * 8},${32 + r() * 20}%,${56 + r() * 22}%)`;
+      g.beginPath(); g.ellipse(0, 0, l, 2.5 + r() * 2.5, 0, 0, Math.PI * 2); g.fill(); g.restore();
+    }
+    for (let i = 0; i < 220; i++) { g.fillStyle = `hsl(${36 + r() * 8},90%,${46 + r() * 12}%)`; g.beginPath(); g.ellipse(r() * 256, r() * 256, 2.6, 2, r() * 3, 0, Math.PI * 2); g.fill(); }
+  }, [3, 14]);
 }
 
 // ---------- remolque tolva ----------
-let MC: { grano: THREE.MeshStandardMaterial; mazorca: THREE.MeshStandardMaterial; cama: THREE.MeshStandardMaterial } | null = null;
+let MC: { grano: THREE.MeshStandardMaterial; mazorca: THREE.MeshStandardMaterial; hoja: THREE.MeshStandardMaterial; cama: THREE.MeshStandardMaterial } | null = null;
 function materialesCarga() {
   if (MC) return MC;
-  const tg = texGrano(), tm = texMazorca();
-  const cama = tg.clone(); cama.repeat.set(3, 14); cama.needsUpdate = true;
+  const tg = texGrano(), tm = texMazorca(), th = texTotomoxtle(), cama = texCama();
   MC = {
     grano: new THREE.MeshStandardMaterial({ map: tg, bumpMap: tg, bumpScale: 2.2, roughness: 0.82, color: 0xffffff }),
     mazorca: new THREE.MeshStandardMaterial({ map: tm, bumpMap: tm, bumpScale: 1.6, roughness: 0.6 }),
-    cama: new THREE.MeshStandardMaterial({ map: cama, bumpMap: cama, bumpScale: 2.6, roughness: 0.9, color: 0x8a6a3a }),
+    hoja: new THREE.MeshStandardMaterial({ map: th, bumpMap: th, bumpScale: 1.2, roughness: 0.75, side: THREE.DoubleSide }),
+    cama: new THREE.MeshStandardMaterial({ map: cama, bumpMap: cama, bumpScale: 2.6, roughness: 0.9, color: 0xc9b48c }),
   };
   return MC;
 }
@@ -241,7 +287,7 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
     const ax = Math.min(1, Math.abs(x) / 1.21), ez = Math.min(1, (6.15 - Math.abs(z)) / 1.6);
     return ALTO * Math.pow(Math.cos(ax * Math.PI / 2), 0.9) * (ez * ez * (3 - 2 * ez)) + (nCama(x * 2.2, z * 2.2) - .5) * .08;
   };
-  const N = 2100, maz = new THREE.InstancedMesh(geoMazorca(), mc.mazorca, N); maz.castShadow = true;
+  const N = 1800, maz = new THREE.InstancedMesh(geoMazorca(), mc.mazorca, N); maz.castShadow = true;
   const rnd = azar(7), m4 = new THREE.Matrix4(), col = new THREE.Color(), e = new THREE.Euler(), q = new THREE.Quaternion();
   for (let i = 0; i < N; i++) {
     const x = (rnd() - 0.5) * 2.0, z = (rnd() - 0.5) * 11.9, k = 0.85 + rnd() * 0.3;
@@ -251,11 +297,20 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
     maz.setColorAt(i, col.setHSL(0.1 + rnd() * 0.035, 0.5 + rnd() * 0.3, 0.72 + rnd() * 0.24));
   }
   pila.add(maz);
+  // el totomoxtle comparte la posición de cada mazorca; tonos de paja seca, algunos aún verdosos
+  const hoja = new THREE.InstancedMesh(geoTotomoxtle(), mc.hoja, N);   // la sombra la da la mazorca: el doble de polígonos no se nota en la sombra
+  const rh = azar(13);
+  for (let i = 0; i < N; i++) {
+    maz.getMatrixAt(i, m4); hoja.setMatrixAt(i, m4);
+    const verde = rh() < 0.15;
+    hoja.setColorAt(i, col.setHSL(verde ? 0.17 + rh() * 0.05 : 0.09 + rh() * 0.03, verde ? 0.3 : 0.25 + rh() * 0.25, verde ? 0.55 : 0.5 + rh() * 0.22));
+  }
+  pila.add(hoja);
   const carga = (t: number) => {
     const c = Math.max(0, Math.min(1, t));
     pila.visible = c > 0.002;
     pila.position.y = 1.4 + (3.1 - 1.4) * Math.min(1, c / 0.85);   // la cama sube del piso al nivel de carga…
-    maz.count = Math.round(N * Math.max(0, (c - 0.15) / 0.85));       // …mientras caen las mazorcas de encima
+    maz.count = hoja.count = Math.round(N * Math.max(0, (c - 0.15) / 0.85));   // …mientras caen las mazorcas de encima
   };
   carga(0);
   return { g, carga };
