@@ -47,7 +47,6 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Aria
 .barra .cuenta{min-width:72px;text-align:center;color:#C9D3EA;font:500 15px/1 "Inter",Arial,sans-serif;font-variant-numeric:tabular-nums}
 .barra .sep{width:1px;height:24px;background:rgba(255,255,255,.18);margin:0 4px}
 .barra :focus-visible{outline:3px solid rgba(110,139,232,.8);outline-offset:0}
-.barra #sonido[aria-pressed="false"] .on,.barra #sonido[aria-pressed="true"] .off{display:none}
 @media (hover:hover){.barra button:not(:disabled):hover,.barra a:hover{background:rgba(255,255,255,.12)}}
 .gira{display:none}
 @media (orientation:portrait) and (max-width:700px){
@@ -80,7 +79,6 @@ html,body{overflow:auto;height:auto}
   <span class="cuenta" id="cuenta" aria-live="polite">1 / 11</span>
   <button type="button" id="sig" aria-label="Diapositiva siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
   <span class="sep" aria-hidden="true"></span>
-  <button type="button" id="sonido" aria-pressed="true" aria-label="Sonido"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><g class="on"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></g><g class="off"><path d="M16 9.5l5 5M21 9.5l-5 5"/></g></svg></button>
   <button type="button" id="pantalla" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
 </nav>
 <script>
@@ -109,59 +107,6 @@ html,body{overflow:auto;height:auto}
     scale: [{opacity:0,transform:'scale(.85)'},{opacity:1,transform:'none'}],
     pop:   [{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'scale(1.06)',offset:.7},{opacity:1,transform:'none'}]
   };
-  // Sonido con Web Audio, sin archivos: un barrido suave de aire en cada transición y un tono corto
-  // (escala pentatónica) por cada elemento que aparece. Arranca con la primera interacción, como piden
-  // los navegadores, y se puede silenciar; la preferencia se recuerda en este navegador.
-  var sonido = (function(){
-    var ctx = null, maestro = null, activo = true, listo = false, vivos = [];
-    try { activo = localStorage.getItem('perconsur-presentacion-sonido') !== 'no'; } catch(e){}
-    var NOTAS = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
-    function abre(){
-      if(ctx) return ctx;
-      var C = window.AudioContext || window.webkitAudioContext; if(!C) return null;
-      ctx = new C(); maestro = ctx.createGain(); maestro.gain.value = 0.9; maestro.connect(ctx.destination);
-      return ctx;
-    }
-    function despierta(){ listo = true; var c = abre(); if(c && c.state === 'suspended') c.resume(); }
-    function puede(){ return activo && listo && abre() && ctx.state !== 'closed'; }
-    function sigue(n){ vivos.push(n); n.onended = function(){ var k = vivos.indexOf(n); if(k >= 0) vivos.splice(k, 1); }; }
-    return {
-      despierta: despierta,
-      activo: function(){ return activo; },
-      cambia: function(v){ activo = v; try { localStorage.setItem('perconsur-presentacion-sonido', v ? 'si' : 'no'); } catch(e){} if(!v) this.para(); },
-      para: function(){ var t = ctx ? ctx.currentTime : 0; vivos.slice().forEach(function(n){ try { n.stop(t); } catch(e){} }); vivos = []; },
-      transicion: function(dir){
-        if(!puede()) return;
-        var t = ctx.currentTime, dur = 0.55;
-        var buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate), d = buf.getChannelData(0);
-        for(var k = 0; k < d.length; k++) d[k] = Math.random() * 2 - 1;
-        var ruido = ctx.createBufferSource(); ruido.buffer = buf;
-        var filtro = ctx.createBiquadFilter(); filtro.type = 'bandpass'; filtro.Q.value = 0.7;
-        filtro.frequency.setValueAtTime(dir > 0 ? 500 : 2200, t); filtro.frequency.exponentialRampToValueAtTime(dir > 0 ? 2200 : 500, t + dur);
-        var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.16); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        ruido.connect(filtro); filtro.connect(g); g.connect(maestro); ruido.start(t); ruido.stop(t + dur); sigue(ruido);
-        var o = ctx.createOscillator(), g2 = ctx.createGain(); o.type = 'sine';
-        o.frequency.setValueAtTime(196, t); o.frequency.exponentialRampToValueAtTime(147, t + 0.4);
-        g2.gain.setValueAtTime(0.0001, t); g2.gain.exponentialRampToValueAtTime(0.045, t + 0.03); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
-        o.connect(g2); g2.connect(maestro); o.start(t); o.stop(t + 0.5); sigue(o);
-      },
-      elemento: function(orden, retraso){
-        if(!puede()) return;
-        var t = ctx.currentTime + retraso, f = NOTAS[(orden - 1) % NOTAS.length];
-        [[f, 0.032, 'sine'], [f * 2, 0.008, 'triangle']].forEach(function(p){
-          var o = ctx.createOscillator(), g = ctx.createGain(); o.type = p[2]; o.frequency.setValueAtTime(p[0], t);
-          g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p[1], t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
-          o.connect(g); g.connect(maestro); o.start(t); o.stop(t + 0.35); sigue(o);
-        });
-      }
-    };
-  })();
-  ['pointerdown', 'keydown'].forEach(function(ev){ document.addEventListener(ev, sonido.despierta, { capture: true }); });
-  var btnS = document.getElementById('sonido');
-  function pintaSonido(){ var on = sonido.activo(); btnS.setAttribute('aria-pressed', String(on)); btnS.setAttribute('aria-label', on ? 'Silenciar sonido' : 'Activar sonido'); }
-  btnS.addEventListener('click', function(){ sonido.cambia(!sonido.activo()); pintaSonido(); });
-  pintaSonido();
-
   function anima(el, kf, op){ var a = el.animate(kf, op); anims.push(a); return a; }
   function para(){ anims.forEach(function(a){ a.cancel(); }); anims = []; slides.forEach(function(s){ s.classList.remove('saliendo'); }); }
   function construye(s, omitir){
@@ -171,7 +116,6 @@ html,body{overflow:auto;height:auto}
       var p = el.getAttribute('data-build-in').split(/\s+/), tipo = EF[p[0]] ? p[0] : 'fade', orden = parseInt(p[1], 10) || 1;
       var retraso = 300 + (orden - 1) * 170;
       anima(el, EF[tipo], { duration: tipo === 'left' || tipo === 'right' ? 800 : 650, delay: retraso, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
-      sonido.elemento(orden, retraso / 1000);
     });
   }
   function estado(){
@@ -190,7 +134,6 @@ html,body{overflow:auto;height:auto}
     if(t === 'magic' && Math.abs(n - i) > 1) t = 'fade';
     a.classList.remove('activa'); a.classList.add('saliendo'); b.classList.add('activa');
     var ease = 'cubic-bezier(.65,0,.35,1)', fin, magicos = [];
-    sonido.para(); sonido.transicion(dir);
     if(reduce || t === 'fade'){
       anima(b, [{opacity:0},{opacity:1}], { duration: reduce ? 250 : 650, easing: 'ease' });
       fin = anima(a, [{opacity:1},{opacity:0}], { duration: reduce ? 250 : 650, easing: 'ease' });
@@ -225,7 +168,6 @@ html,body{overflow:auto;height:auto}
     else if(k === 'Home'){ e.preventDefault(); ir(0); }
     else if(k === 'End'){ e.preventDefault(); ir(N - 1); }
     else if(k === 'f' || k === 'F'){ pantalla(); }
-    else if(k === 'm' || k === 'M'){ sonido.cambia(!sonido.activo()); pintaSonido(); }
   });
   // toque o clic: a la izquierda regresa, en el resto avanza; deslizar también cambia de diapositiva
   var x0 = null, y0 = null;

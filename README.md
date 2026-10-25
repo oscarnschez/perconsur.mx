@@ -85,6 +85,4 @@ python3 src/presentacion/build.py
 
 y después se recalcula el hash del script en su CSP, como en `index.html`. Usa la fuente Inter
 (variable, en `assets/fonts/`) y las imágenes de `assets/img/presentacion/`. Se navega con las
-flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n. Las transiciones y las
-entradas tienen sonidos discretos generados con Web Audio (sin archivos); se silencian con el botón de
-la barra o con la tecla M.
+flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n.
