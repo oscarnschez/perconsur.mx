@@ -260,12 +260,12 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
   caja(g, 2.5, 0.12, 12.4, M.marco, 0, 1.33, 0);                    // piso
   for (const side of [-1, 1]) caja(g, 0.06, 0.2, 12.4, M.azul, side * 1.25, 1.28, 0);
   for (const x of [-0.5, 0.5]) caja(g, 0.16, 0.26, 11.6, M.marco, x, 1.1, 0);
-  // postes y costados de tablas de madera blancas, cerrados (sin huecos); dos tablas azules como en el diseño
+  // costados de tablas de madera blancas, cerrados (sin huecos), con dos tablas azules; los postes van por fuera y por dentro la pared queda lisa
   for (const side of [-1, 1]) {
-    for (let z = -6.1; z <= 6.15; z += 1.0167) caja(g, 0.09, 2.15, 0.09, M.poste, side * 1.22, 2.47, z);
+    for (let z = -6.1; z <= 6.15; z += 1.0167) caja(g, 0.09, 2.2, 0.09, M.poste, side * 1.315, 2.45, z);
     for (let i = 0; i < TABLAS; i++) caja(g, 0.04, ALTO_T - 0.004, 12.3, i === 2 || i === 3 ? M.azul : M.tablas[i % 3], side * 1.25, Y0 + ALTO_T * (i + 0.5), 0);
     caja(g, 0.044, 0.06, 12.3, M.tablas[0], side * 1.25, Y0 + ALTO_T * 3, 0);   // filete blanco al centro de la franja azul
-    caja(g, 0.1, 0.08, 12.4, M.poste, side * 1.22, 3.56, 0);
+    caja(g, 0.2, 0.08, 12.4, M.poste, side * 1.28, 3.56, 0);   // riel superior sobre tabla y postes
   }
   for (const z of [-6.17, 6.17]) {
     for (let i = 0; i < TABLAS; i++) caja(g, 2.42, ALTO_T - 0.004, 0.04, i === 2 || i === 3 ? M.azul : M.tablas[(i + 1) % 3], 0, Y0 + ALTO_T * (i + 0.5), z);
