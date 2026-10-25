@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-BVTgRLx9ZO9eO+L+MJRV52fzVbMf0KSEa/8nfV9bCZA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-8QYiJ6bXMBBTCIzt1GDQmifQYo4CeQjduXs50Y0qWck='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR — Transporte de carga por carretera desde Manzanillo</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -411,13 +411,15 @@ main{min-height:100svh}
 .unidad svg{width:100%;height:auto;overflow:visible;margin-bottom:22px}
 .unidad h3{font-size:19px;font-weight:600;letter-spacing:-.017em}
 .unidad p{margin-top:6px;color:var(--ink-2);font-size:16px}
-/* animaciones del equipo: contenedor que baja al chasis; tolva y jaula que se cargan.
-   Sin JavaScript o con movimiento reducido se ve el estado final (cargado). */
+/* animaciones del equipo: empiezan vacíos y se cargan al pasar el cursor (o al aparecer, en táctil).
+   Sin JavaScript se ve el estado final (cargado). */
 .unidad .separador,.unidad .tolvita,.unidad .chorro,.unidad .cae{opacity:0}
 .js .unidad[data-anim]:not(.juega) .izado{opacity:0;transform:translateY(-34px)}
 .js .unidad[data-anim]:not(.juega) .monton{transform:scaleY(0)}
 .unidad .monton{transform-box:fill-box;transform-origin:50% 100%}
 .unidad.juega .izado{animation:baja 1.4s var(--ease) both}
+.js .unidad[data-anim]:not(.juega) .cajas{opacity:0;transform:translateY(-24px)}
+.unidad.juega .cajas{animation:baja 1.1s var(--ease) 1.3s both}
 .unidad.juega .separador{animation:suelta 2.4s ease both}
 @keyframes baja{from{opacity:0;transform:translateY(-34px)}25%{opacity:1}to{opacity:1;transform:none}}
 @keyframes suelta{0%,55%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-30px)}}
@@ -1223,7 +1225,7 @@ main{min-height:100svh}
           <p>Versátil: lleva un contenedor de 40' o uno de 20', uno a la vez.</p>
         </div>
         <div class="unidad" data-reveal data-anim style="--i:3">
-          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#plat"/><g class="izado"><g class="separador"><path d="M131,-40 V9 M305,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="122" y="9" width="191" height="5" rx="1" fill="#F2B705"/><rect x="122" y="12.6" width="191" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch40" transform="translate(122 16) scale(.9095 .88) translate(-10 -16)"/></g></svg>
+          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#plat"/><g class="cajas"><use href="#plat-cajas"/></g><g class="izado"><g class="separador"><path d="M131,-40 V9 M305,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="122" y="9" width="191" height="5" rx="1" fill="#F2B705"/><rect x="122" y="12.6" width="191" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch40" transform="translate(122 16) scale(.9095 .88) translate(-10 -16)"/></g></svg>
           <h3>Plataforma portacontenedor</h3>
           <p>Piso plano con candados para contenedor: lleva un contenedor o carga general, como tarimas, maquinaria y material asegurado con cinchos.</p>
         </div>
@@ -1683,7 +1685,7 @@ main{min-height:100svh}
     <div class="pie-base">
       <p>© 2026 PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.4.1</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.4.2</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -1826,19 +1828,24 @@ main{min-height:100svh}
     avanza();
   }
 
-  /* ---------- equipo: la animación corre al entrar y se repite al pasar el cursor ---------- */
+  /* ---------- equipo: empieza vacío; al pasar el cursor se carga y se queda cargado.
+     En pantallas táctiles (sin cursor) se carga al aparecer en pantalla o al tocarlo. ---------- */
   var anims = $$('[data-anim]');
-  function juega(el){ el.classList.remove('juega'); void el.offsetWidth; el.classList.add('juega'); }
-  if(reduce || !('IntersectionObserver' in window)){
-    anims.forEach(function(el){ el.classList.add('juega'); });
-  } else {
-    var aio = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){ if(en.isIntersecting){ juega(en.target); aio.unobserve(en.target); } });
-    }, { threshold: .5 });
-    anims.forEach(function(el){
-      aio.observe(el);
-      el.addEventListener('pointerenter', function(e){ if(e.pointerType === 'mouse' && el.classList.contains('juega')) juega(el); });
-    });
+  function carga(el){ if(!el.classList.contains('juega')) el.classList.add('juega'); }
+  var conCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  anims.forEach(function(el){
+    el.addEventListener('pointerenter', function(){ carga(el); });
+    el.addEventListener('click', function(){ carga(el); });
+  });
+  if(!conCursor){
+    if(!('IntersectionObserver' in window)){
+      anims.forEach(carga);
+    } else {
+      var aio = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if(en.isIntersecting){ carga(en.target); aio.unobserve(en.target); } });
+      }, { threshold: .6 });
+      anims.forEach(function(el){ aio.observe(el); });
+    }
   }
 
   /* ---------- proceso: pestañas Puerto / Campo ---------- */
@@ -2014,7 +2021,8 @@ main{min-height:100svh}
 <symbol id="ch4020-base" viewBox="0 0 330 100"><ellipse cx="165" cy="95" rx="157" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="314" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="314" height="1" fill="#5A5E65"/><path d="M292,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="247" y="72" width="3" height="14" fill="#2A2C30"/><rect x="243" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><rect x="10.75" y="16.75" width="208.5" height="48.5" rx="1" fill="none" stroke="#686B70" stroke-width="1.5" stroke-dasharray="5 4"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
 <symbol id="cont-ch4020" viewBox="0 0 330 100"><rect x="10" y="16" width="104" height="50" fill="url(#p-corr-gris)"/><rect x="10" y="16" width="104" height="50" fill="url(#g-shade-v)"/><rect x="67.4" y="21" width="2.2" height="16.1" fill="#000000" fill-opacity="0.05"/><rect x="85.8" y="21" width="2.4" height="24.0" fill="#000000" fill-opacity="0.05"/><rect x="63.6" y="21" width="1.6" height="14.1" fill="#000000" fill-opacity="0.10"/><rect x="10" y="16" width="104" height="5" fill="#B2B9C1"/><rect x="10" y="21" width="104" height="1.2" fill="#000000" fill-opacity=".25"/><rect x="10" y="58" width="104" height="8" fill="#787E84"/><rect x="10" y="58" width="104" height="1.2" fill="#FFFFFF" fill-opacity=".14"/><rect x="10" y="16" width="10" height="50" fill="#939AA2"/><rect x="10" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="18" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="10" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="10" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="61" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="16" width="10" height="50" fill="#939AA2"/><rect x="104" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="112" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="104" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="61" rx="2.4" ry="1.5" fill="#101114"/></symbol>
 <symbol id="ch4020" viewBox="0 0 330 100"><use href="#ch4020-base"/><use href="#cont-ch4020"/></symbol>
-<symbol id="plat" viewBox="0 0 330 100"><ellipse cx="165" cy="95" rx="157" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="314" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="314" height="1" fill="#5A5E65"/><path d="M292,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="247" y="72" width="3" height="14" fill="#2A2C30"/><rect x="243" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><rect x="8" y="60" width="314" height="6" fill="#8A6A47"/><rect x="8" y="60" width="314" height="1.4" fill="#FFFFFF" fill-opacity=".22"/><path d="M40,60 v6 M80,60 v6 M120,60 v6 M160,60 v6 M200,60 v6 M240,60 v6 M280,60 v6" stroke="#000000" stroke-opacity=".18" stroke-width="1"/><rect x="11" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="111" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="214" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="314" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><g><rect x="26" y="34" width="34" height="26" rx="1" fill="#C89A62"/><rect x="26" y="34" width="34" height="3" fill="#000000" fill-opacity=".12"/><path d="M26,43 h34 M26,51 h34 M37,34 v26 M49,34 v26" stroke="#9C7443" stroke-width="1"/><rect x="64" y="42" width="40" height="18" rx="1" fill="#D2A66C"/><path d="M64,51 h40 M77,42 v18 M90,42 v18" stroke="#9C7443" stroke-width="1"/><rect x="31" y="22" width="24" height="12" rx="1" fill="#B9884F"/><path d="M43,22 v12" stroke="#8A6236" stroke-width="1"/><path d="M45,22 v38 M84,42 v18" stroke="#F2B705" stroke-width="2.2"/></g><rect x="122.75" y="16.75" width="190.5" height="42.5" rx="1" fill="none" stroke="#686B70" stroke-width="1.5" stroke-dasharray="5 4"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
+<symbol id="plat" viewBox="0 0 330 100"><ellipse cx="165" cy="95" rx="157" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="314" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="314" height="1" fill="#5A5E65"/><path d="M292,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="247" y="72" width="3" height="14" fill="#2A2C30"/><rect x="243" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><rect x="8" y="60" width="314" height="6" fill="#8A6A47"/><rect x="8" y="60" width="314" height="1.4" fill="#FFFFFF" fill-opacity=".22"/><path d="M40,60 v6 M80,60 v6 M120,60 v6 M160,60 v6 M200,60 v6 M240,60 v6 M280,60 v6" stroke="#000000" stroke-opacity=".18" stroke-width="1"/><rect x="11" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="111" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="214" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="314" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="122.75" y="16.75" width="190.5" height="42.5" rx="1" fill="none" stroke="#686B70" stroke-width="1.5" stroke-dasharray="5 4"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
+<symbol id="plat-cajas" viewBox="0 0 330 100"><rect x="26" y="34" width="34" height="26" rx="1" fill="#C89A62"/><rect x="26" y="34" width="34" height="3" fill="#000000" fill-opacity=".12"/><path d="M26,43 h34 M26,51 h34 M37,34 v26 M49,34 v26" stroke="#9C7443" stroke-width="1"/><rect x="64" y="42" width="40" height="18" rx="1" fill="#D2A66C"/><path d="M64,51 h40 M77,42 v18 M90,42 v18" stroke="#9C7443" stroke-width="1"/><rect x="31" y="22" width="24" height="12" rx="1" fill="#B9884F"/><path d="M43,22 v12" stroke="#8A6236" stroke-width="1"/><path d="M45,22 v38 M84,42 v18" stroke="#F2B705" stroke-width="2.2"/></symbol>
 
 <symbol id="i-tolva" viewBox="0 0 32 32"><path d="M2.4 9.3h16.8l-2.3 8.8H4.7z"/><path d="M6.7 18.1l1.2 2.3h3.1l1.2-2.3"/><path d="M19.9 12.7h4.3a1.3 1.3 0 0 1 1.1.5l2.7 3.6a1.3 1.3 0 0 1 .3.8v3.6a.8.8 0 0 1-.8.8h-7.5z"/><path d="M3.3 22h16.5"/><circle cx="6.7" cy="24.5" r="2.1"/><circle cx="14.9" cy="24.5" r="2.1"/><circle cx="24.3" cy="24.5" r="2.1"/></symbol>
 <symbol id="i-jaula" viewBox="0 0 32 32"><rect x="2.4" y="8" width="16.8" height="12.3" rx="1"/><path d="M6.7 8v12.3M10.8 8v12.3M14.9 8v12.3M2.4 14.1h16.8"/><path d="M19.9 12.7h4.3a1.3 1.3 0 0 1 1.1.5l2.7 3.6a1.3 1.3 0 0 1 .3.8v3.6a.8.8 0 0 1-.8.8h-7.5z"/><path d="M3.3 22h16.5"/><circle cx="6.7" cy="24.5" r="2.1"/><circle cx="14.9" cy="24.5" r="2.1"/><circle cx="24.3" cy="24.5" r="2.1"/></symbol>
