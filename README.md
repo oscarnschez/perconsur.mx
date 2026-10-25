@@ -86,3 +86,7 @@ python3 src/presentacion/build.py
 y después se recalcula el hash del script en su CSP, como en `index.html`. Usa la fuente Inter
 (variable, en `assets/fonts/`) y las imágenes de `assets/img/presentacion/`. Se navega con las
 flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n.
+
+Cada diapositiva lleva en el pie el copyright y la revisión de la presentación (`REV 2.0`), sin fecha.
+Al cambiar el contenido de la presentación se sube la revisión en todas las diapositivas: el número
+entero para un rediseño o un cambio de contenido grande, el decimal para correcciones.
