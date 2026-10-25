@@ -17,8 +17,8 @@ const M = {
   grano: new THREE.MeshStandardMaterial({ color: 0xb98318, roughness: 1 }),
   azul: new THREE.MeshStandardMaterial({ color: 0x2f4ca8, metalness: 0.3, roughness: 0.45 }),
   naranja: new THREE.MeshStandardMaterial({ color: 0xf26f22, roughness: 0.5 }),
-  // tablas de madera: tres tonos para que se distinga cada tabla
-  madera: [0xb07b48, 0xa06d3d, 0xbc8853].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.85 })),
+  // tablas de madera pintadas de blanco: tres tonos apenas distintos para que se lea cada tabla
+  tablas: [0xf1f3f5, 0xe6e9ed, 0xeceff2].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.75 })),
   poste: new THREE.MeshStandardMaterial({ color: 0xf6f7f8, metalness: 0.3, roughness: 0.4 }),
   rojo: new THREE.MeshStandardMaterial({ color: 0xd7261e, emissive: 0x5a0a06, roughness: 0.4 }),
   mazorca: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }),
@@ -122,14 +122,14 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
   caja(g, 2.5, 0.12, 12.4, M.marco, 0, 1.33, 0);                    // piso
   for (const side of [-1, 1]) caja(g, 0.06, 0.2, 12.4, M.azul, side * 1.25, 1.28, 0);
   for (const x of [-0.5, 0.5]) caja(g, 0.16, 0.26, 11.6, M.marco, x, 1.1, 0);
-  // postes y costados de tablas de madera, cerrados (sin huecos entre tablas)
+  // postes y costados de tablas de madera blancas, cerrados (sin huecos); dos tablas azules como en el diseño
   for (const side of [-1, 1]) {
     for (let z = -6.1; z <= 6.15; z += 1.0167) caja(g, 0.09, 2.15, 0.09, M.poste, side * 1.22, 2.47, z);
-    for (let i = 0; i < TABLAS; i++) caja(g, 0.04, ALTO_T - 0.004, 12.3, M.madera[i % 3], side * 1.25, Y0 + ALTO_T * (i + 0.5), 0);
+    for (let i = 0; i < TABLAS; i++) caja(g, 0.04, ALTO_T - 0.004, 12.3, i === 2 || i === 3 ? M.azul : M.tablas[i % 3], side * 1.25, Y0 + ALTO_T * (i + 0.5), 0);
     caja(g, 0.1, 0.08, 12.4, M.poste, side * 1.22, 3.56, 0);
   }
   for (const z of [-6.17, 6.17]) {
-    for (let i = 0; i < TABLAS; i++) caja(g, 2.42, ALTO_T - 0.004, 0.04, M.madera[(i + 1) % 3], 0, Y0 + ALTO_T * (i + 0.5), z);
+    for (let i = 0; i < TABLAS; i++) caja(g, 2.42, ALTO_T - 0.004, 0.04, M.tablas[(i + 1) % 3], 0, Y0 + ALTO_T * (i + 0.5), z);
     for (const x of [-1.22, 1.22]) caja(g, 0.12, 2.2, 0.12, M.poste, x, 2.48, z);
   }
   ejes(g, [-5.3, -4.2, -3.1]);
