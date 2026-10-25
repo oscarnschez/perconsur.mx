@@ -268,8 +268,7 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
     caja(g, 0.2, 0.08, 12.4, M.poste, side * 1.28, 3.56, 0);   // riel superior sobre tabla y postes
   }
   for (const z of [-6.17, 6.17]) {
-    for (let i = 0; i < TABLAS; i++) caja(g, 2.42, ALTO_T - 0.004, 0.04, i === 2 || i === 3 ? M.azul : M.tablas[(i + 1) % 3], 0, Y0 + ALTO_T * (i + 0.5), z);
-    caja(g, 2.42, 0.06, 0.044, M.tablas[0], 0, Y0 + ALTO_T * 3, z);   // las franjas dan la vuelta al frente y a la puerta trasera
+    for (let i = 0; i < TABLAS; i++) caja(g, 2.42, ALTO_T - 0.004, 0.04, M.tablas[(i + 1) % 3], 0, Y0 + ALTO_T * (i + 0.5), z);   // frente y puerta trasera sin franjas
     for (const x of [-1.22, 1.22]) caja(g, 0.12, 2.2, 0.12, M.poste, x, 2.48, z);
   }
   ejes(g, [-5.3, -4.2, -3.1]);
