@@ -55,7 +55,8 @@ Para probar en local: `npx wrangler dev` (http://localhost:8787).
 
 `assets/js/` tiene dos visores que se cargan al acercarse a ellos:
 
-- `contenedor3d.js`: el contenedor de 20', 40' y 40' HC (página División Puerto).
+- `contenedor3d.js`: el contenedor de 20', 40' y 40' HC con cajas de cartón dentro, y la grúa de patio que lo
+  coloca en el chasis portacontenedor (página División Puerto). El modelo está en `src/3d/contenedorModelo.ts`.
 - `campo3d.js`: el remolque tolva y el remolque jaula, con su carga (página División Campo).
 - `comun-*.js`: Three.js y las luces compartidas por ambos.
 

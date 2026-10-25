@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-r+1aT1nKtIfdhXkhg6GniLfJLnY3lVRYxil1KdKfP+Q='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-iJBPlFsLj0xs63P0qKoBcc5vgxnbOTXw8CvND9Vi4mo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -1187,6 +1187,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
           <button type="button" class="seg-b" data-size="40hc" aria-pressed="false">40 pies HC</button>
         </div>
         <button type="button" class="btn btn-quiet btn-sm" id="btnPuertas" aria-pressed="false">Abrir puertas</button>
+        <button type="button" class="btn btn-quiet btn-sm" id="btnGrua" aria-pressed="false">Colocar en chasis</button>
       </div>
       <dl class="specs" id="contFicha" aria-live="polite">
         <div><dt>Medidas exteriores</dt><dd data-k="ext">12.19 × 2.44 × 2.59 m</dd></div>
@@ -1933,7 +1934,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.6.0</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.7.0</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -2217,13 +2218,13 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
   });
 
   /* ---------- contenedor en 3D (img2threejs): se carga al acercarse ---------- */
-  var visor = $('#visor3d'), segBtns = $$('.seg-b[data-size]'), btnPuertas = $('#btnPuertas');
+  var visor = $('#visor3d'), segBtns = $$('.seg-b[data-size]'), btnPuertas = $('#btnPuertas'), btnGrua = $('#btnGrua');
   var DATOS = {
     '20':   { nombre: 'Contenedor de 20 pies', ext: '6.06 × 2.44 × 2.59 m', int: '5.90 × 2.35 × 2.39 m', vol: '33 m³', kg: '28,200 kg', chasis: "20' o 40/20", equipo: "20'" },
     '40':   { nombre: 'Contenedor de 40 pies', ext: '12.19 × 2.44 × 2.59 m', int: '12.03 × 2.35 × 2.39 m', vol: '67 m³', kg: '26,700 kg', chasis: "40' o 40/20", equipo: "40'" },
     '40hc': { nombre: 'Contenedor de 40 pies high cube', ext: '12.19 × 2.44 × 2.90 m', int: '12.03 × 2.35 × 2.69 m', vol: '76 m³', kg: '26,500 kg', chasis: "40' o 40/20", equipo: "40' high cube" }
   };
-  var tam = '40', api = null, puertas = false;
+  var tam = '40', api = null, puertas = false, grua = false;
   function pintarDatos(){
     var d = DATOS[tam];
     $('#contNombre').textContent = d.nombre;
@@ -2238,6 +2239,12 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     btnPuertas.textContent = puertas ? 'Cerrar puertas' : 'Abrir puertas';
     if(api) api.setDoors(puertas);
   });
+  // la grúa de patio toma el contenedor de la estiba y lo coloca en el chasis portacontenedor
+  if(btnGrua) btnGrua.addEventListener('click', function(){
+    grua = !grua; btnGrua.setAttribute('aria-pressed', String(grua));
+    btnGrua.textContent = grua ? 'Retirar del chasis' : 'Colocar en chasis';
+    if(api) api.setCrane(grua);
+  });
   var btnCot = $('#btnCotizarCont');
   if(btnCot) btnCot.addEventListener('click', function(){ var s = form && form.elements.contenedor; if(s) s.value = DATOS[tam].equipo; });
   if(visor){
@@ -2251,7 +2258,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
         import('./assets/js/contenedor3d.js?v=' + VER).then(function(m){
           api = m.mount(visor, { reduce: reduce, onReady: function(){ visor.classList.add('listo'); } });
-          api.setSize(tam); api.setDoors(puertas);
+          api.setSize(tam); api.setDoors(puertas); if(grua) api.setCrane(true);
         }).catch(function(){ /* sin módulo: queda el dibujo */ });
       }, { rootMargin: '400px 0px' });
       vio.observe(visor);

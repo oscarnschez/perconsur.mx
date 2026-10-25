@@ -1,25 +1,21 @@
-// Visor 3D del contenedor (img2threejs): 20', 40' y 40' HC, arrastrar para girar, abrir puertas.
+// Visor 3D del contenedor: 20', 40' y 40' HC con cajas de cartón dentro. Se gira arrastrando,
+// se abren las puertas y una grúa de patio lo toma de la estiba y lo coloca en el chasis.
 import * as THREE from 'three';
-import * as C20 from './container20';
 import * as C40 from './container40';
-import * as C40HC from './container40hc';
-import { mountDoorHinges } from './containerRuntime';
+import { crearContenedor, crearChasis, crearGrua, MEDIDAS, ALTO_CHASIS, type Size } from './contenedorModelo';
 
-type Size = '20' | '40' | '40hc';
-const FACT: Record<Size, any> = { '20': C20, '40': C40, '40hc': C40HC };
-const CODE: Record<Size, string> = { '20': '22G1', '40': '42G1', '40hc': '45G1' };
 const pick = (mod: any, test: (k: string) => boolean) => mod[Object.keys(mod).find(test)!];
 
-function sizeCodeDecal(code: string, wallX: number, y: number, z: number, side: 1 | -1): THREE.Mesh {
-  const cv = document.createElement('canvas'); cv.width = 256; cv.height = 96;
-  const g = cv.getContext('2d')!; g.fillStyle = '#F4F5F4';
-  g.font = '600 54px "Inter", Arial, sans-serif'; g.textAlign = 'right'; g.fillText(code, 246, 58);
-  g.fillRect(96, 72, 150, 6);
-  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.23), new THREE.MeshStandardMaterial({ map: tex, transparent: true, roughness: 0.55 }));
-  m.position.set(wallX + side * 0.045, y, z); m.rotation.y = side * Math.PI / 2; m.name = 'size-type-code';
-  return m;
-}
+// maniobra de la grúa: fracciones del tiempo total, de la entrada de la grúa a soltar el contenedor
+const CARRIL = 3.1, CENTRO = CARRIL / 2;   // x del chasis; la grúa queda entre la estiba (x = 0) y el chasis
+const T: Record<string, [number, number]> = {
+  entra: [0, 0.14], baja: [0.14, 0.26], traba: [0.26, 0.3], sube: [0.3, 0.42],
+  cruza: [0.42, 0.6], asienta: [0.6, 0.79], suelta: [0.79, 0.84], libera: [0.84, 1],
+};
+const DURACION = 11, PARQUE = 6.4, ALZA = 2.5;
+const tramo = (p: number, [a, b]: [number, number]) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+const suave = (t: number) => t * t * (3 - 2 * t);
+const frena = (t: number) => 1 - Math.pow(1 - t, 3);   // llega despacio: el contenedor asienta sin golpe
 
 export function mount(host: HTMLElement, opts: { reduce: boolean; onReady?: () => void }) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
@@ -30,37 +26,81 @@ export function mount(host: HTMLElement, opts: { reduce: boolean; onReady?: () =
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   scene.environment = pick(C40, k => k.endsWith('Environment'))(renderer);
-  scene.add(pick(C40, k => k.endsWith('LookDevLights'))('neutral'));
-  const cam = new THREE.PerspectiveCamera(24, 1, 0.1, 200);
+  const luces: THREE.Group = pick(C40, k => k.endsWith('LookDevLights'))('neutral'); scene.add(luces);
+  const sol = luces.children.find((o: any) => o.isDirectionalLight && o.castShadow) as THREE.DirectionalLight | undefined;
+  const cam = new THREE.PerspectiveCamera(24, 1, 0.1, 300);
   const turn = new THREE.Group(); scene.add(turn);
-  let model: THREE.Group | null = null, setDoors = (_: number) => {}, doors = 0, doorsTarget = 0;
-  let yaw = -0.62, size: Size = '40';
+  const mundo = new THREE.Group(); turn.add(mundo);   // en la vista de la grúa se corre para centrar la escena
 
+  let cont: ReturnType<typeof crearContenedor>;
+  let chasis: ReturnType<typeof crearChasis> | null = null, grua: ReturnType<typeof crearGrua> | null = null;
+  let size: Size = '40', yaw = -0.62, doors = 0, doorsTarget = 0, doorsVel = 0;
+  let gruaOn = false, modo = 0, modoVel = 0, p = 0;
+
+  const libera = (g: THREE.Object3D) => g.traverse((o: any) => { if (o.isMesh) o.geometry.dispose(); });
   function build(s: Size) {
-    if (model) { turn.remove(model); model.traverse((o: any) => { if (o.isMesh) { o.geometry.dispose(); } }); }
-    size = s;
-    model = pick(FACT[s], k => k.startsWith('create') && k.endsWith('Model'))({});
-    const box = new THREE.Box3().setFromObject(model!);
-    const L = box.max.z - box.min.z, H = box.max.y - box.min.y, W = box.max.x - box.min.x;
-    for (const side of [1, -1] as const) model!.add(sizeCodeDecal(CODE[s], side * W / 2, H - 0.42, L / 2 - 0.75, side));
-    model!.position.z = -(box.max.z + box.min.z) / 2;
-    turn.add(model!); setDoors = mountDoorHinges(model!); setDoors(doors);
-    frame();
+    if (cont) { mundo.remove(cont.g); libera(cont.g); }
+    size = s; cont = crearContenedor(s); mundo.add(cont.g); cont.puertas(doors);
+    if (chasis) { mundo.remove(chasis.g); libera(chasis.g); chasis = crearChasis(s); mundo.add(chasis.g); }
+    grua?.ajusta(MEDIDAS[s].L);
+    aplica(); frame();
+  }
+  function asegurarGrua() {
+    if (grua) return;
+    grua = crearGrua(); mundo.add(grua.g); grua.ajusta(MEDIDAS[size].L);
+    chasis = crearChasis(size); mundo.add(chasis.g);
+  }
+  // coloca grúa, chasis y contenedor según el avance p de la maniobra
+  function aplica() {
+    mundo.position.x = -CENTRO * modo;
+    if (!grua || !chasis) { cont.g.position.set(0, 0, 0); return; }
+    const { H } = MEDIDAS[size];
+    grua.g.visible = chasis.g.visible = modo > 0.001 || p > 0;
+    const e = suave(tramo(p, T.entra));
+    grua.g.position.set(CENTRO, 0, -(1 - e) * 22);
+    chasis.g.position.set(CARRIL, 0, (1 - e) * 26);
+    for (const r of chasis.ruedas.children) r.rotation.x = -(1 - e) * 26 / 0.5;
+    const c = tramo(p, T.cruza), xT = -CENTRO + suave(c) * CARRIL;
+    grua.trole.position.x = xT;
+    const vaiven = Math.sin(c * Math.PI * 2.5) * Math.sin(c * Math.PI) * 0.16;   // balanceo al cruzar
+    let y: number;
+    if (p <= T.baja[1]) y = PARQUE + (H - PARQUE) * suave(tramo(p, T.baja));
+    else if (p <= T.sube[0]) y = H;
+    else if (p <= T.sube[1]) y = H + ALZA * suave(tramo(p, T.sube));
+    else if (p <= T.asienta[0]) y = H + ALZA;
+    else if (p <= T.asienta[1]) y = H + ALZA + (ALTO_CHASIS - ALZA) * frena(tramo(p, T.asienta));
+    else if (p <= T.libera[0]) y = H + ALTO_CHASIS;
+    else y = H + ALTO_CHASIS + (PARQUE + 0.8 - H - ALTO_CHASIS) * suave(tramo(p, T.libera));
+    grua.coloca(y, vaiven);
+    const enganchado = p > (T.traba[0] + T.traba[1]) / 2 && p < (T.suelta[0] + T.suelta[1]) / 2;
+    if (enganchado) cont.g.position.set(CENTRO + xT + vaiven, y - H, 0);
+    else if (p >= T.suelta[0]) cont.g.position.set(CARRIL, ALTO_CHASIS, 0);
+    else cont.g.position.set(0, 0, 0);
+  }
+  let sombraAmplia = false;
+  function camara() {
+    const v = (cam.fov * Math.PI) / 360, a = cam.aspect;
+    const d0 = (12.6 / 2) / Math.tan(v) / Math.min(1, a) * 0.62;                       // encuadre del 40' solo
+    const d1 = Math.max(8.8 / (Math.tan(v) * a), 8.6 / Math.tan(v)) * 1.08;            // grúa completa
+    const d = d0 + (d1 - d0) * modo, ty = 1.0 + 5.2 * modo, el = 0.42 - 0.12 * modo;
+    cam.position.set(0, d * el, d); cam.lookAt(0, ty, 0); cam.updateProjectionMatrix();
+    const amplia = modo > 0.3;
+    if (sol && amplia !== sombraAmplia) {
+      sombraAmplia = amplia; const s = amplia ? 18 : 9, sc = sol.shadow.camera;
+      sc.left = -s; sc.right = s; sc.top = s; sc.bottom = -s; sc.far = amplia ? 90 : 60; sc.updateProjectionMatrix();
+    }
   }
   function frame() {
     const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
-    renderer.setSize(w, h, false); cam.aspect = w / h;
-    // encuadre fijo por el 40' para que los tamaños se comparen a la misma escala
-    const span = 12.6, dist = (span / 2) / Math.tan((cam.fov * Math.PI / 180) / 2) / Math.min(1, cam.aspect) * 0.62;
-    cam.position.set(0, dist * 0.42, dist); cam.lookAt(0, 1.0, 0); cam.updateProjectionMatrix();
+    renderer.setSize(w, h, false); cam.aspect = w / h; camara();
   }
   // Movimiento físico, medido en tiempo y no en cuadros:
   //  - arrastre 1:1 con el dedo (sin suavizado que lo retrase)
   //  - al soltar, el giro conserva la velocidad del gesto y se frena solo (inercia)
-  //  - teclado y puertas: resorte con amortiguamiento crítico (sin rebote), respuesta ~0.4 s
-  //  - todo se puede interrumpir: tocar el modelo en movimiento lo detiene en su valor actual
+  //  - teclado, puertas y encuadre: resorte con amortiguamiento crítico (sin rebote)
+  //  - todo se puede interrumpir: la maniobra de la grúa se invierte desde donde va
   let raf = 0, visible = true, last = 0;
-  let yawVel = 0, yawGoal: number | null = null, doorsVel = 0, dragging = false;
+  let yawVel = 0, yawGoal: number | null = null, dragging = false;
   const spring = (x: number, v: number, goal: number, response: number, dt: number) => {
     const w = (2 * Math.PI) / response;
     const a = w * w * (goal - x) - 2 * w * v;
@@ -82,9 +122,19 @@ export function mount(host: HTMLElement, opts: { reduce: boolean; onReady?: () =
       }
     }
     if (opts.reduce) doors = doorsTarget;
-    else { [doors, doorsVel] = spring(doors, doorsVel, doorsTarget, 0.5, dt); }
+    else { [doors, doorsVel] = spring(doors, doorsVel, doorsTarget, 0.6, dt); }
     if (Math.abs(doorsTarget - doors) < 0.001 && Math.abs(doorsVel) < 0.002) { doors = doorsTarget; doorsVel = 0; } else moving = true;
-    turn.rotation.y = yaw; setDoors(doors);
+    // grúa: primero se abre el encuadre, luego corre la maniobra; al quitarla, al revés
+    const pMeta = gruaOn && modo > 0.6 ? 1 : 0;
+    if (opts.reduce) p = pMeta;
+    else if (p < pMeta) p = Math.min(pMeta, p + dt / DURACION);
+    else if (p > pMeta) p = Math.max(pMeta, p - dt / (DURACION * 0.75));
+    const modoMeta = gruaOn || p > 0 ? 1 : 0;
+    if (opts.reduce) modo = modoMeta;
+    else [modo, modoVel] = spring(modo, modoVel, modoMeta, 1.1, dt);
+    if (Math.abs(modoMeta - modo) < 0.0005 && Math.abs(modoVel) < 0.001) { modo = modoMeta; modoVel = 0; } else moving = true;
+    if (p !== pMeta || (gruaOn && p < 1)) moving = true;
+    turn.rotation.y = yaw; cont.puertas(doors); aplica(); camara();
     renderer.render(scene, cam);
     if (visible && moving) raf = requestAnimationFrame(loop); else last = 0;
   };
@@ -127,6 +177,14 @@ export function mount(host: HTMLElement, opts: { reduce: boolean; onReady?: () =
   return {
     setSize(s: Size) { if (s !== size) { build(s); kick(); } },
     setDoors(open: boolean) { doorsTarget = open ? 1 : 0; kick(); },
+    setCrane(on: boolean) {
+      if (on) asegurarGrua();
+      if (on !== gruaOn) {   // vista de frente al portal durante la maniobra; al quitarla, la vista de siempre
+        const base = on ? -0.3 : -0.62, actual = yawGoal ?? yaw;
+        yawGoal = base + Math.round((actual - base) / (2 * Math.PI)) * 2 * Math.PI; yawVel = 0;
+      }
+      gruaOn = on; kick();
+    },
     rotate(d: number) { yawGoal = (yawGoal ?? yaw) + d; kick(); },
   };
 }
