@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-xD3xROTDRvtvgSfWI6goHlvF9wmuBHc7TF9irCEowBU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-o338I8PR4lngDsOJtyNbzBNA+RSWLC9p+W/leBsanZY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR — Transporte de carga por carretera desde Manzanillo</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -261,6 +261,18 @@ main{min-height:100svh}
 .division-lista .ico{width:22px;height:22px;color:var(--accent);flex:none}
 .division-arte{margin:auto calc(clamp(28px,3.6vw,48px) * -.4) 0;padding-top:28px}
 .division-arte svg{width:100%;height:auto;overflow:visible}
+/* tarjetas de división: toda la tarjeta abre la página de la división */
+.division{position:relative}
+.division .mas::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.js .division.is-in{transition:transform var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease)}
+@media (hover:hover){.division:hover{transform:translateY(-4px);box-shadow:0 2px 6px rgba(0,0,0,.04),0 18px 40px rgba(0,0,0,.08)}.division:hover .mas svg{transform:translateX(2px)}}
+.division:has(.mas:focus-visible){outline:3px solid var(--foco);outline-offset:3px}
+.division .mas:focus-visible{outline:none}
+.specs.specs--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.specs.specs--4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.btn-campo{background:var(--campo)}
+@media (hover:hover){.btn-campo:hover{background:#23603C}}
+.tema-campo .seg-b[aria-pressed="true"]{color:var(--campo)}
 @media (max-width:900px){.divisiones{grid-template-columns:1fr}}
 
 /* el contenedor en 3D */
@@ -728,7 +740,7 @@ main{min-height:100svh}
             <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>Retorno y posicionamiento de vacíos</li>
             <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-transfer"/></svg>Transferencias entre terminales y recintos</li>
           </ul>
-          <div class="acciones"><a class="mas" href="#division-puerto">Servicios de la División Puerto<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
+          <div class="acciones"><a class="mas" href="#puerto">Conoce la División Puerto<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
           <div class="division-arte"><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con contenedor"><use href="#rig-cont"/></svg></div>
         </article>
         <article class="division tema-campo" data-reveal style="--i:1">
@@ -740,43 +752,9 @@ main{min-height:100svh}
             <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-jaula"/></svg>Carga de cosecha en jaula</li>
             <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Unidades asignadas por solicitud</li>
           </ul>
-          <div class="acciones"><a class="mas" href="#division-campo">Servicios de la División Campo<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
+          <div class="acciones"><a class="mas" href="#campo">Conoce la División Campo<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
           <div class="division-arte"><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con tolva"><use href="#rig-tolva"/></svg></div>
         </article>
-      </div>
-    </div>
-  </div>
-
-  <!-- El contenedor en 3D: elige tamaño, gíralo y ábrelo -->
-  <div class="sec" id="sec-contenedor">
-    <div class="wrap">
-      <div class="sec-head t-center" data-reveal>
-        <h2 class="t-headline">Conoce el contenedor. <span class="light">Gíralo y compara medidas.</span></h2>
-        <p class="t-lede">Lo llevamos sobre chasis de 20', 40' o 40/20, un contenedor por viaje.</p>
-      </div>
-      <div class="visor" id="visor3d" tabindex="0" role="img" aria-label="Contenedor de 40 pies en 3D. Arrástralo o usa las flechas para girarlo.">
-        <svg class="visor-poster" viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch40"/></svg>
-        <p class="visor-pista" aria-hidden="true">Arrastra para girar</p>
-      </div>
-      <div class="visor-ctl">
-        <div class="seg" role="group" aria-label="Tamaño de contenedor" data-seg>
-          <span class="seg-thumb" aria-hidden="true"></span>
-          <button type="button" class="seg-b" data-size="20" aria-pressed="false">20 pies</button>
-          <button type="button" class="seg-b" data-size="40" aria-pressed="true">40 pies</button>
-          <button type="button" class="seg-b" data-size="40hc" aria-pressed="false">40 pies HC</button>
-        </div>
-        <button type="button" class="btn btn-quiet btn-sm" id="btnPuertas" aria-pressed="false">Abrir puertas</button>
-      </div>
-      <dl class="specs" id="contFicha" aria-live="polite">
-        <div><dt>Medidas exteriores</dt><dd data-k="ext">12.19 × 2.44 × 2.59 m</dd></div>
-        <div><dt>Medidas interiores</dt><dd data-k="int">12.03 × 2.35 × 2.39 m</dd></div>
-        <div><dt>Capacidad</dt><dd data-k="vol">67 m³</dd></div>
-        <div><dt>Carga útil máxima</dt><dd data-k="kg">26,700 kg</dd></div>
-        <div><dt>Chasis</dt><dd data-k="chasis">40' o 40/20</dd></div>
-      </dl>
-      <div class="acciones specs-nota">
-        <p class="t-small"><span id="contNombre">Contenedor de 40 pies</span>. Valores típicos de un contenedor seco estándar; varían por fabricante. El peso que puede viajar por carretera lo limita la NOM-012-SCT-2: te lo confirmamos al cotizar.</p>
-        <a class="mas" id="btnCotizarCont" href="#contacto">Cotizar este contenedor<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a>
       </div>
     </div>
   </div>
@@ -1040,6 +1018,7 @@ main{min-height:100svh}
           <p class="t-eyebrow">División Puerto</p>
           <h2 class="t-headline" tabindex="-1">Contenedores desde Manzanillo.</h2>
           <p class="t-lede">Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
+          <div class="acciones" style="margin-top:20px"><a class="mas" href="#puerto">Conoce la División Puerto<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
         </div>
         <div class="div-head-art" data-reveal><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con contenedor de 40 pies"><use href="#rig-cont"/></svg></div>
       </div>
@@ -1116,6 +1095,7 @@ main{min-height:100svh}
           <p class="t-eyebrow">División Campo</p>
           <h2 class="t-headline" tabindex="-1">Cosecha del campo a la planta.</h2>
           <p class="t-lede">Asignamos unidades a cada solicitud de carga, las coordinamos con el encargado en campo y llevamos el producto a la planta destino.</p>
+          <div class="acciones" style="margin-top:20px"><a class="mas" href="#campo">Conoce la División Campo<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
         </div>
         <div class="div-head-art" data-reveal><svg viewBox="0 0 1000 300" role="img" aria-label="Tractocamión con jaula de tablas"><use href="#rig-jaula"/></svg></div>
       </div>
@@ -1169,6 +1149,270 @@ main{min-height:100svh}
           </ul>
           <div class="acciones" style="margin-top:28px"><a class="btn" href="#contacto">Cotizar un traslado</a></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: DIVISIÓN PUERTO
+     ===================================================================== -->
+<section class="page" id="page-puerto" data-page="puerto" aria-labelledby="t-puerto">
+  <div class="intro wrap">
+    <p class="t-eyebrow">División Puerto</p>
+    <h1 class="t-display" id="t-puerto" tabindex="-1">Contenedores desde Manzanillo.</h1>
+    <p class="t-lede">Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
+    <div class="acciones" style="margin-top:32px"><a class="btn" href="#contacto">Cotizar un traslado</a><a class="mas" href="#sec-contenedor">Ver el contenedor en 3D<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
+  </div>
+
+  <!-- El contenedor en 3D: elige tamaño, gíralo y ábrelo -->
+  <div class="sec sec--tone" id="sec-contenedor">
+    <div class="wrap">
+      <div class="sec-head t-center" data-reveal>
+        <h2 class="t-headline">Conoce el contenedor. <span class="light">Gíralo y compara medidas.</span></h2>
+        <p class="t-lede">Lo llevamos sobre chasis de 20', 40' o 40/20, un contenedor por viaje.</p>
+      </div>
+      <div class="visor" id="visor3d" tabindex="0" role="img" aria-label="Contenedor de 40 pies en 3D. Arrástralo o usa las flechas para girarlo.">
+        <svg class="visor-poster" viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch40"/></svg>
+        <p class="visor-pista" aria-hidden="true">Arrastra para girar</p>
+      </div>
+      <div class="visor-ctl">
+        <div class="seg" role="group" aria-label="Tamaño de contenedor" data-seg>
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button type="button" class="seg-b" data-size="20" aria-pressed="false">20 pies</button>
+          <button type="button" class="seg-b" data-size="40" aria-pressed="true">40 pies</button>
+          <button type="button" class="seg-b" data-size="40hc" aria-pressed="false">40 pies HC</button>
+        </div>
+        <button type="button" class="btn btn-quiet btn-sm" id="btnPuertas" aria-pressed="false">Abrir puertas</button>
+      </div>
+      <dl class="specs" id="contFicha" aria-live="polite">
+        <div><dt>Medidas exteriores</dt><dd data-k="ext">12.19 × 2.44 × 2.59 m</dd></div>
+        <div><dt>Medidas interiores</dt><dd data-k="int">12.03 × 2.35 × 2.39 m</dd></div>
+        <div><dt>Capacidad</dt><dd data-k="vol">67 m³</dd></div>
+        <div><dt>Carga útil máxima</dt><dd data-k="kg">26,700 kg</dd></div>
+        <div><dt>Chasis</dt><dd data-k="chasis">40' o 40/20</dd></div>
+      </dl>
+      <div class="acciones specs-nota">
+        <p class="t-small"><span id="contNombre">Contenedor de 40 pies</span>. Valores típicos de un contenedor seco estándar; varían por fabricante. El peso que puede viajar por carretera lo limita la NOM-012-SCT-2: te lo confirmamos al cotizar.</p>
+        <a class="mas" id="btnCotizarCont" href="#contacto">Cotizar este contenedor<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="bloque">
+    <div class="wrap">
+      <h2 class="t-title">Lo que hacemos en el puerto</h2>
+      <div class="servicios">
+        <div class="card" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-import"/></svg>
+          <h3 class="t-sub">Importación</h3>
+          <p>Recibimos la liberación del contenedor, lo retiramos de la terminal en Manzanillo y lo trasladamos a tu planta o almacén. Coordinamos la descarga y el retorno del contenedor vacío al puerto.</p>
+        </div>
+        <div class="card" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-export"/></svg>
+          <h3 class="t-sub">Exportación</h3>
+          <p>Posicionamos el contenedor vacío en tu planta, esperamos la carga y lo entregamos en la terminal portuaria dentro de la ventana de embarque.</p>
+        </div>
+        <div class="card" data-reveal style="--i:2">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-cont"/></svg>
+          <h3 class="t-sub">Vacíos</h3>
+          <p>Retorno de contenedores vacíos a la terminal y posicionamiento de vacíos en tu planta para exportación.</p>
+        </div>
+        <div class="card" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-transfer"/></svg>
+          <h3 class="t-sub">Transferencias</h3>
+          <p>Movimiento de contenedores entre terminales, patios y recintos fiscalizados dentro del puerto de Manzanillo.</p>
+        </div>
+        <div class="card" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-truck"/></svg>
+          <h3 class="t-sub">Traslados dedicados</h3>
+          <p>Unidad completa para un solo cliente, con operador asignado y seguimiento del viaje de origen a destino. También transportamos carga general, además de contenedores.</p>
+        </div>
+        <div class="card" data-reveal style="--i:2">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg>
+          <h3 class="t-sub">Maniobras generales</h3>
+          <p>Movimientos de contenedores en patios, plantas y recintos: posicionamiento, reacomodo, cambio de chasis y traslados cortos dentro de la zona portuaria o industrial.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <h2 class="t-title">Así se mueve tu contenedor</h2>
+      <ol class="pasos">
+        <li data-reveal><h3 class="t-sub">Liberación en puerto</h3><p>Recibimos de tu agente aduanal la liberación y programamos la unidad y el operador.</p></li>
+        <li data-reveal><h3 class="t-sub">Retiro en la terminal</h3><p>La unidad entra al recinto portuario de Manzanillo, carga el contenedor y verifica sellos y número.</p></li>
+        <li data-reveal><h3 class="t-sub">Traslado por carretera</h3><p>Viaje directo a tu planta con operador capacitado y rastreo GPS que compartimos contigo durante el trayecto.</p></li>
+        <li data-reveal><h3 class="t-sub">Entrega y retorno de vacío</h3><p>Descarga en tu almacén con nota de entrega–recepción y evidencia fotográfica del contenedor. Devolvemos el vacío al puerto dentro del plazo del naviero.</p></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <h2 class="t-title">Equipo de la División Puerto</h2>
+      <div class="unidades unidades--4">
+        <div class="unidad" data-reveal data-anim style="--i:0">
+          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch20-base"/><g class="izado"><g class="separador"><path d="M18,-40 V9 M106,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="10" y="9" width="104" height="5" rx="1" fill="#F2B705"/><rect x="10" y="12.6" width="104" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch20"/></g></svg>
+          <h3>Chasis de 20'</h3>
+          <p>Para un contenedor de 20 pies. Ideal para carga pesada y densa.</p>
+        </div>
+        <div class="unidad" data-reveal data-anim style="--i:1">
+          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch40-base"/><g class="izado"><g class="separador"><path d="M18,-40 V9 M212,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="10" y="9" width="210" height="5" rx="1" fill="#F2B705"/><rect x="10" y="12.6" width="210" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch40"/></g></svg>
+          <h3>Chasis de 40'</h3>
+          <p>Para un contenedor de 40 pies estándar o high cube.</p>
+        </div>
+        <div class="unidad" data-reveal data-anim style="--i:2">
+          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch4020-base"/><g class="izado"><g class="separador"><path d="M18,-40 V9 M106,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="10" y="9" width="104" height="5" rx="1" fill="#F2B705"/><rect x="10" y="12.6" width="104" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch4020"/></g></svg>
+          <h3>Chasis 40/20</h3>
+          <p>Versátil: lleva un contenedor de 40' o uno de 20', uno a la vez.</p>
+        </div>
+        <div class="unidad" data-reveal data-anim style="--i:3">
+          <svg viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#plat"/><g class="cajas"><use href="#plat-cajas"/></g><g class="izado"><g class="separador"><path d="M131,-40 V9 M305,-40 V9" stroke="#5A5E65" stroke-width="1"/><rect x="122" y="9" width="191" height="5" rx="1" fill="#F2B705"/><rect x="122" y="12.6" width="191" height="1.4" fill="#000000" fill-opacity=".25"/></g><use href="#cont-ch40" transform="translate(122 16) scale(.9095 .88) translate(-10 -16)"/></g></svg>
+          <h3>Plataforma portacontenedor</h3>
+          <p>Piso plano con candados para contenedor: lleva un contenedor o carga general, como tarimas, maquinaria y material asegurado con cinchos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="t-title">Rutas frecuentes</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Origen</span><span>Puerto de Manzanillo, Colima</span></li>
+            <li data-reveal><span>Zona metropolitana de Guadalajara</span><span>Guadalajara, Zapopan, Tlaquepaque, El Salto, Tala, Tlajomulco, etc.</span></li>
+            <li data-reveal><span>Bajío</span><span>Guanajuato, Querétaro, Aguascalientes, San Luis Potosí y Zacatecas</span></li>
+            <li data-reveal><span>Norte</span><span>Saltillo, Monterrey, Apodaca y Reynosa</span></li>
+            <li data-reveal><span>Otros destinos</span><span>Toluca, Ecatepec, Cuautitlán Izcalli, Tultitlán, Azcapotzalco y Puebla</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec sec--dark cierre">
+    <div class="wrap">
+      <h2 class="t-headline" data-reveal>¿Tienes un contenedor por mover?</h2>
+      <p class="t-lede" data-reveal style="--i:1">Cuéntanos la terminal, el destino y el tamaño del contenedor. Te respondemos con tu cotización.</p>
+      <div class="acciones" data-reveal style="--i:2">
+        <a class="btn btn-light" href="#contacto">Cotizar un traslado</a>
+        <a class="mas" href="mailto:logistica@perconsur.mx">logistica@perconsur.mx<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PÁGINA: DIVISIÓN CAMPO
+     ===================================================================== -->
+<section class="page tema-campo" id="page-campo" data-page="campo" aria-labelledby="t-campo">
+  <div class="intro wrap">
+    <p class="t-eyebrow">División Campo</p>
+    <h1 class="t-display" id="t-campo" tabindex="-1">Cosecha del campo a la planta.</h1>
+    <p class="t-lede">Llevamos maíz en grano y en mazorca, en tolva y en jaula, y coordinamos cada carga con el encargado en campo y la planta que la recibe.</p>
+    <div class="acciones" style="margin-top:32px"><a class="btn btn-campo" href="#contacto">Cotizar un traslado</a><a class="mas" href="#sec-campo3d">Ver la tolva y la jaula en 3D<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
+  </div>
+
+  <!-- La tolva y la jaula en 3D: elige la unidad, gírala y cárgala -->
+  <div class="sec sec--tone" id="sec-campo3d">
+    <div class="wrap">
+      <div class="sec-head t-center" data-reveal>
+        <h2 class="t-headline t-tinta">Conoce la tolva y la jaula. <span class="light">Gíralas y cárgalas.</span></h2>
+        <p class="t-lede">Las dos unidades con que movemos la cosecha del lugar de carga a la planta.</p>
+      </div>
+      <div class="visor" id="visorCampo" tabindex="0" role="img" aria-label="Remolque tolva en 3D. Arrástralo o usa las flechas para girarlo.">
+        <svg class="visor-poster" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#rig-tolva"/></svg>
+        <p class="visor-pista" aria-hidden="true">Arrastra para girar</p>
+      </div>
+      <div class="visor-ctl">
+        <div class="seg" role="group" aria-label="Tipo de remolque" data-seg>
+          <span class="seg-thumb" aria-hidden="true"></span>
+          <button type="button" class="seg-b" data-tipo="tolva" aria-pressed="true">Tolva</button>
+          <button type="button" class="seg-b" data-tipo="jaula" aria-pressed="false">Jaula</button>
+        </div>
+        <button type="button" class="btn btn-quiet btn-sm" id="btnCarga" aria-pressed="false">Cargar cosecha</button>
+      </div>
+      <dl class="specs specs--4" id="campoFicha" aria-live="polite">
+        <div><dt>Producto</dt><dd data-k="producto">Maíz en grano</dd></div>
+        <div><dt>Carga</dt><dd data-k="carga">Por arriba, con la lona abierta</dd></div>
+        <div><dt>Descarga</dt><dd data-k="descarga">Por gravedad, en compuertas inferiores</dd></div>
+        <div><dt>Ejes del remolque</dt><dd data-k="ejes">2, en tándem</dd></div>
+      </dl>
+      <div class="acciones specs-nota">
+        <p class="t-small">Remolque <span id="campoNombre">tolva</span> de la División Campo.</p>
+        <a class="mas" href="#contacto" id="btnCotizarCampo">Cotizar con esta unidad<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <h2 class="t-title t-tinta">Lo que hacemos en el campo</h2>
+      <div class="servicios servicios--2">
+        <div class="card" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-tolva"/></svg>
+          <h3 class="t-sub">Carga de cosecha en tolva</h3>
+          <p>Remolque tolva con descarga por gravedad en compuertas inferiores y lona enrollable para cubrir el producto en el camino.</p>
+        </div>
+        <div class="card" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-jaula"/></svg>
+          <h3 class="t-sub">Carga de cosecha en jaula</h3>
+          <p>Remolque con costados de jaula para producto voluminoso, como la mazorca, del lugar de carga a la planta.</p>
+        </div>
+        <div class="card" data-reveal>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>
+          <h3 class="t-sub">Unidades para cada solicitud</h3>
+          <p>Asignamos a cada carga las unidades y los operadores que necesita, y organizamos los viajes según la planta que recibe la cosecha.</p>
+        </div>
+        <div class="card" data-reveal style="--i:1">
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>
+          <h3 class="t-sub">Coordinación en campo</h3>
+          <p>El operador llega a la ubicación del lugar de carga y se coordina con el encargado de cosecha que lo recibe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <h2 class="t-title t-tinta">Así se mueve la cosecha</h2>
+      <ol class="pasos">
+        <li data-reveal><h3 class="t-sub">Solicitud de carga</h3><p>El cliente indica el lugar de carga, la fecha y el producto que hay que mover.</p></li>
+        <li data-reveal><h3 class="t-sub">Asignación de unidades</h3><p>Asignamos tolvas o jaulas, operador y hora para cada solicitud.</p></li>
+        <li data-reveal><h3 class="t-sub">Carga en campo</h3><p>El operador se presenta con el encargado de cosecha en el lugar de carga indicado.</p></li>
+        <li data-reveal><h3 class="t-sub">Entrega en planta</h3><p>Traslado a la planta destino, descarga y regreso por la siguiente carga.</p></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="bloque">
+    <div class="wrap">
+      <div class="grid">
+        <div class="c-4"><h2 class="t-title t-tinta">Datos de la división</h2></div>
+        <div class="c-8">
+          <ul class="ficha">
+            <li data-reveal><span>Producto</span><span>Cosecha de maíz, en grano y en mazorca</span></li>
+            <li data-reveal><span>Unidades</span><span>Tractocamión con tolva o con jaula</span></li>
+            <li data-reveal><span>Plantas destino</span><span>Guanajuato, Jalisco y Sinaloa</span></li>
+            <li data-reveal><span>Contacto</span><span><a class="link" href="mailto:divisioncampo@perconsur.mx">divisioncampo@perconsur.mx</a></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec sec--dark cierre">
+    <div class="wrap">
+      <h2 class="t-headline" data-reveal>¿Tienes cosecha por mover?</h2>
+      <p class="t-lede" data-reveal style="--i:1">Cuéntanos el lugar de carga, la planta destino y el producto. Te respondemos con tu cotización.</p>
+      <div class="acciones" data-reveal style="--i:2">
+        <a class="btn btn-light" href="#contacto">Cotizar un traslado</a>
+        <a class="mas" href="mailto:divisioncampo@perconsur.mx">divisioncampo@perconsur.mx<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a>
       </div>
     </div>
   </div>
@@ -1685,7 +1929,7 @@ main{min-height:100svh}
     <div class="pie-base">
       <p>© 2026 PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.4.5</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.5.0</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -1724,14 +1968,16 @@ main{min-height:100svh}
     inicio: 'PERCONSUR — Transporte de carga por carretera desde Manzanillo',
     nosotros: 'Nosotros — PERCONSUR', servicios: 'Servicios — PERCONSUR', flota: 'Flota — PERCONSUR',
     clientes: 'Clientes — PERCONSUR', contacto: 'Contacto — PERCONSUR',
+    puerto: 'División Puerto — PERCONSUR', campo: 'División Campo — PERCONSUR',
     privacidad: 'Aviso de privacidad — PERCONSUR', terminos: 'Términos y condiciones — PERCONSUR', cookies: 'Política de cookies — PERCONSUR'
   };
   function show(name, moveFocus){
     if(!document.getElementById('page-' + name)) name = 'inicio';
     current = name;
     pages.forEach(function(p){ p.classList.toggle('active', p.dataset.page === name); });
+    var enMenu = (name === 'puerto' || name === 'campo') ? 'servicios' : name;   /* las divisiones viven bajo Servicios */
     pageLinks.forEach(function(a){
-      if(a.dataset.page === name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      if(a.dataset.page === enMenu) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     setMenu(false);
     window.scrollTo(0, 0);
@@ -2000,6 +2246,49 @@ main{min-height:100svh}
         }).catch(function(){ /* sin módulo: queda el dibujo */ });
       }, { rootMargin: '400px 0px' });
       vio.observe(visor);
+    }
+  }
+
+  /* ---------- tolva y jaula en 3D: se cargan al acercarse ---------- */
+  var visorC = $('#visorCampo'), tipoBtns = $$('.seg-b[data-tipo]'), btnCarga = $('#btnCarga');
+  var CAMPO = {
+    tolva: { nombre: 'tolva', producto: 'Maíz en grano', carga: 'Por arriba, con la lona abierta', descarga: 'Por gravedad, en compuertas inferiores', ejes: '2, en tándem', equipo: 'Tolva' },
+    jaula: { nombre: 'jaula', producto: 'Mazorca y producto voluminoso', carga: 'Por arriba, en el lugar de carga', descarga: 'En la planta destino', ejes: '3', equipo: 'Jaula' }
+  };
+  var tipo = 'tolva', apiC = null, llena = false;
+  function pintarCampo(){
+    var d = CAMPO[tipo];
+    $('#campoNombre').textContent = d.nombre;
+    $$('#campoFicha dd').forEach(function(dd){ dd.textContent = d[dd.dataset.k]; });
+    tipoBtns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.tipo === tipo)); });
+    placeThumb(tipoBtns[0].closest('[data-seg]'));
+    if(visorC) visorC.setAttribute('aria-label', 'Remolque ' + d.nombre + (llena ? ' cargado' : '') + ' en 3D. Arrástralo o usa las flechas para girarlo.');
+    var poster = visorC && visorC.querySelector('.visor-poster use'); if(poster) poster.setAttribute('href', tipo === 'tolva' ? '#rig-tolva' : '#rig-jaula');
+  }
+  tipoBtns.forEach(function(b){ b.addEventListener('click', function(){ tipo = b.dataset.tipo; pintarCampo(); if(apiC) apiC.setTipo(tipo); }); });
+  if(btnCarga) btnCarga.addEventListener('click', function(){
+    llena = !llena; btnCarga.setAttribute('aria-pressed', String(llena));
+    btnCarga.textContent = llena ? 'Descargar' : 'Cargar cosecha';
+    pintarCampo();
+    if(apiC) apiC.setCarga(llena);
+  });
+  var btnCotC = $('#btnCotizarCampo');
+  if(btnCotC) btnCotC.addEventListener('click', function(){ var s = form && form.elements.contenedor; if(s) s.value = CAMPO[tipo].equipo; });
+  if(visorC){
+    visorC.addEventListener('pointerdown', function(){ visorC.classList.add('tocado'); }, { once: true });
+    if('IntersectionObserver' in window){
+      var cargadoC = false;
+      var vioC = new IntersectionObserver(function(es){
+        if(cargadoC || !es.some(function(e){ return e.isIntersecting; })) return;
+        cargadoC = true; vioC.disconnect();
+        var cv = document.createElement('canvas');
+        if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
+        import('./assets/js/campo3d.js').then(function(m){
+          apiC = m.mount(visorC, { reduce: reduce, onReady: function(){ visorC.classList.add('listo'); } });
+          apiC.setTipo(tipo); apiC.setCarga(llena);
+        }).catch(function(){ /* sin módulo: queda el dibujo */ });
+      }, { rootMargin: '400px 0px' });
+      vioC.observe(visorC);
     }
   }
 })();

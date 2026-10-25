@@ -50,3 +50,20 @@ Para probar en local: `npx wrangler dev` (http://localhost:8787).
    Probar el correo (enviar y recibir).
 4. Opcional: transferir el registro del dominio a Cloudflare con el código de autorización de Squarespace.
    Después, activar DNSSEC desde Cloudflare.
+
+## Visores 3D
+
+`assets/js/` tiene dos visores que se cargan al acercarse a ellos:
+
+- `contenedor3d.js`: el contenedor de 20', 40' y 40' HC (página División Puerto).
+- `campo3d.js`: el remolque tolva y el remolque jaula, con su carga (página División Campo).
+- `comun-*.js`: Three.js y las luces compartidas por ambos.
+
+Las fuentes están en `src/3d/` (no se publican). Para regenerarlos, con `three@0.169` instalado:
+
+```
+npx esbuild src/3d/contenedor3d.ts src/3d/campo3d.ts --bundle --format=esm --splitting \
+  --minify --target=es2020 --outdir=assets/js --chunk-names=comun-[hash]
+```
+
+Si cambia el nombre de `comun-*.js`, borra el anterior.
