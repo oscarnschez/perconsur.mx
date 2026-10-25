@@ -55,8 +55,12 @@ Para probar en local: `npx wrangler dev` (http://localhost:8787).
 
 `assets/js/` tiene dos visores que se cargan al acercarse a ellos:
 
-- `contenedor3d.js`: el contenedor de 20', 40' y 40' HC con cajas de cartón dentro, y la grúa de patio que lo
-  coloca en el chasis portacontenedor (página División Puerto). El modelo está en `src/3d/contenedorModelo.ts`.
+- `contenedor3d.js`: el contenedor de 20', 40' y 40' HC (página División Puerto), con seis colores y cuatro tipos
+  de carga (cajas, tarimas emplayadas, costales y tambos). La grúa de patio lo toma de la estiba y lo asienta en el
+  chasis de un tractocamión PERCONSUR; mientras va colgado, las puertas no se pueden abrir. Los modelos están en
+  `src/3d/`: `c3d-contenedor.ts`, `c3d-carga.ts`, `c3d-chasis.ts` (chasis y tractocamión), `c3d-grua.ts` y
+  `c3d-comun.ts` (texturas y piezas compartidas). Los reflejos usan `assets/img/entorno-ciudad.exr`, un HDRI de
+  [Poly Haven](https://polyhaven.com) con licencia CC0, tomado del paquete `@pmndrs/assets`.
 - `campo3d.js`: el remolque tolva y el remolque jaula, con su carga (página División Campo).
 - `comun-*.js`: Three.js y las luces compartidas por ambos.
 
