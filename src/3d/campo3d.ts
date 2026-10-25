@@ -14,14 +14,12 @@ const M = {
   llanta: new THREE.MeshStandardMaterial({ color: 0x1b1c1f, roughness: 0.92 }),
   rin: new THREE.MeshStandardMaterial({ color: 0xd3d8de, metalness: 0.85, roughness: 0.22 }),
   lona: new THREE.MeshStandardMaterial({ color: 0x3e434b, roughness: 0.85, side: THREE.DoubleSide }),
-  grano: new THREE.MeshStandardMaterial({ color: 0xb98318, roughness: 1 }),
   azul: new THREE.MeshStandardMaterial({ color: 0x2f4ca8, metalness: 0.3, roughness: 0.45 }),
   naranja: new THREE.MeshStandardMaterial({ color: 0xf26f22, roughness: 0.5 }),
   // tablas de madera pintadas de blanco: tres tonos apenas distintos para que se lea cada tabla
   tablas: [0xf1f3f5, 0xe6e9ed, 0xeceff2].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.75 })),
   poste: new THREE.MeshStandardMaterial({ color: 0xf6f7f8, metalness: 0.3, roughness: 0.4 }),
   rojo: new THREE.MeshStandardMaterial({ color: 0xd7261e, emissive: 0x5a0a06, roughness: 0.4 }),
-  mazorca: new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }),
 };
 
 function caja(g: THREE.Group, w: number, h: number, d: number, m: THREE.Material, x: number, y: number, z: number) {
@@ -75,7 +73,101 @@ function patas(g: THREE.Group, z: number, yTop: number) {
   caja(g, 1.7, 0.06, 0.06, M.marco, 0, yTop * 0.55, z);
 }
 
+
+// ---------- carga: texturas en canvas, ruido y geometría con semillas fijas ----------
+function azar(semilla: number) { let s = semilla; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+// ruido de valor 2D suave (determinista), para que la superficie no sea una forma geométrica perfecta
+function ruido(semilla: number) {
+  const r = azar(semilla), T = Array.from({ length: 256 }, () => r());
+  const h = (i: number, j: number) => T[(i * 73 + j * 151) & 255];
+  const sm = (t: number) => t * t * (3 - 2 * t);
+  return (x: number, y: number) => {
+    const i = Math.floor(x), j = Math.floor(y), fx = sm(x - i), fy = sm(y - j);
+    const a = h(i, j), b = h(i + 1, j), c = h(i, j + 1), d = h(i + 1, j + 1);
+    return (a + (b - a) * fx) + ((c + (d - c) * fx) - (a + (b - a) * fx)) * fy;
+  };
+}
+function lienzo(w: number, h: number, pinta: (g: CanvasRenderingContext2D) => void, repetir: [number, number]) {
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  pinta(cv.getContext('2d')!);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(...repetir);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  return tex;
+}
+// granos de maíz vistos de cerca: dientes amarillo-anaranjados con brillo y sombra entre granos
+function texGrano() {
+  const r = azar(11);
+  return lienzo(256, 256, g => {
+    g.fillStyle = '#5e3606'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 1500; i++) {
+      const x = r() * 256, y = r() * 256, a = r() * Math.PI, rx = 3.2 + r() * 1.6, ry = 2.4 + r() * 1.2;
+      const tono = 34 + r() * 10, luz = 40 + r() * 14;
+      for (const [dx, dy] of [[0, 0], [256, 0], [-256, 0], [0, 256], [0, -256]]) {
+        g.save(); g.translate(x + dx, y + dy); g.rotate(a);
+        g.fillStyle = `hsl(${tono},92%,${luz}%)`; g.beginPath(); g.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = 'rgba(255,232,170,.38)'; g.beginPath(); g.ellipse(-rx * .3, -ry * .3, rx * .35, ry * .3, 0, 0, Math.PI * 2); g.fill();
+        g.restore();
+      }
+    }
+  }, [5, 24]);
+}
+// grano de la mazorca: hileras de granos alrededor (u) y a lo largo (v)
+function texMazorca() {
+  const r = azar(23), COL = 14, FIL = 30, W = 224, H = 480, cw = W / COL, ch = H / FIL;
+  return lienzo(W, H, g => {
+    g.fillStyle = '#6a3c08'; g.fillRect(0, 0, W, H);
+    for (let j = 0; j < FIL; j++) for (let i = 0; i < COL; i++) {
+      const x = i * cw + (j % 2) * cw * .5, y = j * ch, luz = 44 + r() * 10, tono = 37 + r() * 7;
+      const grd = g.createLinearGradient(x, y, x + cw, y + ch);
+      grd.addColorStop(0, `hsl(${tono},95%,${luz + 16}%)`); grd.addColorStop(1, `hsl(${tono - 5},90%,${luz - 10}%)`);
+      g.fillStyle = grd;
+      g.beginPath(); g.roundRect(x + 1.2, y + 1.2, cw - 2.4, ch - 2.4, 4); g.fill();
+      if (x + cw > W) { g.beginPath(); g.roundRect(x - W + 1.2, y + 1.2, cw - 2.4, ch - 2.4, 4); g.fill(); }
+    }
+  }, [1, 1]);
+}
+// montón: rejilla desplazada; alto máximo al centro, cae hacia las paredes y se redondea en los extremos
+function monton(ancho: number, largo: number, alto: number, semilla: number, nx = 40, nz = 150) {
+  const geo = new THREE.PlaneGeometry(ancho, largo, nx, nz); geo.rotateX(-Math.PI / 2);
+  const n = ruido(semilla), pos = geo.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    const ax = Math.min(1, Math.abs(x) / (ancho / 2)), ez = Math.min(1, (largo / 2 - Math.abs(z)) / 1.6);
+    const forma = Math.pow(Math.cos(ax * Math.PI / 2), 0.9) * (ez * ez * (3 - 2 * ez));
+    const grumos = (n(x * 2.2, z * 2.2) - .5) * .08 + (n(x * 7, z * 7) - .5) * .025;
+    pos.setY(i, alto * forma + grumos * Math.min(1, forma * 4));
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+// mazorca: perfil torneado, base ancha y punta afilada, acostada sobre X
+function geoMazorca() {
+  const L = 0.24, R = 0.048, pts: THREE.Vector2[] = [new THREE.Vector2(0, 0)];
+  for (let k = 0; k <= 16; k++) {
+    const t = k / 16, cuerpo = 0.8 + 0.2 * Math.sin(Math.min(t / 0.22, 1) * Math.PI / 2);
+    const punta = 1 - 0.62 * Math.pow(Math.max(0, (t - 0.25) / 0.75), 1.7);
+    pts.push(new THREE.Vector2(R * cuerpo * punta * (k === 0 ? .82 : 1), t * L));
+  }
+  pts.push(new THREE.Vector2(0, L));
+  const geo = new THREE.LatheGeometry(pts, 14); geo.translate(0, -L / 2, 0); geo.rotateZ(Math.PI / 2);
+  return geo;
+}
+
 // ---------- remolque tolva ----------
+let MC: { grano: THREE.MeshStandardMaterial; mazorca: THREE.MeshStandardMaterial; cama: THREE.MeshStandardMaterial } | null = null;
+function materialesCarga() {
+  if (MC) return MC;
+  const tg = texGrano(), tm = texMazorca();
+  const cama = tg.clone(); cama.repeat.set(3, 14); cama.needsUpdate = true;
+  MC = {
+    grano: new THREE.MeshStandardMaterial({ map: tg, bumpMap: tg, bumpScale: 2.2, roughness: 0.82, color: 0xffffff }),
+    mazorca: new THREE.MeshStandardMaterial({ map: tm, bumpMap: tm, bumpScale: 1.6, roughness: 0.6 }),
+    cama: new THREE.MeshStandardMaterial({ map: cama, bumpMap: cama, bumpScale: 2.6, roughness: 0.9, color: 0x8a6a3a }),
+  };
+  return MC;
+}
+
 function tolva(): { g: THREE.Group; carga: (t: number) => void } {
   const g = new THREE.Group(); g.name = 'remolque-tolva';
   g.add(new THREE.Mesh(tronco(2.5, 12.4, 3.05, 2.5, 11.6, 2.0, 0), M.alu));
@@ -104,7 +196,7 @@ function tolva(): { g: THREE.Group; carga: (t: number) => void } {
   caja(g, 0.5, 0.06, 0.5, M.marco, 0, 1.97, 5.6);   // perno rey
   // lona enrollable y montón de grano
   const lona = new THREE.Mesh(arco(2.5, 0.28, 12.2, 0.03), M.lona); lona.position.set(0, 3.12, 6.1); g.add(lona);
-  const grano = new THREE.Mesh(arco(2.4, 0.55, 11.8, 0), M.grano); grano.position.set(0, 3.05, 5.9); g.add(grano);
+  const grano = new THREE.Mesh(monton(2.42, 11.9, 0.62, 5), materialesCarga().grano); grano.position.set(0, 3.06, 0); g.add(grano);
   const carga = (t: number) => {
     const abre = Math.min(1, t * 2.5);                 // primero se enrolla la lona…
     lona.scale.z = Math.max(0.04, 1 - abre); lona.visible = true;
@@ -140,26 +232,31 @@ function jaula(): { g: THREE.Group; carga: (t: number) => void } {
   caja(g, 2.2, 0.1, 0.1, M.marco, 0, 0.62, -6.25);
   for (const x of [-1.05, 1.05]) caja(g, 0.16, 0.08, 0.03, M.rojo, x, 1.32, -6.27);
   patas(g, 4.7, 1.0);
-  // mazorcas: se acomodan de abajo hacia arriba y forman un copete al centro
-  const N = 2200, geo = new THREE.CapsuleGeometry(0.075, 0.2, 3, 8);
-  const maz = new THREE.InstancedMesh(geo, M.mazorca, N); maz.castShadow = true;
-  const rnd = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
-  const pts: { p: THREE.Vector3; q: THREE.Quaternion }[] = [];
+  // mazorcas: una cama de mazorcas que sube con la carga y, encima, mazorcas sueltas que van cayendo
+  const mc = materialesCarga(), ALTO = 0.42;
+  const pila = new THREE.Group(); g.add(pila);
+  const cama = new THREE.Mesh(monton(2.42, 12.3, ALTO, 9, 36, 140), mc.cama); pila.add(cama);
+  const nCama = ruido(9);
+  const altoCama = (x: number, z: number) => {
+    const ax = Math.min(1, Math.abs(x) / 1.21), ez = Math.min(1, (6.15 - Math.abs(z)) / 1.6);
+    return ALTO * Math.pow(Math.cos(ax * Math.PI / 2), 0.9) * (ez * ez * (3 - 2 * ez)) + (nCama(x * 2.2, z * 2.2) - .5) * .08;
+  };
+  const N = 2100, maz = new THREE.InstancedMesh(geoMazorca(), mc.mazorca, N); maz.castShadow = true;
+  const rnd = azar(7), m4 = new THREE.Matrix4(), col = new THREE.Color(), e = new THREE.Euler(), q = new THREE.Quaternion();
   for (let i = 0; i < N; i++) {
-    const x = (rnd() - 0.5) * 2.2, z = (rnd() - 0.5) * 12.0;
-    const techo = 3.4 + 0.45 * (1 - Math.abs(x) / 1.1) * (1 - Math.pow(Math.abs(z) / 6.0, 4));
-    const y = 1.5 + rnd() * (techo - 1.5);
-    const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * Math.PI, rnd() * Math.PI, rnd() * Math.PI));
-    pts.push({ p: new THREE.Vector3(x, y, z), q });
+    const x = (rnd() - 0.5) * 2.0, z = (rnd() - 0.5) * 11.9, k = 0.85 + rnd() * 0.3;
+    e.set((rnd() - .5) * .5, rnd() * Math.PI * 2, (rnd() - .5) * .6);      // acostadas, con poca inclinación
+    m4.compose(new THREE.Vector3(x, altoCama(x, z) + 0.035 + rnd() * 0.05, z), q.setFromEuler(e), new THREE.Vector3(k, k, k));
+    maz.setMatrixAt(i, m4);
+    maz.setColorAt(i, col.setHSL(0.1 + rnd() * 0.035, 0.5 + rnd() * 0.3, 0.72 + rnd() * 0.24));
   }
-  pts.sort((a, b) => a.p.y - b.p.y);
-  const m4 = new THREE.Matrix4(), uno = new THREE.Vector3(1, 1, 1), col = new THREE.Color();
-  pts.forEach((o, i) => {
-    maz.setMatrixAt(i, m4.compose(o.p, o.q, uno));
-    maz.setColorAt(i, col.setHSL(0.115 + rnd() * 0.025, 0.85, 0.36 + rnd() * 0.08));
-  });
-  g.add(maz);
-  const carga = (t: number) => { maz.count = Math.round(N * Math.max(0, Math.min(1, t))); maz.visible = maz.count > 0; };
+  pila.add(maz);
+  const carga = (t: number) => {
+    const c = Math.max(0, Math.min(1, t));
+    pila.visible = c > 0.002;
+    pila.position.y = 1.4 + (3.1 - 1.4) * Math.min(1, c / 0.85);   // la cama sube del piso al nivel de carga…
+    maz.count = Math.round(N * Math.max(0, (c - 0.15) / 0.85));       // …mientras caen las mazorcas de encima
+  };
   carga(0);
   return { g, carga };
 }
