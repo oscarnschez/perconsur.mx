@@ -66,4 +66,4 @@ npx esbuild src/3d/contenedor3d.ts src/3d/campo3d.ts --bundle --format=esm --spl
   --minify --target=es2020 --outdir=assets/js --chunk-names=comun-[hash]
 ```
 
-Si cambia el nombre de `comun-*.js`, borra el anterior.
+Si cambia el nombre de `comun-*.js`, borra el anterior. La página pide los visores con `?v=<versión del pie>`, así que al subir la versión los navegadores descargan el visor nuevo en vez de usar el que tienen en caché.
