@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-iJBPlFsLj0xs63P0qKoBcc5vgxnbOTXw8CvND9Vi4mo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-Dsq6DWebtmw7Rv+09rWGnrshfS8T02Ilu/a6nyLgY0s='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -291,6 +291,19 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
 .visor-pista{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-size:13px;color:var(--ink-2);pointer-events:none;transition:opacity var(--t-base) ease}
 .visor.tocado .visor-pista{opacity:0}
 .visor-ctl{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 16px;margin-top:24px}
+.visor-ctl .btn:disabled{opacity:.42;cursor:not-allowed}
+/* opciones del contenedor: color y carga */
+.visor-opc{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 32px;margin-top:14px}
+.opc{display:flex;align-items:center;gap:8px;max-width:100%;min-width:0}
+.opc-t{font-size:14px;color:var(--ink-2);margin-right:2px}
+.colores{gap:0}
+.color-b{width:40px;height:40px;border-radius:50%;display:grid;place-items:center}
+.color-b::before{content:"";width:24px;height:24px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);transition:box-shadow var(--t-fast) ease,transform var(--t-fast) var(--ease)}
+.color-b[aria-pressed="true"]::before{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 3px var(--bg-2),0 0 0 5px var(--ink)}
+.color-b:active::before{transform:scale(.92)}
+@media (hover:hover){.color-b:hover::before{transform:scale(1.1)}}
+.seg-carga{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.seg-carga::-webkit-scrollbar{display:none}
 .specs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;margin-top:clamp(40px,5vw,56px);padding-top:28px;border-top:1px solid var(--line)}
 .specs div{display:grid;gap:6px;align-content:start}
 .specs dt{font-size:14px;color:var(--ink-2)}
@@ -560,7 +573,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
 }
 @media print{
   *,*::before,*::after{animation:none !important;transition:none !important}
-  .nav,.menu-panel,.skip,.visor-ctl{display:none}
+  .nav,.menu-panel,.skip,.visor-ctl,.visor-opc{display:none}
   [data-reveal]{opacity:1 !important;transform:none !important}
 }
 </style>
@@ -1188,6 +1201,28 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         </div>
         <button type="button" class="btn btn-quiet btn-sm" id="btnPuertas" aria-pressed="false">Abrir puertas</button>
         <button type="button" class="btn btn-quiet btn-sm" id="btnGrua" aria-pressed="false">Colocar en chasis</button>
+      </div>
+      <div class="visor-opc">
+        <div class="opc colores" role="group" aria-label="Color del contenedor">
+          <span class="opc-t" aria-hidden="true">Color</span>
+          <button type="button" class="color-b" data-color="rojo" aria-pressed="true" aria-label="Rojo" style="--c:#8a3427"></button>
+          <button type="button" class="color-b" data-color="azul" aria-pressed="false" aria-label="Azul" style="--c:#24548f"></button>
+          <button type="button" class="color-b" data-color="verde" aria-pressed="false" aria-label="Verde" style="--c:#336843"></button>
+          <button type="button" class="color-b" data-color="gris" aria-pressed="false" aria-label="Gris" style="--c:#868b91"></button>
+          <button type="button" class="color-b" data-color="naranja" aria-pressed="false" aria-label="Naranja" style="--c:#c9672f"></button>
+          <button type="button" class="color-b" data-color="blanco" aria-pressed="false" aria-label="Blanco" style="--c:#e2e4e5"></button>
+        </div>
+        <div class="opc">
+          <span class="opc-t" id="t-carga">Carga</span>
+          <div class="seg seg-carga" role="group" aria-labelledby="t-carga" data-seg>
+            <span class="seg-thumb" aria-hidden="true"></span>
+            <button type="button" class="seg-b" data-carga="cajas" aria-pressed="true">Cajas</button>
+            <button type="button" class="seg-b" data-carga="tarimas" aria-pressed="false">Tarimas</button>
+            <button type="button" class="seg-b" data-carga="costales" aria-pressed="false">Costales</button>
+            <button type="button" class="seg-b" data-carga="tambos" aria-pressed="false">Tambos</button>
+            <button type="button" class="seg-b" data-carga="vacio" aria-pressed="false">Vacío</button>
+          </div>
+        </div>
       </div>
       <dl class="specs" id="contFicha" aria-live="polite">
         <div><dt>Medidas exteriores</dt><dd data-k="ext">12.19 × 2.44 × 2.59 m</dd></div>
@@ -1934,7 +1969,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.7.0</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.8.0</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -2224,7 +2259,15 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     '40':   { nombre: 'Contenedor de 40 pies', ext: '12.19 × 2.44 × 2.59 m', int: '12.03 × 2.35 × 2.39 m', vol: '67 m³', kg: '26,700 kg', chasis: "40' o 40/20", equipo: "40'" },
     '40hc': { nombre: 'Contenedor de 40 pies high cube', ext: '12.19 × 2.44 × 2.90 m', int: '12.03 × 2.35 × 2.69 m', vol: '76 m³', kg: '26,500 kg', chasis: "40' o 40/20", equipo: "40' high cube" }
   };
-  var tam = '40', api = null, puertas = false, grua = false;
+  var tam = '40', api = null, puertas = false, grua = false, bloq = false, color = 'rojo', carga = 'cajas';
+  var colorBtns = $$('.color-b[data-color]'), cargaBtns = $$('.seg-b[data-carga]');
+  function puertasUI(){ btnPuertas.setAttribute('aria-pressed', String(puertas)); btnPuertas.textContent = puertas ? 'Cerrar puertas' : 'Abrir puertas'; }
+  // mientras la grúa mueve el contenedor las puertas van cerradas: se abren en piso o sobre el chasis
+  function bloqueo(b){
+    bloq = b; if(!btnPuertas) return;
+    btnPuertas.disabled = b; btnPuertas.title = b ? 'Las puertas se abren cuando el contenedor está en piso o sobre el chasis' : '';
+    if(b && puertas){ puertas = false; puertasUI(); }
+  }
   function pintarDatos(){
     var d = DATOS[tam];
     $('#contNombre').textContent = d.nombre;
@@ -2235,14 +2278,27 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
   }
   segBtns.forEach(function(b){ b.addEventListener('click', function(){ tam = b.dataset.size; pintarDatos(); if(api) api.setSize(tam); }); });
   if(btnPuertas) btnPuertas.addEventListener('click', function(){
-    puertas = !puertas; btnPuertas.setAttribute('aria-pressed', String(puertas));
-    btnPuertas.textContent = puertas ? 'Cerrar puertas' : 'Abrir puertas';
+    if(bloq) return;
+    puertas = !puertas; puertasUI();
     if(api) api.setDoors(puertas);
   });
+  colorBtns.forEach(function(b){ b.addEventListener('click', function(){
+    color = b.dataset.color; colorBtns.forEach(function(o){ o.setAttribute('aria-pressed', String(o === b)); });
+    if(api) api.setColor(color);
+  }); });
+  // al elegir la carga se abren las puertas para verla (si el contenedor no va colgado de la grúa)
+  cargaBtns.forEach(function(b){ b.addEventListener('click', function(){
+    carga = b.dataset.carga; cargaBtns.forEach(function(o){ o.setAttribute('aria-pressed', String(o === b)); });
+    placeThumb(b.closest('[data-seg]'));
+    if(api) api.setCarga(carga);
+    if(!puertas && !bloq && carga !== 'vacio'){ puertas = true; puertasUI(); if(api) api.setDoors(true); }
+  }); });
   // la grúa de patio toma el contenedor de la estiba y lo coloca en el chasis portacontenedor
   if(btnGrua) btnGrua.addEventListener('click', function(){
     grua = !grua; btnGrua.setAttribute('aria-pressed', String(grua));
     btnGrua.textContent = grua ? 'Retirar del chasis' : 'Colocar en chasis';
+    if(puertas){ puertas = false; puertasUI(); }
+    bloqueo(true);
     if(api) api.setCrane(grua);
   });
   var btnCot = $('#btnCotizarCont');
@@ -2257,8 +2313,8 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         var cv = document.createElement('canvas');
         if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
         import('./assets/js/contenedor3d.js?v=' + VER).then(function(m){
-          api = m.mount(visor, { reduce: reduce, onReady: function(){ visor.classList.add('listo'); } });
-          api.setSize(tam); api.setDoors(puertas); if(grua) api.setCrane(true);
+          api = m.mount(visor, { reduce: reduce, onBloqueo: bloqueo, onReady: function(){ visor.classList.add('listo'); } });
+          api.setSize(tam); api.setColor(color); api.setCarga(carga); api.setDoors(puertas); if(grua) api.setCrane(true);
         }).catch(function(){ /* sin módulo: queda el dibujo */ });
       }, { rootMargin: '400px 0px' });
       vio.observe(visor);
