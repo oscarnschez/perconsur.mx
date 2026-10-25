@@ -83,6 +83,8 @@ Si cambia el nombre de `comun-*.js`, borra el anterior. La página pide los viso
 python3 src/presentacion/build.py
 ```
 
-y después se recalcula el hash del script en su CSP, como en `index.html`. Usa las fuentes Archivo e
-Inter (variables, en `assets/fonts/`) y las imágenes de `assets/img/presentacion/`. Se navega con las
-flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n.
+y después se recalcula el hash del script en su CSP, como en `index.html`. Usa la fuente Inter
+(variable, en `assets/fonts/`) y las imágenes de `assets/img/presentacion/`. Se navega con las
+flechas, tocando o deslizando, y `#n` en la dirección abre la diapositiva n. Las transiciones y las
+entradas tienen sonidos discretos generados con Web Audio (sin archivos); se silencian con el botón de
+la barra o con la tecla M.
