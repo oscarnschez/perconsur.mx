@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-tFTJ/YGWUi+KfAeYqAupgFeW7UHGzb4rBs7YHkv4E+A='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-6kVFfQgPzS60QawIXm3GP9Zcj1/o3bpUBPI7ZJH4hHs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -227,6 +227,9 @@ p{max-width:64ch}
 main{min-height:100svh}
 .page{display:none}
 .page.active{display:block;animation:page-in var(--t-base) ease both}
+/* sin JavaScript: la página que nombra la dirección (#privacidad, #flota…) se muestra con :target */
+html:not(.js) .page:has(> .ancla:target){display:block}
+html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){display:none}
 @keyframes page-in{from{opacity:0}to{opacity:1}}
 
 /* ---------- INICIO ---------- */
@@ -578,7 +581,6 @@ main{min-height:100svh}
 <linearGradient id="g-cab-hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.26"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
 <linearGradient id="g-glass" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#C4D3E6"/><stop offset="0.35" stop-color="#7E93B2"/><stop offset="0.36" stop-color="#5D7194"/><stop offset="1" stop-color="#1E2A40"/></linearGradient>
 <linearGradient id="g-frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4D53"/><stop offset="0.25" stop-color="#2E3035"/><stop offset="1" stop-color="#1B1C20"/></linearGradient>
-<linearGradient id="g-tank" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B7BEC6"/><stop offset="0.12" stop-color="#F4F6F8"/><stop offset="0.3" stop-color="#FFFFFF"/><stop offset="0.55" stop-color="#C8CED5"/><stop offset="0.85" stop-color="#8B939D"/><stop offset="1" stop-color="#6E757E"/></linearGradient>
 <linearGradient id="g-lens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.5" stop-color="#DCE6F2"/><stop offset="1" stop-color="#9FB1C8"/></linearGradient>
 <linearGradient id="g-tail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF6B5E"/><stop offset="1" stop-color="#A3140B"/></linearGradient>
 <linearGradient id="g-shade-v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.2"/><stop offset="0.14" stop-color="#FFFFFF" stop-opacity="0.04"/><stop offset="0.8" stop-color="#000000" stop-opacity="0.06"/><stop offset="1" stop-color="#000000" stop-opacity="0.28"/></linearGradient>
@@ -586,7 +588,6 @@ main{min-height:100svh}
 <radialGradient id="g-tire" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#2B2D31"/><stop offset="0.62" stop-color="#232428"/><stop offset="0.86" stop-color="#17181B"/><stop offset="1" stop-color="#0E0F11"/></radialGradient>
 <radialGradient id="g-rim" cx="0.5" cy="0.5" r="0.5" fx="0.38" fy="0.34"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.45" stop-color="#E3E7EC"/><stop offset="0.8" stop-color="#B4BBC4"/><stop offset="1" stop-color="#7F8791"/></radialGradient>
 <radialGradient id="g-hub" cx="0.5" cy="0.5" r="0.5" fx="0.35" fy="0.3"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.6" stop-color="#C9CFD6"/><stop offset="1" stop-color="#7A818B"/></radialGradient>
-<pattern id="p-perf" width="3" height="3.4" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.7" r=".75" fill="#5D646D"/></pattern>
 <radialGradient id="g-ground" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#000000" stop-opacity="0.34"/><stop offset="0.6" stop-color="#000000" stop-opacity="0.14"/><stop offset="1" stop-color="#000000" stop-opacity="0"/></radialGradient>
 <linearGradient id="p-corr-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7A3329"/><stop offset="0.14" stop-color="#8E3B30"/><stop offset="0.34" stop-color="#A25E55"/><stop offset="0.5" stop-color="#934338"/><stop offset="0.78" stop-color="#6C2D24"/><stop offset="1" stop-color="#7A3329"/></linearGradient><pattern id="p-corr" width="12" height="20" patternUnits="userSpaceOnUse"><rect width="12" height="20" fill="url(#p-corr-g)"/></pattern>
 <linearGradient id="p-corr-gris-g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#90969E"/><stop offset="0.14" stop-color="#A7AFB8"/><stop offset="0.34" stop-color="#B7BDC5"/><stop offset="0.5" stop-color="#ABB2BB"/><stop offset="0.78" stop-color="#7F858C"/><stop offset="1" stop-color="#90969E"/></linearGradient><pattern id="p-corr-gris" width="12" height="20" patternUnits="userSpaceOnUse"><rect width="12" height="20" fill="url(#p-corr-gris-g)"/></pattern>
@@ -695,6 +696,7 @@ main{min-height:100svh}
      PÁGINA: INICIO
      ===================================================================== -->
 <section class="page active" id="page-inicio" data-page="inicio" aria-labelledby="t-inicio">
+  <span class="ancla" id="inicio" aria-hidden="true"></span>
 
   <!-- Presentación: qué es, a quién sirve y la acción principal -->
   <div class="hero">
@@ -913,6 +915,7 @@ main{min-height:100svh}
      PÁGINA: NOSOTROS
      ===================================================================== -->
 <section class="page" id="page-nosotros" data-page="nosotros" aria-labelledby="t-nosotros">
+  <span class="ancla" id="nosotros" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-nosotros" tabindex="-1">Más de 15 años en carretera.</h1>
     <p class="t-lede">Perconsur es una empresa mexicana de transporte de carga por carretera, especializada en el movimiento de contenedores marítimos.</p>
@@ -1001,6 +1004,7 @@ main{min-height:100svh}
      PÁGINA: SERVICIOS
      ===================================================================== -->
 <section class="page" id="page-servicios" data-page="servicios" aria-labelledby="t-servicios">
+  <span class="ancla" id="servicios" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-servicios" tabindex="-1">Lo que hacemos con tu carga.</h1>
     <p class="t-lede">Trabajamos en dos divisiones: Puerto, para contenedores marítimos desde Manzanillo, y Campo, para la cosecha que va del campo a la planta.</p>
@@ -1158,6 +1162,7 @@ main{min-height:100svh}
      PÁGINA: DIVISIÓN PUERTO
      ===================================================================== -->
 <section class="page" id="page-puerto" data-page="puerto" aria-labelledby="t-puerto">
+  <span class="ancla" id="puerto" aria-hidden="true"></span>
   <div class="intro wrap">
     <p class="t-eyebrow">División Puerto</p>
     <h1 class="t-display" id="t-puerto" tabindex="-1">Contenedores desde Manzanillo.</h1>
@@ -1172,7 +1177,7 @@ main{min-height:100svh}
         <h2 class="t-headline">Conoce el contenedor. <span class="light">Gíralo y compara medidas.</span></h2>
         <p class="t-lede">Lo llevamos sobre chasis de 20', 40' o 40/20, un contenedor por viaje.</p>
       </div>
-      <div class="visor" id="visor3d" tabindex="0" role="img" aria-label="Contenedor de 40 pies en 3D. Arrástralo o usa las flechas para girarlo.">
+      <div class="visor" id="visor3d" tabindex="0" role="group" aria-roledescription="visor 3D" aria-label="Contenedor de 40 pies en 3D. Arrástralo o usa las flechas para girarlo.">
         <svg class="visor-poster" viewBox="0 0 330 100" aria-hidden="true" focusable="false"><use href="#ch40"/></svg>
         <p class="visor-pista" aria-hidden="true">Arrastra para girar</p>
       </div>
@@ -1311,6 +1316,7 @@ main{min-height:100svh}
      PÁGINA: DIVISIÓN CAMPO
      ===================================================================== -->
 <section class="page tema-campo" id="page-campo" data-page="campo" aria-labelledby="t-campo">
+  <span class="ancla" id="campo" aria-hidden="true"></span>
   <div class="intro wrap">
     <p class="t-eyebrow">División Campo</p>
     <h1 class="t-display" id="t-campo" tabindex="-1">Cosecha del campo a la planta.</h1>
@@ -1325,7 +1331,7 @@ main{min-height:100svh}
         <h2 class="t-headline t-tinta">Conoce la tolva y la jaula. <span class="light">Gíralas y cárgalas.</span></h2>
         <p class="t-lede">Las dos unidades con que movemos la cosecha del lugar de carga a la planta.</p>
       </div>
-      <div class="visor" id="visorCampo" tabindex="0" role="img" aria-label="Remolque tolva en 3D. Arrástralo o usa las flechas para girarlo.">
+      <div class="visor" id="visorCampo" tabindex="0" role="group" aria-roledescription="visor 3D" aria-label="Remolque tolva en 3D. Arrástralo o usa las flechas para girarlo.">
         <svg class="visor-poster" viewBox="0 0 1000 300" aria-hidden="true" focusable="false"><use href="#rig-tolva"/></svg>
         <p class="visor-pista" aria-hidden="true">Arrastra para girar</p>
       </div>
@@ -1422,6 +1428,7 @@ main{min-height:100svh}
      PÁGINA: FLOTA
      ===================================================================== -->
 <section class="page" id="page-flota" data-page="flota" aria-labelledby="t-flota">
+  <span class="ancla" id="flota" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-flota" tabindex="-1">Unidades propias, listas para trabajar.</h1>
     <p class="t-lede">Tractocamiones y remolques con documentación vigente, mantenidos para operar de manera segura.</p>
@@ -1512,6 +1519,7 @@ main{min-height:100svh}
      PÁGINA: CLIENTES
      ===================================================================== -->
 <section class="page" id="page-clientes" data-page="clientes" aria-labelledby="t-clientes">
+  <span class="ancla" id="clientes" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-clientes" tabindex="-1">La carga de la industria.</h1>
     <p class="t-lede">Trabajamos con empresas que necesitan que su carga o contenedor llegue el día que lo programaron. Estos son algunos de los clientes que confían en nosotros.</p>
@@ -1588,6 +1596,7 @@ main{min-height:100svh}
      PÁGINA: CONTACTO
      ===================================================================== -->
 <section class="page" id="page-contacto" data-page="contacto" aria-labelledby="t-contacto">
+  <span class="ancla" id="contacto" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-contacto" tabindex="-1">Cuéntanos qué mueves.</h1>
     <p class="t-lede">Con el origen, el destino y el tipo de carga te enviamos una cotización. Si ya tienes fecha programada, mejor.</p>
@@ -1707,6 +1716,7 @@ main{min-height:100svh}
      PÁGINAS LEGALES
      ===================================================================== -->
 <section class="page" id="page-privacidad" data-page="privacidad" aria-labelledby="t-privacidad">
+  <span class="ancla" id="privacidad" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-privacidad" tabindex="-1">Aviso de privacidad.</h1>
     <p class="t-lede">Cómo tratamos los datos personales que nos compartes al pedir una cotización o contratar un traslado.</p>
@@ -1715,7 +1725,7 @@ main{min-height:100svh}
     <div class="wrap">
       <div class="grid">
         <aside class="c-4 legal-aside">
-          <p class="t-small">Última actualización: 22 de octubre de 2026.</p>
+          <p class="t-small">Última actualización: 25 de octubre de 2026.</p>
           <ul class="legal-docs">
             <li><a href="#privacidad" data-page="privacidad">Aviso de privacidad</a></li>
             <li><a href="#terminos" data-page="terminos">Términos y condiciones</a></li>
@@ -1733,6 +1743,7 @@ main{min-height:100svh}
             <li><b>Datos de tu solicitud:</b> servicio y equipo que necesitas, origen, destino y el mensaje que nos escribas.</li>
             <li><b>Si contratas el servicio:</b> datos de facturación (razón social, RFC y domicilio fiscal), y nombres y teléfonos de las personas de contacto en planta, almacén o campo.</li>
           </ul>
+          <p>Si nos compartes datos de otras personas, como tus contactos en planta, almacén o campo, confirmas que les informaste de este aviso de privacidad.</p>
           <p>No pedimos datos personales sensibles. Te pedimos no incluirlos en tus mensajes.</p>
 
           <h2>3. Cómo obtenemos tus datos</h2>
@@ -1778,6 +1789,7 @@ main{min-height:100svh}
 </section>
 
 <section class="page" id="page-terminos" data-page="terminos" aria-labelledby="t-terminos">
+  <span class="ancla" id="terminos" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-terminos" tabindex="-1">Términos y condiciones.</h1>
     <p class="t-lede">Las reglas para usar este sitio web y solicitar cotizaciones.</p>
@@ -1844,6 +1856,7 @@ main{min-height:100svh}
 </section>
 
 <section class="page" id="page-cookies" data-page="cookies" aria-labelledby="t-cookies">
+  <span class="ancla" id="cookies" aria-hidden="true"></span>
   <div class="intro wrap">
     <h1 class="t-display" id="t-cookies" tabindex="-1">Política de cookies.</h1>
     <p class="t-lede">Este sitio no usa cookies. Aquí te explicamos qué significa.</p>
@@ -1927,9 +1940,9 @@ main{min-height:100svh}
     </div>
     <p class="pie-aviso">PERCONSUR y su logotipo son marcas de PERCONSUR DE NAYARIT GROUP, S.A. de C.V. Los nombres y logotipos de clientes que aparecen en este sitio pertenecen a sus respectivos titulares y se muestran solo como referencia. <a href="#marcas">Aviso sobre marcas</a>.</p>
     <div class="pie-base">
-      <p>© 2026 PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
+      <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.5.5</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.5.6</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -1962,6 +1975,9 @@ main{min-height:100svh}
   function placeAll(){ $$('[data-seg]').forEach(placeThumb); }
   window.addEventListener('resize', placeAll);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(placeAll);
+
+  /* ---------- año del pie: siempre el actual ---------- */
+  var anio = $('#anio'); if(anio) anio.textContent = String(new Date().getFullYear());
 
   /* ---------- router por hash ---------- */
   var titles = {
@@ -2307,10 +2323,8 @@ main{min-height:100svh}
 <symbol id="rig-jaula" viewBox="0 0 1000 300"><ellipse cx="490" cy="281" rx="480" ry="9" fill="url(#g-ground)"/><use href="#trailer-jaula-a"/><use href="#tractor-a"/><use href="#wheel" x="63" y="227" width="54" height="54"/><use href="#wheel" x="132" y="227" width="54" height="54"/><use href="#wheel" x="201" y="227" width="54" height="54"/><use href="#wheel" x="532" y="227" width="54" height="54"/><use href="#wheel" x="600" y="227" width="54" height="54"/><use href="#wheel" x="857" y="227" width="54" height="54"/><use href="#tractor-b"/></symbol>
 <symbol id="ch20-base" viewBox="0 0 330 100"><ellipse cx="79" cy="95" rx="71" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="142" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="142" height="1" fill="#5A5E65"/><path d="M120,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="116" y="72" width="3" height="14" fill="#2A2C30"/><rect x="112" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
 <symbol id="cont-ch20" viewBox="0 0 330 100"><rect x="10" y="16" width="104" height="50" fill="url(#p-corr-gris)"/><rect x="10" y="16" width="104" height="50" fill="url(#g-shade-v)"/><rect x="67.4" y="21" width="2.2" height="16.1" fill="#000000" fill-opacity="0.05"/><rect x="85.8" y="21" width="2.4" height="24.0" fill="#000000" fill-opacity="0.05"/><rect x="63.6" y="21" width="1.6" height="14.1" fill="#000000" fill-opacity="0.10"/><rect x="10" y="16" width="104" height="5" fill="#B2B9C1"/><rect x="10" y="21" width="104" height="1.2" fill="#000000" fill-opacity=".25"/><rect x="10" y="58" width="104" height="8" fill="#787E84"/><rect x="10" y="58" width="104" height="1.2" fill="#FFFFFF" fill-opacity=".14"/><rect x="10" y="16" width="10" height="50" fill="#939AA2"/><rect x="10" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="18" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="10" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="10" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="61" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="16" width="10" height="50" fill="#939AA2"/><rect x="104" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="112" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="104" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="61" rx="2.4" ry="1.5" fill="#101114"/></symbol>
-<symbol id="ch20" viewBox="0 0 330 100"><use href="#ch20-base"/><use href="#cont-ch20"/></symbol>
 <symbol id="ch4020-base" viewBox="0 0 330 100"><ellipse cx="165" cy="95" rx="157" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="314" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="314" height="1" fill="#5A5E65"/><path d="M292,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="247" y="72" width="3" height="14" fill="#2A2C30"/><rect x="243" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><rect x="10.75" y="16.75" width="208.5" height="48.5" rx="1" fill="none" stroke="#686B70" stroke-width="1.5" stroke-dasharray="5 4"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
 <symbol id="cont-ch4020" viewBox="0 0 330 100"><rect x="10" y="16" width="104" height="50" fill="url(#p-corr-gris)"/><rect x="10" y="16" width="104" height="50" fill="url(#g-shade-v)"/><rect x="67.4" y="21" width="2.2" height="16.1" fill="#000000" fill-opacity="0.05"/><rect x="85.8" y="21" width="2.4" height="24.0" fill="#000000" fill-opacity="0.05"/><rect x="63.6" y="21" width="1.6" height="14.1" fill="#000000" fill-opacity="0.10"/><rect x="10" y="16" width="104" height="5" fill="#B2B9C1"/><rect x="10" y="21" width="104" height="1.2" fill="#000000" fill-opacity=".25"/><rect x="10" y="58" width="104" height="8" fill="#787E84"/><rect x="10" y="58" width="104" height="1.2" fill="#FFFFFF" fill-opacity=".14"/><rect x="10" y="16" width="10" height="50" fill="#939AA2"/><rect x="10" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="18" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="10" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="10" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="15" cy="61" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="16" width="10" height="50" fill="#939AA2"/><rect x="104" y="16" width="2" height="50" fill="#FFFFFF" fill-opacity=".14"/><rect x="112" y="16" width="2" height="50" fill="#000000" fill-opacity=".22"/><rect x="104" y="16" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="21" rx="2.4" ry="1.5" fill="#101114"/><rect x="104" y="56" width="10" height="10" fill="#686C72"/><ellipse cx="109" cy="61" rx="2.4" ry="1.5" fill="#101114"/></symbol>
-<symbol id="ch4020" viewBox="0 0 330 100"><use href="#ch4020-base"/><use href="#cont-ch4020"/></symbol>
 <symbol id="plat" viewBox="0 0 330 100"><ellipse cx="165" cy="95" rx="157" ry="4" fill="url(#g-ground)"/><rect x="8" y="66" width="314" height="6" fill="url(#g-frame)"/><rect x="8" y="66" width="314" height="1" fill="#5A5E65"/><path d="M292,66 h30 v9 h-26 Z" fill="#2E3035"/><rect x="247" y="72" width="3" height="14" fill="#2A2C30"/><rect x="243" y="86" width="11" height="2" fill="#2A2C30"/><rect x="8" y="67" width="4" height="3" rx="1" fill="url(#g-tail)"/><rect x="14" y="72" width="2" height="12" fill="#2A2C30"/><rect x="9" y="83" width="18" height="3" fill="#1E1F23"/><rect x="8" y="60" width="314" height="6" fill="#8A6A47"/><rect x="8" y="60" width="314" height="1.4" fill="#FFFFFF" fill-opacity=".22"/><path d="M40,60 v6 M80,60 v6 M120,60 v6 M160,60 v6 M200,60 v6 M240,60 v6 M280,60 v6" stroke="#000000" stroke-opacity=".18" stroke-width="1"/><rect x="11" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="111" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="214" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="314" y="57.5" width="5" height="3" rx="1" fill="#3A3D43"/><rect x="122.75" y="16.75" width="190.5" height="42.5" rx="1" fill="none" stroke="#686B70" stroke-width="1.5" stroke-dasharray="5 4"/><use href="#wheel" x="30.5" y="76" width="19" height="19"/><use href="#wheel" x="54.5" y="76" width="19" height="19"/></symbol>
 <symbol id="plat-cajas" viewBox="0 0 330 100"><rect x="26" y="34" width="34" height="26" rx="1" fill="#C89A62"/><rect x="26" y="34" width="34" height="3" fill="#000000" fill-opacity=".12"/><path d="M26,43 h34 M26,51 h34 M37,34 v26 M49,34 v26" stroke="#9C7443" stroke-width="1"/><rect x="64" y="42" width="40" height="18" rx="1" fill="#D2A66C"/><path d="M64,51 h40 M77,42 v18 M90,42 v18" stroke="#9C7443" stroke-width="1"/><rect x="31" y="22" width="24" height="12" rx="1" fill="#B9884F"/><path d="M43,22 v12" stroke="#8A6236" stroke-width="1"/><path d="M45,22 v38 M84,42 v18" stroke="#F2B705" stroke-width="2.2"/></symbol>
 
