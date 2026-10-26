@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-Dsq6DWebtmw7Rv+09rWGnrshfS8T02Ilu/a6nyLgY0s='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-+t/XV+yKfWZYW5W/NDQpzj1EXQhp0Uqgz4yvx5ZdBV0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -1969,7 +1969,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.9.2</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.9.3</span> · Actualizado el <time datetime="2026-10-25">25 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -2259,7 +2259,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     '40':   { nombre: 'Contenedor de 40 pies', ext: '12.19 × 2.44 × 2.59 m', int: '12.03 × 2.35 × 2.39 m', vol: '67 m³', kg: '26,700 kg', chasis: "40' o 40/20", equipo: "40'" },
     '40hc': { nombre: 'Contenedor de 40 pies high cube', ext: '12.19 × 2.44 × 2.90 m', int: '12.03 × 2.35 × 2.69 m', vol: '76 m³', kg: '26,500 kg', chasis: "40' o 40/20", equipo: "40' high cube" }
   };
-  var tam = '40', api = null, puertas = false, grua = false, bloq = false, color = 'rojo', carga = 'cajas';
+  var tam = '40', api = null, puertas = false, grua = false, bloq = false, color = 'rojo', contenido = 'cajas';
   var colorBtns = $$('.color-b[data-color]'), cargaBtns = $$('.seg-b[data-carga]');
   function puertasUI(){ btnPuertas.setAttribute('aria-pressed', String(puertas)); btnPuertas.textContent = puertas ? 'Cerrar puertas' : 'Abrir puertas'; }
   // mientras la grúa mueve el contenedor las puertas van cerradas: se abren en piso o sobre el chasis
@@ -2288,10 +2288,10 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
   }); });
   // al elegir la carga se abren las puertas para verla (si el contenedor no va colgado de la grúa)
   cargaBtns.forEach(function(b){ b.addEventListener('click', function(){
-    carga = b.dataset.carga; cargaBtns.forEach(function(o){ o.setAttribute('aria-pressed', String(o === b)); });
+    contenido = b.dataset.carga; cargaBtns.forEach(function(o){ o.setAttribute('aria-pressed', String(o === b)); });
     placeThumb(b.closest('[data-seg]'));
-    if(api) api.setCarga(carga);
-    if(!puertas && !bloq && carga !== 'vacio'){ puertas = true; puertasUI(); if(api) api.setDoors(true); }
+    if(api) api.setCarga(contenido);
+    if(!puertas && !bloq && contenido !== 'vacio'){ puertas = true; puertasUI(); if(api) api.setDoors(true); }
   }); });
   // la grúa de patio toma el contenedor de la estiba y lo coloca en el chasis portacontenedor
   if(btnGrua) btnGrua.addEventListener('click', function(){
@@ -2314,7 +2314,7 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
         if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda el dibujo
         import('./assets/js/contenedor3d.js?v=' + VER).then(function(m){
           api = m.mount(visor, { reduce: reduce, onBloqueo: bloqueo, onReady: function(){ visor.classList.add('listo'); } });
-          api.setSize(tam); api.setColor(color); api.setCarga(carga); api.setDoors(puertas); if(grua) api.setCrane(true);
+          api.setSize(tam); api.setColor(color); api.setCarga(contenido); api.setDoors(puertas); if(grua) api.setCrane(true);
         }).catch(function(){ /* sin módulo: queda el dibujo */ });
       }, { rootMargin: '400px 0px' });
       vio.observe(visor);
