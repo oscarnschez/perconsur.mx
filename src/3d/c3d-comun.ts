@@ -35,6 +35,21 @@ export function geoViga(a: THREE.Vector3, b: THREE.Vector3, ancho: number, alto 
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 export { V };
 
+// UV en metros proyectadas por la cara dominante (caja), para que una textura conserve su escala en piezas largas
+export function uvMundo(geo: THREE.BufferGeometry, escala = 1) {
+  const p = geo.attributes.position, n = geo.attributes.normal, uv = new Float32Array(p.count * 2);
+  for (let i = 0; i < p.count; i++) {
+    const ax = Math.abs(n.getX(i)), ay = Math.abs(n.getY(i)), az = Math.abs(n.getZ(i));
+    const [u, v] = ax >= ay && ax >= az ? [p.getZ(i), p.getY(i)] : ay >= az ? [p.getX(i), p.getZ(i)] : [p.getX(i), p.getY(i)];
+    uv[i * 2] = u / escala; uv[i * 2 + 1] = v / escala;
+  }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+}
+// aplica uvMundo a las mallas de un grupo cuyo material esté en la lista
+export function uvMundoEn(g: THREE.Object3D, mats: THREE.Material[], escala = 1) {
+  g.traverse((o: any) => { if (o.isMesh && mats.includes(o.material)) uvMundo(o.geometry, escala); });
+}
+
 // Junta las piezas estáticas por material: muchas cajas, una sola llamada de dibujo por material.
 export function fusion() {
   const porMat = new Map<THREE.Material, THREE.BufferGeometry[]>();
