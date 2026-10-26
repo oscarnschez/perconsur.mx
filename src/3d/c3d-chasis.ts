@@ -1,7 +1,8 @@
 // Chasis portacontenedor con cuello de ganso, enganchado a un tractocamión PERCONSUR (quinta rueda).
 import * as THREE from 'three';
-import { azar, lienzo, caja, fusion, rueda, comunes, V, texDesgaste } from './c3d-comun';
+import { azar, lienzo, fusion, rueda, comunes, V, uvMundoEn } from './c3d-comun';
 import { MEDIDAS, type Size } from './c3d-contenedor';
+import { crearTracto } from './c3d-tracto';
 
 export const ALTO_CHASIS = 1.32;    // cara superior de las mesas, donde asienta el contenedor
 const Y_PERNO = 1.15;               // placa del perno rey, sobre la quinta rueda
@@ -9,145 +10,83 @@ const Y_PERNO = 1.15;               // placa del perno rey, sobre la quinta rued
 function texReflejante() {   // cinta reflejante roja y blanca
   return lienzo(256, 16, g => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? '#f2f2f2' : '#d2231b'; g.fillRect(i * 32, 0, 32, 16); } }, [6, 1]);
 }
-function texRejilla() {
-  return lienzo(256, 128, g => {
-    g.fillStyle = '#0f1013'; g.fillRect(0, 0, 256, 128);
-    for (let y = 6; y < 128; y += 12) { const grd = g.createLinearGradient(0, y, 0, y + 7); grd.addColorStop(0, '#f5f7f9'); grd.addColorStop(1, '#7d838a'); g.fillStyle = grd; g.fillRect(4, y, 248, 6); }
-  });
+// acero con pintura negra de trabajo: moteado, polvo, despostilladuras y escurrimientos de óxido.
+// Devuelve el color y la rugosidad del mismo patrón (el óxido es más áspero, el metal expuesto más liso).
+// El lienzo cubre 2 × 2 m con UV en metros.
+function texAcero(semilla: number) {
+  const pinta = (g: CanvasRenderingContext2D, rugo: boolean) => {
+    const r = azar(semilla), N = 512;
+    g.fillStyle = rugo ? '#969696' : '#2b2d31'; g.fillRect(0, 0, N, N);
+    for (let i = 0; i < 1400; i++) {
+      const c = r() < 0.5 ? 255 : 0, a = 0.012 + r() * 0.025;
+      g.fillStyle = `rgba(${c},${c},${c},${a})`; g.beginPath(); g.arc(r() * N, r() * N, 3 + r() * 22, 0, Math.PI * 2); g.fill();
+    }
+    for (let i = 0; i < 60; i++) {   // polvo del camino, café grisáceo
+      const x = r() * N, y = r() * N, rad = 20 + r() * 60, grd = g.createRadialGradient(x, y, 0, x, y, rad);
+      grd.addColorStop(0, rugo ? 'rgba(220,220,220,0.14)' : 'rgba(110,96,80,0.09)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = grd; g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+    for (let i = 0; i < 22; i++) {   // óxido: mancha con escurrimiento hacia abajo
+      const x = r() * N, y = r() * N, rad = 2 + r() * 9, l = 20 + r() * 110;
+      const esc = g.createLinearGradient(0, y, 0, y + l);
+      esc.addColorStop(0, rugo ? 'rgba(235,235,235,0.55)' : 'rgba(122,58,24,0.5)'); esc.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = esc; g.fillRect(x - rad * 0.35, y, rad * 0.7, l);
+      const m = g.createRadialGradient(x, y, 0, x, y, rad);
+      m.addColorStop(0, rugo ? 'rgba(245,245,245,0.95)' : 'rgba(150,72,28,0.95)'); m.addColorStop(0.6, rugo ? 'rgba(235,235,235,0.6)' : 'rgba(105,50,22,0.6)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = m; g.beginPath(); g.arc(x, y, rad, 0, Math.PI * 2); g.fill();
+    }
+    for (let i = 0; i < 160; i++) {   // despostilladuras: primario gris y acero brillante en el centro
+      const x = r() * N, y = r() * N, a = 0.6 + r() * 1.8;
+      g.fillStyle = rugo ? '#7a7a7a' : '#44474c'; g.beginPath(); g.ellipse(x, y, a * 1.4, a * 0.8, r() * 3, 0, Math.PI * 2); g.fill();
+      if (a > 1.6) { g.fillStyle = rugo ? '#5a5a5a' : '#6e7379'; g.beginPath(); g.arc(x, y, a * 0.5, 0, Math.PI * 2); g.fill(); }
+    }
+  };
+  return { map: lienzo(512, 512, g => pinta(g, false), [0.5, 0.5]), rugosidad: lienzo(512, 512, g => pinta(g, true), [0.5, 0.5], false) };
 }
-function texLetrero(texto: string, w = 512, h = 96) {
-  return lienzo(w, h, g => {
-    g.fillStyle = '#ffffff'; g.font = `600 ${Math.round(h * 0.56)}px "Inter", Arial, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-    (g as any).letterSpacing = `${Math.round(h * 0.12)}px`; g.fillText(texto, w / 2, h / 2 + 2);
+// galvanizado por inmersión: cristales de zinc ("lentejuelas") de tonos distintos y manchas de óxido blanco.
+// El lienzo cubre 0.5 × 0.5 m.
+function texGalvanizado() {
+  const N = 256, r = azar(31), pts = Array.from({ length: 80 }, () => [r() * N, r() * N, 150 + r() * 70, r() * 6.28]);
+  return lienzo(N, N, g => {
+    const img = g.createImageData(N, N);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      let best = 1e9, sel = pts[0];
+      for (const p of pts) {
+        const dx = Math.min(Math.abs(x - p[0]), N - Math.abs(x - p[0])), dy = Math.min(Math.abs(y - p[1]), N - Math.abs(y - p[1])), d = dx * dx + dy * dy;
+        if (d < best) { best = d; sel = p; }
+      }
+      const v = sel[2] + Math.sin((x * Math.cos(sel[3]) + y * Math.sin(sel[3])) * 0.35) * 6, o = (y * N + x) * 4;
+      img.data[o] = v; img.data[o + 1] = v + 2; img.data[o + 2] = v + 5; img.data[o + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    for (let i = 0; i < 18; i++) { g.fillStyle = `rgba(235,236,232,${0.1 + r() * 0.15})`; g.beginPath(); g.arc(r() * N, r() * N, 4 + r() * 16, 0, Math.PI * 2); g.fill(); }
+  }, [2, 2]);
+}
+// placa de servicio público federal
+function texPlaca() {
+  return lienzo(512, 256, g => {
+    g.fillStyle = '#f4f5f2'; g.fillRect(0, 0, 512, 256);
+    g.strokeStyle = '#1f2a44'; g.lineWidth = 10; g.strokeRect(10, 10, 492, 236);
+    g.fillStyle = '#1f2a44'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '600 30px "Inter", Arial, sans-serif'; g.fillText('SERVICIO PÚBLICO FEDERAL', 256, 46);
+    g.font = '700 118px "Inter", Arial, sans-serif'; g.fillText('98-AE-3P', 256, 148);
+    g.font = '600 26px "Inter", Arial, sans-serif'; g.fillText('MÉXICO', 256, 222);
   });
 }
 
 let MAT: ReturnType<typeof crear> | null = null;
 function crear() {
-  const pintura = new THREE.MeshPhysicalMaterial({ color: 0x2b49a6, metalness: 0.45, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.07 });
+  const acero = texAcero(8);
   return {
-    pintura,
-    pinturaOsc: new THREE.MeshPhysicalMaterial({ color: 0x1d3478, metalness: 0.45, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.08 }),
-    chasis: new THREE.MeshStandardMaterial({ color: 0x1c1e22, map: texDesgaste(8, 0.6, [1 / 2, 1 / 2]), roughness: 0.55, metalness: 0.4 }),
+    chasis: new THREE.MeshStandardMaterial({ map: acero.map, roughnessMap: acero.rugosidad, roughness: 1, metalness: 0.35 }),
+    galv: new THREE.MeshStandardMaterial({ map: texGalvanizado(), metalness: 0.85, roughness: 0.4 }),
     reflejante: new THREE.MeshStandardMaterial({ map: texReflejante(), roughness: 0.3, emissive: 0x220000 }),
-    rejilla: new THREE.MeshStandardMaterial({ map: texRejilla(), metalness: 0.8, roughness: 0.25 }),
-    letrero: new THREE.MeshStandardMaterial({ map: texLetrero('PERCONSUR'), transparent: true, roughness: 0.35, polygonOffset: true, polygonOffsetFactor: -2 }),
-    plastico: new THREE.MeshStandardMaterial({ color: 0x16171a, roughness: 0.7 }),
+    placa: new THREE.MeshStandardMaterial({ map: texPlaca(), roughness: 0.35, metalness: 0.2 }),
     mangueraR: new THREE.MeshStandardMaterial({ color: 0xc8281f, roughness: 0.5 }),
     mangueraA: new THREE.MeshStandardMaterial({ color: 0x2f5fc8, roughness: 0.5 }),
   };
 }
 const mats = () => MAT ?? (MAT = crear());
-
-// perfil en el plano (z, y) extruido a lo ancho (x), centrado en x
-function perfil(dibuja: (s: THREE.Shape) => void, ancho: number, bisel = 0.05) {
-  const s = new THREE.Shape(); dibuja(s);
-  const geo = new THREE.ExtrudeGeometry(s, { depth: ancho - 2 * bisel, bevelEnabled: bisel > 0, bevelThickness: bisel, bevelSize: bisel, bevelSegments: 4, curveSegments: 18 });
-  geo.rotateY(-Math.PI / 2); geo.translate((ancho - 2 * bisel) / 2, 0, 0);
-  return geo;
-}
-// arco de salpicadera alrededor de una rueda (centro en z, y), extruido a lo ancho
-function salpicadera(z: number, y: number, rIn: number, rOut: number, ancho: number, desde = 0, hasta = Math.PI) {
-  return perfil(s => {
-    s.absarc(z, y, rOut, desde, hasta, false);
-    s.absarc(z, y, rIn, hasta, desde, true);
-  }, ancho, 0.015);
-}
-
-// ---------- tractocamión ----------
-// Origen en el perno rey (centro de la quinta rueda), frente hacia −z.
-export function crearTracto() {
-  const M = mats(), C = comunes();
-  const g = new THREE.Group(); g.name = 'tractocamion';
-  const f = fusion();
-  // bastidor, quinta rueda y plataforma
-  for (const sx of [-1, 1]) { f.caja(M.chasis, 0.012, 0.3, 8.2, sx * 0.42, 0.93, -2.85); f.caja(M.chasis, 0.08, 0.012, 8.2, sx * 0.38, 1.08, -2.85); f.caja(M.chasis, 0.08, 0.012, 8.2, sx * 0.38, 0.78, -2.85); }
-  for (const z of [-6.6, -5.2, -3.6, -1.8, -0.7, 0.5, 1.2]) f.caja(M.chasis, 0.84, 0.18, 0.08, 0, 0.93, z);
-  f.caja(C.negro, 1.05, 0.07, 1.0, 0, Y_PERNO - 0.035, 0.05);
-  f.caja(C.negroMate, 0.12, 0.072, 0.5, 0, Y_PERNO - 0.034, 0.32);
-  for (const sx of [-1, 1]) f.caja(C.negro, 0.12, 0.1, 0.5, sx * 0.4, 1.05, 0.05);
-  f.caja(C.diamante, 0.9, 0.03, 0.75, 0, 1.1, -1.05);
-  // salpicaderas traseras (cuartos) y loderas
-  for (const sx of [-1, 1]) {
-    f.geo(M.plastico, salpicadera(-0.35, 0.52, 0.56, 0.6, 0.62, Math.PI * 0.15, Math.PI * 0.85), sx * 0.88, 0, 0);
-    f.geo(M.plastico, salpicadera(0.95, 0.52, 0.56, 0.6, 0.62, Math.PI * 0.15, Math.PI * 0.85), sx * 0.88, 0, 0);
-    f.caja(C.hule, 0.62, 0.6, 0.012, sx * 0.88, 0.55, 1.65);
-  }
-  // cofre con salpicaderas delanteras
-  f.geo(M.pintura, perfil(s => {
-    s.moveTo(-4.4, 0.85); s.lineTo(-4.4, 2.02); s.quadraticCurveTo(-5.6, 2.0, -6.55, 1.78);
-    s.quadraticCurveTo(-6.98, 1.66, -7.0, 1.4); s.lineTo(-7.0, 0.85); s.closePath();
-  }, 1.78, 0.08));
-  for (const sx of [-1, 1]) {
-    f.geo(M.pintura, salpicadera(-5.3, 0.6, 0.6, 0.7, 0.36, -0.05, Math.PI + 0.05), sx * 0.98, 0, 0);
-    f.caja(M.pintura, 0.36, 0.12, 0.95, sx * 0.98, 0.62, -6.5);      // faldón hasta la defensa
-    f.caja(M.pintura, 0.36, 0.12, 0.25, sx * 0.98, 0.62, -4.5);
-  }
-  // parrilla, defensa, faros y emblema
-  f.caja(C.cromo, 1.18, 0.86, 0.05, 0, 1.25, -7.1);
-  f.caja(M.rejilla, 1.04, 0.74, 0.02, 0, 1.25, -7.13);
-  f.caja(C.cromo, 2.42, 0.36, 0.28, 0, 0.6, -7.1);
-  f.caja(C.negroMate, 2.3, 0.08, 0.2, 0, 0.42, -7.12);
-  for (const sx of [-1, 1]) {
-    f.caja(C.cromo, 0.36, 0.22, 0.12, sx * 0.98, 1.0, -7.06, sx * 0.2);
-    f.caja(C.faro, 0.3, 0.16, 0.02, sx * 0.98, 1.0, -7.13, sx * 0.2);
-    f.caja(C.ambar, 0.1, 0.07, 0.02, sx * 1.12, 0.86, -7.08, sx * 0.3);
-    f.caja(C.faro, 0.16, 0.1, 0.03, sx * 0.85, 0.6, -7.25);
-  }
-  // cabina con dormitorio y techo aerodinámico
-  f.geo(M.pintura, perfil(s => {
-    s.moveTo(-1.45, 1.18); s.lineTo(-4.42, 1.18); s.lineTo(-4.42, 2.12);
-    s.lineTo(-3.92, 3.08); s.quadraticCurveTo(-3.8, 3.24, -3.55, 3.27);
-    s.quadraticCurveTo(-2.95, 3.32, -2.55, 3.72); s.quadraticCurveTo(-2.3, 3.93, -1.9, 3.95);
-    s.lineTo(-1.45, 3.95); s.closePath();
-  }, 2.36, 0.07));
-  f.caja(M.pinturaOsc, 2.36, 0.12, 2.95, 0, 1.18, -2.93);
-  // parabrisas en dos piezas y ventanas laterales
-  const parab = new THREE.PlaneGeometry(2.1, Math.hypot(0.5, 0.96)); parab.rotateX(-Math.atan2(0.5, 0.96)); parab.rotateY(Math.PI);
-  f.geo(C.vidrio, parab, 0, 2.64, -4.245);
-  f.caja(M.pinturaOsc, 0.07, 1.06, 0.05, 0, 2.64, -4.25, 0, -Math.atan2(0.5, 0.96));
-  const ventana = new THREE.Shape(); ventana.moveTo(-4.3, 2.22); ventana.lineTo(-3.92, 2.98); ventana.lineTo(-3.3, 2.98); ventana.lineTo(-3.3, 2.22); ventana.closePath();
-  const geoV = new THREE.ShapeGeometry(ventana);
-  for (const sx of [-1, 1]) {
-    const v = geoV.clone(); v.rotateY(-Math.PI / 2); if (sx > 0) v.scale(-1, 1, 1);   // plano x = cte, mirando hacia afuera
-    f.geo(C.vidrio, v, sx * 1.192, 0, 0);
-    f.caja(C.vidrio, 0.01, 0.28, 0.42, sx * 1.192, 2.95, -2.15);              // ventanita del dormitorio
-    // contorno de la puerta, manija, escalones, tanque y espejo
-    f.caja(C.negroMate, 0.006, 1.86, 0.012, sx * 1.19, 2.1, -3.22);
-    f.caja(C.negroMate, 0.006, 0.012, 1.1, sx * 1.19, 1.2 + 0.02, -3.77);
-    f.caja(C.cromo, 0.03, 0.04, 0.2, sx * 1.205, 2.05, -3.45);
-    for (const [y, z] of [[0.58, -3.8], [0.93, -3.8]]) f.caja(C.diamante, 0.32, 0.03, 0.45, sx * 1.02, y, z);
-    f.cil(C.aluminio, 0.31, 1.25, sx * 0.86, 0.68, -2.55, 'z', 28);
-    for (const z of [-3.0, -2.1]) f.cil(C.negroMate, 0.325, 0.06, sx * 0.86, 0.68, z, 'z', 28);
-    f.viga(C.cromo, V(sx * 1.18, 2.35, -4.25), V(sx * 1.48, 2.45, -4.35), 0.035);
-    f.viga(C.cromo, V(sx * 1.18, 2.95, -4.0), V(sx * 1.48, 2.95, -4.35), 0.035);
-    f.caja(C.negro, 0.1, 0.5, 0.22, sx * 1.5, 2.72, -4.36);
-    f.caja(C.cromo, 0.1, 0.5, 0.02, sx * 1.5, 2.72, -4.25);
-    // extensiones laterales y escapes cromados detrás de la cabina
-    f.caja(M.pintura, 0.04, 2.4, 0.32, sx * 1.17, 2.55, -1.3);
-    f.cil(C.cromo, 0.065, 2.9, sx * 1.08, 2.7, -1.25, 'y', 20);
-    f.cil(C.negroMate, 0.075, 0.9, sx * 1.08, 2.0, -1.25, 'y', 20);
-  }
-  for (let k = 0; k < 5; k++) f.caja(C.ambar, 0.1, 0.05, 0.06, -0.5 + k * 0.25, 3.31, -3.48);
-  f.cerrar(g);
-  // letrero PERCONSUR en las puertas
-  for (const sx of [-1, 1]) {
-    const l = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.19), M.letrero);
-    l.position.set(sx * 1.197, 1.72, -3.78); l.rotation.y = sx * Math.PI / 2; g.add(l);
-  }
-  // mangueras de aire (roja y azul) de la cabina al chasis
-  for (const [sx, m] of [[0.15, M.mangueraR], [-0.15, M.mangueraA]] as const) {
-    const curva = new THREE.CatmullRomCurve3([V(sx, 2.3, -1.4), V(sx * 1.3, 1.75, -1.25), V(sx, 1.38, -1.0), V(sx * 0.8, 1.3, -0.9)]);
-    const tubo = new THREE.Mesh(new THREE.TubeGeometry(curva, 24, 0.018, 6), m); g.add(tubo);
-  }
-  // ruedas: direccional con rin de aluminio y tándem de tracción con llantas dobles
-  const ruedas: THREE.Object3D[] = [];
-  const pon = (x: number, z: number) => { const r = rueda(0.52, 0.28, true); r.position.set(x, 0.52, z); g.add(r); ruedas.push(r); };
-  for (const sx of [-1, 1]) { pon(sx * 1.05, -5.3); for (const z of [-0.35, 0.95]) { pon(sx * 1.03, z); pon(sx * 0.73, z); } }
-  for (const z of [-5.3, -0.35, 0.95]) { const e = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1.9, 12), C.negro); e.rotation.z = Math.PI / 2; e.position.set(0, 0.52, z); g.add(e); }
-  g.traverse((o: any) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-  return { g, ruedas };
-}
 
 // ---------- chasis ----------
 export function crearChasis(size: Size) {
@@ -171,14 +110,19 @@ export function crearChasis(size: Size) {
     f.caja(M.reflejante, 0.004, 0.06, fin - zG - 0.6, sx * 0.585, y - 0.3, (zG + 0.6 + fin) / 2);
     for (const k of [0.3, 0.55, 0.8]) f.caja(C.ambar, 0.03, 0.04, 0.07, sx * 0.59, y - 0.38, -L / 2 + k * L);
   }
-  for (let z = zG + 0.7; z < L / 2 - 0.3; z += 1.25) f.caja(M.chasis, 1.0, 0.14, 0.08, 0, y - 0.32, z);
+  // travesaños en I entre los largueros
+  for (let z = zG + 0.7; z < L / 2 - 0.3; z += 1.25) {
+    f.caja(M.chasis, 0.99, 0.15, 0.01, 0, y - 0.32, z);
+    for (const dy of [-0.075, 0.075]) f.caja(M.chasis, 0.99, 0.012, 0.08, 0, y - 0.32 + dy, z);
+  }
   // mesas con candados giratorios donde asientan las esquineras
   for (const z of [-L / 2 + 0.08, L / 2 - 0.08]) {
     f.caja(M.chasis, W, 0.15, 0.22, 0, y - 0.075, z);
     for (const sx of [-1, 1]) {
-      f.caja(C.acero, 0.17, 0.04, 0.17, sx * (W / 2 - 0.09), y - 0.02, z);
-      f.geo(C.acero, new THREE.ConeGeometry(0.045, 0.07, 8), sx * (W / 2 - 0.09), y + 0.035, z);
-      f.caja(C.acero, 0.03, 0.03, 0.14, sx * (W / 2 + 0.02), y - 0.05, z);   // palanca del candado
+      f.caja(M.galv, 0.17, 0.04, 0.17, sx * (W / 2 - 0.09), y - 0.02, z);
+      f.geo(M.galv, new THREE.CylinderGeometry(0.03, 0.05, 0.07, 8), sx * (W / 2 - 0.09), y + 0.035, z);
+      f.caja(M.galv, 0.03, 0.03, 0.14, sx * (W / 2 + 0.02), y - 0.05, z);
+      f.caja(C.rojo, 0.035, 0.035, 0.035, sx * (W / 2 + 0.02), y - 0.05, z + 0.08);   // perilla de la palanca   // palanca del candado
     }
   }
   // placa superior con perno rey, conexiones de aire y luz al frente
@@ -191,29 +135,44 @@ export function crearChasis(size: Size) {
   const zPatas = zG + (size === '20' ? 1.1 : 0.6);
   for (const sx of [-1, 1]) {
     f.caja(M.chasis, 0.12, 0.6, 0.12, sx * 0.62, 0.62, zPatas);
-    f.caja(M.chasis, 0.09, 0.4, 0.09, sx * 0.62, 0.32, zPatas);
+    f.caja(M.galv, 0.09, 0.4, 0.09, sx * 0.62, 0.32, zPatas);
     f.caja(M.chasis, 0.3, 0.04, 0.3, sx * 0.62, 0.12, zPatas);
     f.viga(M.chasis, V(sx * 0.62, 0.8, zPatas), V(sx * 0.5, y - 0.5, zPatas + 0.7), 0.06);
   }
   f.caja(M.chasis, 1.3, 0.05, 0.05, 0, 0.75, zPatas);
-  f.cil(C.acero, 0.015, 0.3, 0.78, 0.7, zPatas, 'x');
+  f.cil(M.galv, 0.015, 0.3, 0.78, 0.7, zPatas, 'x');
+  f.cil(M.galv, 0.012, 0.25, 0.93, 0.6, zPatas, 'y');   // manivela
+  f.caja(M.chasis, 0.2, 0.18, 0.14, 0.62, 0.78, zPatas + 0.12);   // caja de engranes
   // tándem: colgantes, muelles, ejes y tanque de aire
   const zEjes = size === '20' ? [L / 2 - 1.0, L / 2 - 2.25] : [L / 2 - 1.1, L / 2 - 2.35];
   for (const z of zEjes) {
     f.cil(C.negro, 0.07, 2.0, 0, 0.5, z, 'x');
-    for (const sx of [-1, 1]) { f.caja(C.negro, 0.09, 0.08, 1.0, sx * 0.5, 0.64, z); f.caja(M.chasis, 0.1, 0.3, 0.12, sx * 0.5, 0.8, z - 0.55); }
+    for (const sx of [-1, 1]) {
+      f.caja(C.negro, 0.09, 0.08, 1.0, sx * 0.5, 0.64, z); f.caja(M.chasis, 0.1, 0.3, 0.12, sx * 0.5, 0.8, z - 0.55);
+      // cámara de freno de doble diafragma, vástago y matraca
+      f.cil(C.negro, 0.095, 0.1, sx * 0.34, 0.5, z - 0.3, 'z', 20); f.cil(C.negro, 0.085, 0.12, sx * 0.34, 0.5, z - 0.41, 'z', 20);
+      f.cil(M.galv, 0.012, 0.22, sx * 0.34, 0.5, z - 0.15, 'z', 8);
+      f.caja(M.galv, 0.03, 0.16, 0.04, sx * 0.34, 0.45, z - 0.04);
+    }
   }
-  f.cil(C.acero, 0.17, 1.1, 0, 0.72, (zEjes[0] + zEjes[1]) / 2, 'x', 18);
+  f.cil(M.chasis, 0.17, 1.1, 0, 0.72, (zEjes[0] + zEjes[1]) / 2, 'x', 24);
+  for (const sx of [-1, 1]) f.cil(M.chasis, 0.172, 0.03, sx * 0.48, 0.72, (zEjes[0] + zEjes[1]) / 2, 'x', 24);
   // defensa trasera, calaveras y loderas
   f.caja(M.chasis, W - 0.25, 0.1, 0.1, 0, 0.56, fin + 0.04);
   f.caja(M.reflejante, W - 0.3, 0.05, 0.004, 0, 0.56, fin + 0.092);
   for (const sx of [-1, 1]) {
     f.caja(M.chasis, 0.07, 0.62, 0.07, sx * 0.8, 0.87, fin + 0.04);
-    f.caja(C.rojo, 0.2, 0.1, 0.03, sx * (W / 2 - 0.22), y - 0.09, L / 2 + 0.03);
-    f.caja(C.ambar, 0.08, 0.1, 0.03, sx * (W / 2 - 0.4), y - 0.09, L / 2 + 0.03);
+    for (const [dx, m] of [[0.2, C.rojo], [0.38, C.rojo], [0.56, C.ambar]] as const) {
+      f.cil(C.negro, 0.07, 0.03, sx * (W / 2 - dx), y - 0.11, L / 2 + 0.03, 'z', 24);
+      f.geo(m, new THREE.CircleGeometry(0.058, 24), sx * (W / 2 - dx), y - 0.11, L / 2 + 0.047);
+    }
     f.caja(C.hule, 0.6, 0.55, 0.012, sx * 0.87, 0.6, zEjes[0] + 0.72);
   }
+  for (const dx of [-0.12, 0, 0.12]) f.geo(C.rojo, new THREE.CircleGeometry(0.025, 16), dx, y - 0.11, L / 2 + 0.047);   // luces de identificación
+  f.geo(M.placa, new THREE.PlaneGeometry(0.3, 0.15), 0.62, 0.86, fin + 0.086);
+  f.caja(M.chasis, 0.34, 0.19, 0.01, 0.62, 0.86, fin + 0.08);
   f.cerrar(g);
+  uvMundoEn(g, [M.chasis, M.galv]);
   const ruedas: THREE.Object3D[] = [];
   for (const z of zEjes) for (const x of [-1.0, -0.71, 0.71, 1.0]) {
     const r = rueda(0.5, 0.27, false); r.position.set(x, 0.5, z); g.add(r); ruedas.push(r);
