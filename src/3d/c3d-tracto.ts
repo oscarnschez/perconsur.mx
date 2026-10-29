@@ -168,10 +168,10 @@ export function crearTracto() {
 
   // cofre: de la nariz al parabrisas, ensanchándose hacia atrás
   const cofre = volumen([
-    { z: -7.03, yb: 1.0, yt: 1.42, w: 1.08, wb: 1.08, rt: 0.2, rb: 0.04 },
-    { z: -6.86, yb: 1.0, yt: 1.63, w: 1.15, wb: 1.15, rt: 0.32, rb: 0.04 },
-    { z: -6.3, yb: 1.0, yt: 1.81, w: 1.19, wb: 1.19, rt: 0.4, rb: 0.04 },
-    { z: -5.4, yb: 1.0, yt: 1.96, w: 1.2, wb: 1.2, rt: 0.44, rb: 0.04 },
+    { z: -6.33, yb: 1.0, yt: 1.44, w: 1.08, wb: 1.08, rt: 0.2, rb: 0.04 },
+    { z: -6.16, yb: 1.0, yt: 1.66, w: 1.15, wb: 1.15, rt: 0.32, rb: 0.04 },
+    { z: -5.75, yb: 1.0, yt: 1.85, w: 1.19, wb: 1.19, rt: 0.4, rb: 0.04 },
+    { z: -5.15, yb: 1.0, yt: 1.99, w: 1.2, wb: 1.2, rt: 0.44, rb: 0.04 },
     { z: -4.55, yb: 1.0, yt: 2.07, w: 1.2, wb: 1.2, rt: 0.44, rb: 0.04 },
   ], 7);
   f.geo(M.pintura, cofre.cuerpo); for (const t of cofre.tapas) f.geo(M.pintura, t);
@@ -205,27 +205,27 @@ export function crearTracto() {
   // salpicaderas delanteras con el arco de la llanta y forro interior negro
   for (const sx of [-1, 1]) {
     f.geo(M.pintura, perfil(s => {
-      s.moveTo(-7.0, 0.88); s.lineTo(-7.0, 1.12); s.quadraticCurveTo(-6.0, 1.14, -4.6, 1.14); s.lineTo(-4.6, 0.62);
-      s.absarc(-5.3, 0.52, 0.66, 0.15, Math.PI - 0.15, false); s.lineTo(-6.3, 0.62); s.quadraticCurveTo(-6.8, 0.66, -7.0, 0.88);
+      s.moveTo(-6.3, 0.88); s.lineTo(-6.3, 1.12); s.quadraticCurveTo(-5.6, 1.14, -4.6, 1.14); s.lineTo(-4.6, 0.62);
+      s.absarc(-5.3, 0.52, 0.66, 0.15, Math.PI - 0.15, false); s.lineTo(-6.05, 0.62); s.quadraticCurveTo(-6.25, 0.66, -6.3, 0.88);
     }, 0.42, 0.04), sx * 0.99, 0, 0);
     const forro = new THREE.CylinderGeometry(0.63, 0.63, 0.32, 28, 1, true, 0.2, Math.PI - 0.4); forro.rotateZ(Math.PI / 2);
     f.geo(M.forro, forro, sx * 0.99, 0.52, -5.3);
   }
   // parrilla cromada, defensa aerodinámica con faros de niebla y faros LED que siguen el cofre
-  f.geo(C.cromo, redondeada(1.34, 0.6, 0.12, 0.05), 0, 1.1, -6.99);
-  f.geo(M.parrilla, new THREE.PlaneGeometry(1.18, 0.47).rotateY(Math.PI), 0, 1.1, -7.056);
-  f.caja(M.plastico, 2.3, 0.32, 0.1, 0, 0.92, -6.97);   // faldón frontal detrás de la defensa
-  f.geo(M.plata, redondeada(2.46, 0.48, 0.44, 0.12), 0, 0.64, -7.06);
-  f.geo(M.plastico, redondeada(2.3, 0.14, 0.32, 0.05), 0, 0.34, -7.05);
-  f.geo(M.plastico, redondeada(1.2, 0.12, 0.05, 0.03), 0, 0.62, -7.28);
+  f.geo(C.cromo, redondeada(1.34, 0.6, 0.12, 0.05), 0, 1.1, -6.29);
+  f.geo(M.parrilla, new THREE.PlaneGeometry(1.18, 0.47).rotateY(Math.PI), 0, 1.1, -6.356);
+  f.caja(M.plastico, 2.3, 0.32, 0.1, 0, 0.92, -6.27);   // faldón frontal detrás de la defensa
+  f.geo(M.plata, redondeada(2.46, 0.48, 0.44, 0.12), 0, 0.64, -6.36);
+  f.geo(M.plastico, redondeada(2.3, 0.14, 0.32, 0.05), 0, 0.34, -6.35);
+  f.geo(M.plastico, redondeada(1.2, 0.12, 0.05, 0.03), 0, 0.62, -6.58);
   for (const sx of [-1, 1]) {
     // faro envolvente: carcasa negra, dos módulos LED y línea de luz diurna
-    f.geo(M.plastico, redondeada(0.46, 0.22, 0.2, 0.06).rotateY(sx * 0.42), sx * 0.86, 1.22, -6.98);
-    f.geo(M.faroVidrio, redondeada(0.47, 0.23, 0.205, 0.065).rotateY(sx * 0.42), sx * 0.86, 1.22, -6.985);
-    for (const k of [0, 1]) f.geo(M.cromo, new THREE.CylinderGeometry(0.055, 0.06, 0.04, 20).rotateX(Math.PI / 2).rotateY(sx * 0.42), sx * (0.78 + k * 0.15), 1.24, -7.07 + k * 0.065);
-    f.geo(M.led, redondeada(0.38, 0.022, 0.02, 0.01).rotateY(sx * 0.42), sx * 0.86, 1.13, -7.06);
-    f.geo(C.ambar, redondeada(0.12, 0.08, 0.05, 0.02).rotateY(sx * 0.9), sx * 1.17, 1.16, -6.6);
-    f.geo(M.led, new THREE.CircleGeometry(0.055, 16).rotateY(Math.PI), sx * 0.95, 0.66, -7.29);
+    f.geo(M.plastico, redondeada(0.46, 0.22, 0.2, 0.06).rotateY(sx * 0.42), sx * 0.86, 1.22, -6.28);
+    f.geo(M.faroVidrio, redondeada(0.47, 0.23, 0.205, 0.065).rotateY(sx * 0.42), sx * 0.86, 1.22, -6.285);
+    for (const k of [0, 1]) f.geo(M.cromo, new THREE.CylinderGeometry(0.055, 0.06, 0.04, 20).rotateX(Math.PI / 2).rotateY(sx * 0.42), sx * (0.78 + k * 0.15), 1.24, -6.37 + k * 0.065);
+    f.geo(M.led, redondeada(0.38, 0.022, 0.02, 0.01).rotateY(sx * 0.42), sx * 0.86, 1.13, -6.36);
+    f.geo(C.ambar, redondeada(0.12, 0.08, 0.05, 0.02).rotateY(sx * 0.9), sx * 1.17, 1.16, -5.9);
+    f.geo(M.led, new THREE.CircleGeometry(0.055, 16).rotateY(Math.PI), sx * 0.95, 0.66, -6.59);
   }
   // limpiadores, luces de gálibo en el techo y espejos aerodinámicos en las puertas
   for (const sx of [-1, 1]) { const a = enZ(cab.secciones, -4.31), b = enZ(cab.secciones, -4.16); f.viga(M.plastico, V(sx * 0.1, a.yt + 0.025, -4.31), V(sx * 0.85, b.yt + 0.025, -4.16), 0.025); }
@@ -245,8 +245,8 @@ export function crearTracto() {
   f.cil(C.cromo, 0.065, 2.7, 0.92, 2.65, -1.12, 'y', 20);
   f.cil(C.negroMate, 0.075, 0.8, 0.92, 1.85, -1.12, 'y', 20);
   // bastidor, quinta rueda, plataforma, salpicaderas traseras y loderas
-  for (const sx of [-1, 1]) { f.caja(C.negro, 0.012, 0.3, 8.2, sx * 0.42, 0.93, -2.85); f.caja(C.negro, 0.08, 0.012, 8.2, sx * 0.38, 1.08, -2.85); f.caja(C.negro, 0.08, 0.012, 8.2, sx * 0.38, 0.78, -2.85); }
-  for (const z of [-6.6, -5.2, -3.6, -1.8, -0.7, 0.5, 1.2]) f.caja(C.negro, 0.84, 0.18, 0.08, 0, 0.93, z);
+  for (const sx of [-1, 1]) { f.caja(C.negro, 0.012, 0.3, 7.5, sx * 0.42, 0.93, -2.5); f.caja(C.negro, 0.08, 0.012, 7.5, sx * 0.38, 1.08, -2.5); f.caja(C.negro, 0.08, 0.012, 7.5, sx * 0.38, 0.78, -2.5); }
+  for (const z of [-6.0, -5.2, -3.6, -1.8, -0.7, 0.5, 1.2]) f.caja(C.negro, 0.84, 0.18, 0.08, 0, 0.93, z);
   f.caja(C.negro, 1.05, 0.07, 1.0, 0, Y_QUINTA - 0.035, 0.05);
   f.caja(C.negroMate, 0.12, 0.072, 0.5, 0, Y_QUINTA - 0.034, 0.32);
   for (const sx of [-1, 1]) f.caja(C.negro, 0.12, 0.1, 0.5, sx * 0.4, 1.05, 0.05);
