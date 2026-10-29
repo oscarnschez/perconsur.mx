@@ -19,5 +19,3 @@
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 /assets/js/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
-/assets/modelos/*
-  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
