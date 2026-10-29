@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Seguridad: si cambia un script en línea, hay que recalcular su hash sha256 en la CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-+t/XV+yKfWZYW5W/NDQpzj1EXQhp0Uqgz4yvx5ZdBV0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-C7B5RsUvVcXOtuY46Yfj8nVHMJrE4yzWDmYg9o2iua8=' 'sha256-If5EptB+IZCBKy09niv++nKPg8aoQLmZllNTIdzb/9I=' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>PERCONSUR</title>
 <meta name="description" content="PERCONSUR: transporte de carga por carretera. División Puerto: contenedores de importación y exportación desde Manzanillo, Colima. División Campo: cosecha del campo a la planta en tolva y jaula. Más de 15 años en servicio.">
@@ -387,6 +387,11 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
 .intro{padding-top:calc(var(--nav-h) + clamp(64px,9vw,120px));padding-bottom:clamp(56px,7vw,88px)}
 .intro .t-display{max-width:14ch}
 .intro .t-lede{margin-top:22px;max-width:36em}
+.buque{position:relative;margin-top:clamp(40px,5vw,64px);aspect-ratio:21/9;border-radius:var(--r-xl);overflow:hidden;background:#dce5ec}
+.buque img,.buque canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.buque canvas{opacity:0;transition:opacity var(--t-slow) ease}
+.buque.listo canvas{opacity:1}
+@media (max-width:640px){.buque{aspect-ratio:4/3}}
 .subnav{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
 
 .bloque{padding-block:clamp(64px,8vw,104px);border-top:1px solid var(--line-2)}
@@ -1179,6 +1184,10 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
     <h1 class="t-display" id="t-puerto" tabindex="-1">Contenedores desde Manzanillo.</h1>
     <p class="t-lede">Nos encargamos del tramo terrestre completo: del recinto portuario a tu planta en importación, y de tu planta a la terminal en exportación.</p>
     <div class="acciones" style="margin-top:32px"><a class="btn" href="#contacto">Cotizar un traslado</a><a class="mas" href="#sec-contenedor">Ver el contenedor en 3D<svg aria-hidden="true" focusable="false" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg></a></div>
+    <!-- Buque portacontenedores en 3D rumbo a Manzanillo; sin WebGL o con movimiento reducido queda la imagen fija -->
+    <figure class="buque" id="buque3d" role="img" aria-label="Buque portacontenedores navegando en mar abierto rumbo al puerto de Manzanillo">
+      <img src="assets/img/buque-mar.webp" srcset="assets/img/buque-mar-840.webp 840w, assets/img/buque-mar.webp 1680w" sizes="(max-width: 1280px) 100vw, 1280px" width="1680" height="720" alt="" decoding="async" fetchpriority="high">
+    </figure>
   </div>
 
   <!-- El contenedor en 3D: elige tamaño, gíralo y ábrelo -->
@@ -1966,10 +1975,11 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
       </nav>
     </div>
     <p class="pie-aviso">PERCONSUR y su logotipo son marcas de PERCONSUR DE NAYARIT GROUP, S.A. de C.V. Los nombres y logotipos de clientes que aparecen en este sitio pertenecen a sus respectivos titulares y se muestran solo como referencia. <a href="#marcas">Aviso sobre marcas</a>.</p>
+    <p class="pie-aviso">Modelo 3D del buque: <a href="https://sketchfab.com/3d-models/container-ship-aaa41cca946b4a08bc08cf692b7757be" rel="noopener">«Container Ship»</a> de RM02, con licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" rel="noopener">CC BY 4.0</a>; se retiraron sus letreros y logotipos.</p>
     <div class="pie-base">
       <p>© <span id="anio">2026</span> PERCONSUR DE NAYARIT GROUP, S.A. de C.V.</p>
       <p>Zapopan, Jalisco · Manzanillo, Colima</p>
-      <p class="pie-version">Versión <span class="tnum">1.10.1</span> · Actualizado el <time datetime="2026-10-29">29 de octubre de 2026</time></p>
+      <p class="pie-version">Versión <span class="tnum">1.11.0</span> · Actualizado el <time datetime="2026-10-29">29 de octubre de 2026</time></p>
     </div>
   </div>
 </footer>
@@ -2319,6 +2329,21 @@ html:not(.js) main:has(.ancla:target) #page-inicio:not(:has(> .ancla:target)){di
       }, { rootMargin: '400px 0px' });
       vio.observe(visor);
     }
+  }
+
+  /* ---------- buque en 3D del encabezado de Puerto: solo con movimiento y sin ahorro de datos ---------- */
+  var buque = $('#buque3d'), ahorro = navigator.connection && navigator.connection.saveData;
+  if(buque && !reduce && !ahorro && 'IntersectionObserver' in window){
+    var bio = new IntersectionObserver(function(es){
+      if(!es.some(function(e){ return e.isIntersecting; })) return;
+      bio.disconnect();
+      var cv = document.createElement('canvas');
+      if(!(cv.getContext('webgl2') || cv.getContext('webgl'))) return;   // sin WebGL: queda la imagen
+      import('./assets/js/barco3d.js?v=' + VER).then(function(m){
+        m.mount(buque, { onReady: function(){ buque.classList.add('listo'); } });
+      }).catch(function(){ /* sin módulo: queda la imagen */ });
+    }, { rootMargin: '200px 0px' });
+    bio.observe(buque);
   }
 
   /* ---------- tolva y jaula en 3D: se cargan al acercarse ---------- */
