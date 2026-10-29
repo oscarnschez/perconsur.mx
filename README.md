@@ -62,6 +62,13 @@ Para probar en local: `npx wrangler dev` (http://localhost:8787).
   (tractocamión de cofre aerodinámico, modelado por secciones), `c3d-grua.ts` y
   `c3d-comun.ts` (texturas y piezas compartidas). Los reflejos usan `assets/img/entorno-ciudad.exr`, un HDRI de
   [Poly Haven](https://polyhaven.com) con licencia CC0, tomado del paquete `@pmndrs/assets`.
+- `barco3d.js`: encabezado de la División Puerto, un buque portacontenedores sobre mar abierto. El mar (olas de
+  Gerstner y rizos) y el cielo se generan en código (`src/3d/barco3d.ts`); el buque es `assets/modelos/barco.glb`,
+  basado en [«Container Ship»](https://sketchfab.com/3d-models/container-ship-aaa41cca946b4a08bc08cf692b7757be)
+  de RM02 (CC BY 4.0, con crédito en el pie de página), al que se le borraron letreros y logotipos de las texturas y
+  que se comprimió con `gltf-transform optimize --compress meshopt --texture-compress webp --texture-size 1024`.
+  El decodificador meshopt es WebAssembly, por eso la CSP incluye `'wasm-unsafe-eval'` y `blob:` para las texturas.
+  Con movimiento reducido, ahorro de datos o sin WebGL se muestra la imagen fija `assets/img/buque-mar.webp`.
 - `campo3d.js`: el remolque tolva y el remolque jaula, con su carga (página División Campo).
 - `comun-*.js`: Three.js y las luces compartidas por ambos.
 
